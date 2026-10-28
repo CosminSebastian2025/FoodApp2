@@ -78,7 +78,7 @@ data class CartItem(
     val productName: String,
     val basePrice: Double,
     val quantity: Int,
-    val selectOptions: List<String>,
+    val selectedOptions: List<String>,
     val optionPriceModifier: Double
 ){
     val unitPrice: Double get() = basePrice + optionPriceModifier
