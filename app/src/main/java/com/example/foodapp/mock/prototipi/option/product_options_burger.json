@@ -1,0 +1,87 @@
+{
+  "category": "cat_burger",
+  "products": [
+    {
+      "productId": "opt_burger_classic",
+      "groups": [
+        {
+          "groupId": "cottura",
+          "groupName": "Cottura",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "ben_cotta",
+              "name": "Ben cotta",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "aggiunte",
+          "groupName": "Aggiunte",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "bacon",
+              "name": "Bacon",
+              "priceModifier": 1.5
+            },
+            {
+              "id": "cheddar_extra",
+              "name": "Cheddar extra",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_burger_veggie",
+      "groups": [
+        {
+          "groupId": "pane",
+          "groupName": "Pane",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "classico",
+              "name": "Classico",
+              "priceModifier": 0
+            },
+            {
+              "id": "integrale",
+              "name": "Integrale",
+              "priceModifier": 0.5
+            }
+          ]
+        },
+        {
+          "groupId": "aggiunte",
+          "groupName": "Aggiunte",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "avocado",
+              "name": "Avocado",
+              "priceModifier": 1.5
+            },
+            {
+              "id": "formaggio",
+              "name": "Formaggio",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

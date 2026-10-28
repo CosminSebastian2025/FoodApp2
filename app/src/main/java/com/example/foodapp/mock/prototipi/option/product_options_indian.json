@@ -1,0 +1,97 @@
+{
+  "category": "cat_indian",
+  "products": [
+    {
+      "productId": "opt_chicken_tikka",
+      "groups": [
+        {
+          "groupId": "piccantezza",
+          "groupName": "Piccantezza",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "delicata",
+              "name": "Delicata",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "piccante",
+              "name": "Piccante",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "accompagnamento",
+          "groupName": "Accompagnamento",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "riso_basmati",
+              "name": "Riso basmati",
+              "priceModifier": 0
+            },
+            {
+              "id": "naan",
+              "name": "Naan",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_chana_masala",
+      "groups": [
+        {
+          "groupId": "piccantezza",
+          "groupName": "Piccantezza",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "delicata",
+              "name": "Delicata",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "piccante",
+              "name": "Piccante",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "accompagnamento",
+          "groupName": "Accompagnamento",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "riso_basmati",
+              "name": "Riso basmati",
+              "priceModifier": 0
+            },
+            {
+              "id": "naan",
+              "name": "Naan",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

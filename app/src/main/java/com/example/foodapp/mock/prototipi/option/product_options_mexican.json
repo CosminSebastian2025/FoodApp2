@@ -1,0 +1,92 @@
+{
+  "category": "cat_mexican",
+  "products": [
+    {
+      "productId": "opt_burrito_chicken",
+      "groups": [
+        {
+          "groupId": "piccantezza",
+          "groupName": "Piccantezza",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "leggera",
+              "name": "Leggera",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "forte",
+              "name": "Forte",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "guacamole",
+              "name": "Guacamole",
+              "priceModifier": 1.5
+            },
+            {
+              "id": "formaggio",
+              "name": "Formaggio",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_tacos_beef",
+      "groups": [
+        {
+          "groupId": "numero",
+          "groupName": "Numero",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "2_tacos",
+              "name": "2 tacos",
+              "priceModifier": 0
+            },
+            {
+              "id": "3_tacos",
+              "name": "3 tacos",
+              "priceModifier": 2.5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "salsa_piccante",
+              "name": "Salsa piccante",
+              "priceModifier": 0.5
+            },
+            {
+              "id": "guacamole",
+              "name": "Guacamole",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

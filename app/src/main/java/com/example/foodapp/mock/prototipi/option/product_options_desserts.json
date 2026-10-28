@@ -1,0 +1,87 @@
+{
+  "category": "cat_desserts",
+  "products": [
+    {
+      "productId": "opt_tiramisu",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "singola",
+              "name": "Singola",
+              "priceModifier": 0
+            },
+            {
+              "id": "doppia",
+              "name": "Doppia",
+              "priceModifier": 3.5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "cacao_extra",
+              "name": "Cacao extra",
+              "priceModifier": 0
+            },
+            {
+              "id": "panna",
+              "name": "Panna",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_cheesecake",
+      "groups": [
+        {
+          "groupId": "gusto",
+          "groupName": "Gusto",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "frutti_di_bosco",
+              "name": "Frutti di bosco",
+              "priceModifier": 0
+            },
+            {
+              "id": "cioccolato",
+              "name": "Cioccolato",
+              "priceModifier": 0.5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "panna",
+              "name": "Panna",
+              "priceModifier": 1
+            },
+            {
+              "id": "frutta_fresca",
+              "name": "Frutta fresca",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

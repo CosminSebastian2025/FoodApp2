@@ -1,0 +1,97 @@
+{
+  "category": "cat_fastfood",
+  "products": [
+    {
+      "productId": "opt_chicken_nuggets",
+      "groups": [
+        {
+          "groupId": "quantita",
+          "groupName": "Quantità",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "6_pezzi",
+              "name": "6 pezzi",
+              "priceModifier": 0
+            },
+            {
+              "id": "9_pezzi",
+              "name": "9 pezzi",
+              "priceModifier": 2
+            },
+            {
+              "id": "20_pezzi",
+              "name": "20 pezzi",
+              "priceModifier": 5.5
+            }
+          ]
+        },
+        {
+          "groupId": "salsa",
+          "groupName": "Salsa",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "barbecue",
+              "name": "Barbecue",
+              "priceModifier": 0
+            },
+            {
+              "id": "agrodolce",
+              "name": "Agrodolce",
+              "priceModifier": 0
+            },
+            {
+              "id": "maionese",
+              "name": "Maionese",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_hot_dog",
+      "groups": [
+        {
+          "groupId": "aggiunte",
+          "groupName": "Aggiunte",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "cipolla_croccante",
+              "name": "Cipolla croccante",
+              "priceModifier": 0.5
+            },
+            {
+              "id": "cheddar",
+              "name": "Cheddar",
+              "priceModifier": 1
+            }
+          ]
+        },
+        {
+          "groupId": "menu",
+          "groupName": "Menu",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "solo_panino",
+              "name": "Solo panino",
+              "priceModifier": 0
+            },
+            {
+              "id": "con_patatine_e_bibita",
+              "name": "Con patatine e bibita",
+              "priceModifier": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

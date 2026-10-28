@@ -1,0 +1,18 @@
+[
+    {"id": "cat_burger", "name": "Burger", "imageUrl": "https://picsum.photo/600/300?burger", "count": 12},
+    {"id": "cat_pizza", "name": "Pizza", "imageUrl": "https://picsum.photo/600/300?pizza", "count": 8},
+    {"id": "cat_italian", "name": "Italian", "imageUrl": "https://picsum.photo/600/300?italian", "count": 5},
+    {"id": "cat_mexican", "name": "Mexican", "imageUrl": "https://picsum.photo/600/300?mexican", "count": 7},
+    {"id": "cat_asian", "name": "Asian", "imageUrl": "https://picsum.photo/600/300?asian", "count": 6},
+    {"id": "cat_fastfood", "name": "Fast Food", "imageUrl": "https://picsum.photo/600/300?fastfood", "count": 10},
+    {"id": "cat_healthy", "name": "Healthy", "imageUrl": "https://picsum.photo/600/300?healthy", "count": 4},
+    {"id": "cat_seafood", "name": "Seafood", "imageUrl": "https://picsum.photo/600/300?seafood", "count": 3},
+    {"id": "cat_steakhouse", "name": "Steakhouse", "imageUrl": "https://picsum.photo/600/300?steakhouse", "count": 2},
+    {"id": "cat_indian", "name": "Indian", "imageUrl": "https://picsum.photo/600/300?indian", "count": 5},
+    {"id": "cat_middleeastern", "name": "Middle Eastern", "imageUrl": "https://picsum.photo/600/300?middleeastern", "count": 4},
+    {"id": "cat_french", "name": "French", "imageUrl": "https://picsum.photo/600/300?french", "count": 3},
+    {"id": "cat_greek", "name": "Greek", "imageUrl": "https://picsum.photo/600/300?greek", "count": 2},
+    {"id": "cat_sushi", "name": "Sushi", "imageUrl": "https://picsum.photo/600/300?sushi", "count": 6},
+    {"id": "cat_desserts", "name": "Desserts", "imageUrl": "https://picsum.photo/600/300?desserts", "count": 5},
+    {"id": "cat_drinks", "name": "Drinks", "imageUrl": "https://picsum.photo/600/300?drinks", "count": 4}
+]

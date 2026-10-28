@@ -1,0 +1,20 @@
+[
+    {
+        "id": "store_milano_centro",
+        "name": "FastBite Milano Centro",
+        "address": "Via Dante 12, Milano",
+        "distanceKM": 1.2,
+        "readyInMinutes": 15,
+        "openingHours": "10:00-23:00",
+        "isPreferred": true
+    },
+        {
+        "id": "store_roma_prati",
+        "name": "FastBite Roma Prati",
+        "address": "Via Cola di Rienzo 88, Milano",
+        "distanceKM": 3.5,
+        "readyInMinutes": 25,
+        "openingHours": "10:00-23:00",
+        "isPreferred": false
+    }
+]

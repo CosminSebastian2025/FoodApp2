@@ -1,0 +1,87 @@
+{
+  "category": "cat_french",
+  "products": [
+    {
+      "productId": "opt_quiche_lorraine",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "fetta",
+              "name": "Fetta",
+              "priceModifier": 0
+            },
+            {
+              "id": "porzione_con_insalata",
+              "name": "Porzione con insalata",
+              "priceModifier": 2.5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "formaggio_extra",
+              "name": "Formaggio extra",
+              "priceModifier": 1
+            },
+            {
+              "id": "insalata_mista",
+              "name": "Insalata mista",
+              "priceModifier": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_croque_monsieur",
+      "groups": [
+        {
+          "groupId": "pane",
+          "groupName": "Pane",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "bianco",
+              "name": "Bianco",
+              "priceModifier": 0
+            },
+            {
+              "id": "integrale",
+              "name": "Integrale",
+              "priceModifier": 0.5
+            }
+          ]
+        },
+        {
+          "groupId": "servizio",
+          "groupName": "Servizio",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "singolo",
+              "name": "Singolo",
+              "priceModifier": 0
+            },
+            {
+              "id": "con_insalata",
+              "name": "Con insalata",
+              "priceModifier": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

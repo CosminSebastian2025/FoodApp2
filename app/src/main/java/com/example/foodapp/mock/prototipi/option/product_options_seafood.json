@@ -1,0 +1,92 @@
+{
+  "category": "cat_seafood",
+  "products": [
+    {
+      "productId": "opt_grilled_salmon",
+      "groups": [
+        {
+          "groupId": "contorno",
+          "groupName": "Contorno",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "verdure_grigliate",
+              "name": "Verdure grigliate",
+              "priceModifier": 0
+            },
+            {
+              "id": "patate_al_forno",
+              "name": "Patate al forno",
+              "priceModifier": 0
+            },
+            {
+              "id": "insalata",
+              "name": "Insalata",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "cottura",
+          "groupName": "Cottura",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "ben_cotta",
+              "name": "Ben cotta",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_fried_calamari",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "piccola",
+              "name": "Piccola",
+              "priceModifier": 0
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "priceModifier": 4
+            }
+          ]
+        },
+        {
+          "groupId": "salsa",
+          "groupName": "Salsa",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "limone",
+              "name": "Limone",
+              "priceModifier": 0
+            },
+            {
+              "id": "aioli",
+              "name": "Aioli",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
