@@ -11,6 +11,7 @@ import com.example.foodapp.data.remote.FastBiteApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Dispatcher
 
 class LocalApiImpl(private val reader: AssetsJsonReader): FastBiteApi {
 
@@ -38,8 +39,11 @@ class LocalApiImpl(private val reader: AssetsJsonReader): FastBiteApi {
         reader.getProductById(id)
     }
 
-    override suspend fun getProductOptions(productId: String) = withContext(Dispatchers.IO) {
-        reader.getProductOptions(productId)
+    override suspend fun getProductOptions(productId: String): ProductOptionsResponse? = withContext(Dispatchers.IO) {
+        withContext (Dispatchers.IO) {
+            delay(200)
+            reader.getProductOptions(productId)
+        }
     }
 
     override suspend fun getStores() = withContext(Dispatchers.IO) {

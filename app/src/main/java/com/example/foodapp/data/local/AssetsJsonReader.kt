@@ -9,7 +9,7 @@ class AssetsJsonReader(private val context: Context) {
     private val gson = Gson()
 
     private fun readJson(fileName: String): String {
-        return context.assets.open("mock/prototipi/$fileName").bufferedReader().use { it.readText() }
+        return context.assets.open("prototipi/$fileName").bufferedReader().use { it.readText() }
     }
 
     // ottieni tutte le promozioni disponibili
@@ -36,11 +36,11 @@ class AssetsJsonReader(private val context: Context) {
     fun getProductById(id: String): Product? =
         getAllProducts().find { it.IdProduct == id }
 
-    fun getProductOptions(productId: String): ProductOptionsResponse {
-        return gson.fromJson(
-            readJson("product_options_bigmac.json"),
-            ProductOptionsResponse::class.java
-        )
+    fun getProductOptions(productId: String): ProductOptionsResponse? {
+        val json = readJson("product_options.json")
+        val type = object : TypeToken<Map<String, ProductOptionsResponse>>() {}.type
+        val map: Map<String, ProductOptionsResponse> = gson.fromJson(json, type)
+        return map[productId]
     }
 
     fun getStores(): List<Store> {

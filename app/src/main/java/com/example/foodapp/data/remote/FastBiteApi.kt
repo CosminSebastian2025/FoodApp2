@@ -8,7 +8,7 @@ interface FastBiteApi {
     suspend fun getPopularProducts(): List<Product>
     suspend fun getAllProducts(): List<Product>
     suspend fun getProductsById(id: String): Product?
-    suspend fun getProductOptions(productId: String): ProductOptionsResponse
+    suspend fun getProductOptions(productId: String): ProductOptionsResponse?
     suspend fun getStores(): List<Store>
     suspend fun getPickupSlots(): PickupSlots
     suspend fun getCartRules(): CartRules
