@@ -1,0 +1,87 @@
+{
+  "category": "cat_italian",
+  "products": [
+    {
+      "productId": "opt_lasagna",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "normale",
+              "name": "Normale",
+              "priceModifier": 0
+            },
+            {
+              "id": "abbastanza_grande",
+              "name": "Abbastanza grande",
+              "priceModifier": 3
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "parmigiano",
+              "name": "Parmigiano",
+              "priceModifier": 1
+            },
+            {
+              "id": "insalata",
+              "name": "Insalata",
+              "priceModifier": 2.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_risotto",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "normale",
+              "name": "Normale",
+              "priceModifier": 0
+            },
+            {
+              "id": "abbastanza_grande",
+              "name": "Abbastanza grande",
+              "priceModifier": 3
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "tartufo",
+              "name": "Tartufo",
+              "priceModifier": 3.5
+            },
+            {
+              "id": "parmigiano",
+              "name": "Parmigiano",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

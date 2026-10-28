@@ -1,0 +1,92 @@
+{
+  "category": "cat_healthy",
+  "products": [
+    {
+      "productId": "opt_buddha_bowl",
+      "groups": [
+        {
+          "groupId": "base",
+          "groupName": "Base",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "quinoa",
+              "name": "Quinoa",
+              "priceModifier": 0
+            },
+            {
+              "id": "riso_integrale",
+              "name": "Riso integrale",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "proteina",
+          "groupName": "Proteina",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "tofu",
+              "name": "Tofu",
+              "priceModifier": 0
+            },
+            {
+              "id": "pollo_grigliato",
+              "name": "Pollo grigliato",
+              "priceModifier": 2
+            },
+            {
+              "id": "salmone",
+              "name": "Salmone",
+              "priceModifier": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_caesar_salad",
+      "groups": [
+        {
+          "groupId": "proteina",
+          "groupName": "Proteina",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "senza_pollo",
+              "name": "Senza pollo",
+              "priceModifier": 0
+            },
+            {
+              "id": "pollo_grigliato",
+              "name": "Pollo grigliato",
+              "priceModifier": 2
+            }
+          ]
+        },
+        {
+          "groupId": "condimento",
+          "groupName": "Condimento",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "a_parte",
+              "name": "A parte",
+              "priceModifier": 0
+            },
+            {
+              "id": "gi_condito",
+              "name": "Già condito",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

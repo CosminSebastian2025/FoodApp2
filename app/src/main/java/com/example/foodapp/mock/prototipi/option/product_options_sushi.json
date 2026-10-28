@@ -1,0 +1,87 @@
+{
+  "category": "cat_sushi",
+  "products": [
+    {
+      "productId": "opt_salmon_nigiri",
+      "groups": [
+        {
+          "groupId": "quantita",
+          "groupName": "Quantità",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "4_pezzi",
+              "name": "4 pezzi",
+              "priceModifier": 0
+            },
+            {
+              "id": "6_pezzi",
+              "name": "6 pezzi",
+              "priceModifier": 3.5
+            }
+          ]
+        },
+        {
+          "groupId": "aggiunta",
+          "groupName": "Aggiunta",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "zenzero",
+              "name": "Zenzero",
+              "priceModifier": 0
+            },
+            {
+              "id": "wasabi_extra",
+              "name": "Wasabi extra",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_california_roll",
+      "groups": [
+        {
+          "groupId": "quantita",
+          "groupName": "Quantità",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "8_pezzi",
+              "name": "8 pezzi",
+              "priceModifier": 0
+            },
+            {
+              "id": "12_pezzi",
+              "name": "12 pezzi",
+              "priceModifier": 4
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "salsa_spicy_mayo",
+              "name": "Salsa spicy mayo",
+              "priceModifier": 0.8
+            },
+            {
+              "id": "avocado_extra",
+              "name": "Avocado extra",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

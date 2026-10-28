@@ -1,0 +1,92 @@
+{
+  "category": "cat_asian",
+  "products": [
+    {
+      "productId": "opt_noodles",
+      "groups": [
+        {
+          "groupId": "proteina",
+          "groupName": "Proteina",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "verdure",
+              "name": "Verdure",
+              "priceModifier": 0
+            },
+            {
+              "id": "pollo",
+              "name": "Pollo",
+              "priceModifier": 2
+            },
+            {
+              "id": "gamberi",
+              "name": "Gamberi",
+              "priceModifier": 3
+            }
+          ]
+        },
+        {
+          "groupId": "piccantezza",
+          "groupName": "Piccantezza",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "normale",
+              "name": "Normale",
+              "priceModifier": 0
+            },
+            {
+              "id": "piccante",
+              "name": "Piccante",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_ramen",
+      "groups": [
+        {
+          "groupId": "brodo",
+          "groupName": "Brodo",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "shoyu",
+              "name": "Shoyu",
+              "priceModifier": 0
+            },
+            {
+              "id": "miso",
+              "name": "Miso",
+              "priceModifier": 1
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "uovo",
+              "name": "Uovo",
+              "priceModifier": 1
+            },
+            {
+              "id": "chashu",
+              "name": "Chashu",
+              "priceModifier": 2.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

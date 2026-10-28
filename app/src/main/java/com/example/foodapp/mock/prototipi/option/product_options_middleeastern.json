@@ -1,0 +1,92 @@
+{
+  "category": "cat_middleeastern",
+  "products": [
+    {
+      "productId": "opt_chicken_shawarma",
+      "groups": [
+        {
+          "groupId": "servito_in",
+          "groupName": "Servito in",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "pita",
+              "name": "Pita",
+              "priceModifier": 0
+            },
+            {
+              "id": "piatto",
+              "name": "Piatto",
+              "priceModifier": 1
+            }
+          ]
+        },
+        {
+          "groupId": "salsa",
+          "groupName": "Salsa",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "tahina",
+              "name": "Tahina",
+              "priceModifier": 0
+            },
+            {
+              "id": "yogurt",
+              "name": "Yogurt",
+              "priceModifier": 0
+            },
+            {
+              "id": "piccante",
+              "name": "Piccante",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_falafel",
+      "groups": [
+        {
+          "groupId": "quantita",
+          "groupName": "Quantità",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "4_pezzi",
+              "name": "4 pezzi",
+              "priceModifier": 0
+            },
+            {
+              "id": "6_pezzi",
+              "name": "6 pezzi",
+              "priceModifier": 2
+            }
+          ]
+        },
+        {
+          "groupId": "servito_con",
+          "groupName": "Servito con",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "pita",
+              "name": "Pita",
+              "priceModifier": 0
+            },
+            {
+              "id": "insalata",
+              "name": "Insalata",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "category": "cat_drinks",
+  "products": [
+    {
+      "productId": "opt_lemonade",
+      "groups": [
+        {
+          "groupId": "formato",
+          "groupName": "Formato",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "piccolo",
+              "name": "Piccolo",
+              "priceModifier": 0
+            },
+            {
+              "id": "medio",
+              "name": "Medio",
+              "priceModifier": 1
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "priceModifier": 2
+            }
+          ]
+        },
+        {
+          "groupId": "ghiaccio",
+          "groupName": "Ghiaccio",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "normale",
+              "name": "Normale",
+              "priceModifier": 0
+            },
+            {
+              "id": "senza_ghiaccio",
+              "name": "Senza ghiaccio",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_iced_tea",
+      "groups": [
+        {
+          "groupId": "gusto",
+          "groupName": "Gusto",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "pesca",
+              "name": "Pesca",
+              "priceModifier": 0
+            },
+            {
+              "id": "limone",
+              "name": "Limone",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "formato",
+          "groupName": "Formato",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "piccolo",
+              "name": "Piccolo",
+              "priceModifier": 0
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "priceModifier": 1.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

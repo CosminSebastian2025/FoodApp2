@@ -1,0 +1,97 @@
+{
+  "category": "cat_pizza",
+  "products": [
+    {
+      "productId": "opt_pizza_margherita",
+      "groups": [
+        {
+          "groupId": "formato",
+          "groupName": "Formato",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "piccola",
+              "name": "Piccola",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "priceModifier": 5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "mozzarella_extra",
+              "name": "Mozzarella extra",
+              "priceModifier": 1.5
+            },
+            {
+              "id": "olive",
+              "name": "Olive",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_pizza_diavola",
+      "groups": [
+        {
+          "groupId": "formato",
+          "groupName": "Formato",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "piccola",
+              "name": "Piccola",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 3
+            },
+            {
+              "id": "grande",
+              "name": "Grande",
+              "priceModifier": 5
+            }
+          ]
+        },
+        {
+          "groupId": "impasto",
+          "groupName": "Impasto",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "classico",
+              "name": "Classico",
+              "priceModifier": 0
+            },
+            {
+              "id": "integrale",
+              "name": "Integrale",
+              "priceModifier": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "category": "cat_steakhouse",
+  "products": [
+    {
+      "productId": "opt_ribeye",
+      "groups": [
+        {
+          "groupId": "cottura",
+          "groupName": "Cottura",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "al_sangue",
+              "name": "Al sangue",
+              "priceModifier": 0
+            },
+            {
+              "id": "media",
+              "name": "Media",
+              "priceModifier": 0
+            },
+            {
+              "id": "ben_cotta",
+              "name": "Ben cotta",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "contorno",
+          "groupName": "Contorno",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "patatine",
+              "name": "Patatine",
+              "priceModifier": 0
+            },
+            {
+              "id": "verdure_grigliate",
+              "name": "Verdure grigliate",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_ribs",
+      "groups": [
+        {
+          "groupId": "porzione",
+          "groupName": "Porzione",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "mezza",
+              "name": "Mezza",
+              "priceModifier": 0
+            },
+            {
+              "id": "intera",
+              "name": "Intera",
+              "priceModifier": 8
+            }
+          ]
+        },
+        {
+          "groupId": "salsa",
+          "groupName": "Salsa",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "barbecue_classica",
+              "name": "Barbecue classica",
+              "priceModifier": 0
+            },
+            {
+              "id": "piccante",
+              "name": "Piccante",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

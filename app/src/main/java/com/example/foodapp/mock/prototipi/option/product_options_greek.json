@@ -1,0 +1,87 @@
+{
+  "category": "cat_greek",
+  "products": [
+    {
+      "productId": "opt_greek_souvlaki",
+      "groups": [
+        {
+          "groupId": "servito_con",
+          "groupName": "Servito con",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "pita",
+              "name": "Pita",
+              "priceModifier": 0
+            },
+            {
+              "id": "riso",
+              "name": "Riso",
+              "priceModifier": 0
+            }
+          ]
+        },
+        {
+          "groupId": "salsa",
+          "groupName": "Salsa",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "tzatziki",
+              "name": "Tzatziki",
+              "priceModifier": 0
+            },
+            {
+              "id": "salsa_piccante",
+              "name": "Salsa piccante",
+              "priceModifier": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "opt_greek_salad",
+      "groups": [
+        {
+          "groupId": "formaggio",
+          "groupName": "Formaggio",
+          "isRequired": true,
+          "selectionType": "single",
+          "choices": [
+            {
+              "id": "feta",
+              "name": "Feta",
+              "priceModifier": 0
+            },
+            {
+              "id": "feta_extra",
+              "name": "Feta extra",
+              "priceModifier": 1.5
+            }
+          ]
+        },
+        {
+          "groupId": "extra",
+          "groupName": "Extra",
+          "isRequired": false,
+          "selectionType": "multiple",
+          "choices": [
+            {
+              "id": "olive",
+              "name": "Olive",
+              "priceModifier": 0.5
+            },
+            {
+              "id": "pollo_grigliato",
+              "name": "Pollo grigliato",
+              "priceModifier": 2.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+[
+	{
+		"id": "promo_ritiro",
+		"title": "Ritiro in Negozio",
+		"subtitles": "Ordina in app. Salata la filea. ritira caldo in cassa",
+		"badges":["Zero costi di consegna", "Passa QR Code rapido"],
+		"imageUrl":"https://picsum.photo/600/300?fastfood"
+	}
+]

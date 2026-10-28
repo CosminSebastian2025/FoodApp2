@@ -1,0 +1,16 @@
+[
+    {
+        "pickupFee": 0.00,
+        "managementFee": 0.50,
+        "discountCode": "FAST10",
+        "discountPercent": 10,
+        "currency": "EUR"
+    },
+    {
+        "pickupFee": 0.00,
+        "managementFee": 0.50,
+        "discountCode": "FAST35",
+        "discountPercent": 35,
+        "currency": "EUR"
+    }
+]

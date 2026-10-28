@@ -1,0 +1,62 @@
+[
+  {
+    "id": "prod_bigmac",
+    "name": "Big Mac",
+    "description": "Due hamburger di manzo, salsa speciale, lattuga, formaggio, cetriolini e cipolla in un panino con semi di sesamo.",
+    "basePrice": "5.99",
+    "imageUrl": "https://picsum.photos/seed/bigmac/600/300",
+    "category": "cat_burger",
+    "isPopular": true,
+    "allergenInfo": ["glutine", "latticini", "uova", "sesamo", "senape"]
+  },
+  {
+    "id": "prod_margherita",
+    "name": "Pizza Margherita",
+    "description": "Pizza classica con pomodoro, mozzarella fresca, basilico e olio extravergine d'oliva.",
+    "basePrice": "8.50",
+    "imageUrl": "https://picsum.photos/seed/margherita/600/300",
+    "category": "cat_pizza",
+    "isPopular": true,
+    "allergenInfo": ["glutine", "latticini"]
+  },
+  {
+    "id": "prod_lasagna",
+    "name": "Lasagna alla Bolognese",
+    "description": "Sfoglie di pasta all'uovo con ragù di carne, besciamella e parmigiano.",
+    "basePrice": "10.90",
+    "imageUrl": "https://picsum.photos/seed/lasagna/600/300",
+    "category": "cat_italian",
+    "isPopular": true,
+    "allergenInfo": ["glutine", "latticini", "uova", "sedano"]
+  },
+  {
+    "id": "prod_sushi_salmon",
+    "name": "Sushi Salmon Mix",
+    "description": "Selezione di nigiri e maki con salmone, riso condito e alga nori.",
+    "basePrice": "13.50",
+    "imageUrl": "https://picsum.photos/seed/sushisalmon/600/300",
+    "category": "cat_sushi",
+    "isPopular": true,
+    "allergenInfo": ["pesce", "soia", "sesamo"]
+  },
+  {
+    "id": "prod_burrito",
+    "name": "Burrito di Pollo",
+    "description": "Tortilla di grano farcita con pollo speziato, riso, fagioli, formaggio e salsa.",
+    "basePrice": "9.50",
+    "imageUrl": "https://picsum.photos/seed/chickenburrito/600/300",
+    "category": "cat_mexican",
+    "isPopular": true,
+    "allergenInfo": ["glutine", "latticini"]
+  },
+  {
+    "id": "prod_caesar_salad",
+    "name": "Insalata Caesar",
+    "description": "Lattuga romana, pollo grigliato, crostini, scaglie di grana e salsa Caesar.",
+    "basePrice": "9.90",
+    "imageUrl": "https://picsum.photos/seed/caesarsalad/600/300",
+    "category": "cat_healthy",
+    "isPopular": true,
+    "allergenInfo": ["glutine", "latticini", "uova", "pesce", "senape"]
+  }
+]
