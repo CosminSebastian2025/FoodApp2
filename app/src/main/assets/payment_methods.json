@@ -1,0 +1,6 @@
+[
+  { "id": "pay_visa",   "type": "CARD",      "label": "Visa •••• 4242",           "isDefault": true },
+  { "id": "pay_apple",  "type": "APPLE_PAY", "label": "Apple Pay",                "isDefault": false },
+  { "id": "pay_paypal", "type": "PAYPAL",    "label": "PayPal",                   "isDefault": false },
+  { "id": "pay_cash",   "type": "CASH",      "label": "Paga in cassa al ritiro",  "isDefault": false }
+]

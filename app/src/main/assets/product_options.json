@@ -1,0 +1,35 @@
+{
+  "prod_bigmac": {
+    "productId": "prod_bigmac",
+    "groups": [
+      { "groupId": "size", "groupName": "Dimensione Porzione", "isRequired": true, "selectionType": "single",
+        "choices": [
+          { "id": "std",  "name": "Standard", "priceModifier": 0.00 },
+          { "id": "maxi", "name": "Maxi",     "priceModifier": 1.00 }
+        ] },
+      { "groupId": "extras", "groupName": "Aggiungi Ingredienti Extra", "isRequired": false, "selectionType": "multiple",
+        "choices": [
+          { "id": "bacon",  "name": "Bacon extra",          "priceModifier": 0.50 },
+          { "id": "cheese", "name": "Formaggio extra",      "priceModifier": 0.50 },
+          { "id": "sauce",  "name": "Salsa speciale extra", "priceModifier": 0.30 }
+        ] }
+    ]
+  },
+  "prod_fries": {
+    "productId": "prod_fries",
+    "groups": [
+      { "groupId": "size", "groupName": "Dimensione Porzione", "isRequired": true, "selectionType": "single",
+        "choices": [
+          { "id": "small",  "name": "Piccola", "priceModifier": -0.50 },
+          { "id": "medium", "name": "Media",   "priceModifier": 0.00 },
+          { "id": "large",  "name": "Grande",  "priceModifier": 0.70 }
+        ] },
+      { "groupId": "seasoning", "groupName": "Condimento", "isRequired": false, "selectionType": "multiple",
+        "choices": [
+          { "id": "salt",   "name": "Sale extra",         "priceModifier": 0.00 },
+          { "id": "spice",  "name": "Spezie",             "priceModifier": 0.00 },
+          { "id": "cheese", "name": "Salsa formaggio",    "priceModifier": 0.50 }
+        ] }
+    ]
+  }
+}

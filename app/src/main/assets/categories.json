@@ -1,0 +1,8 @@
+[
+  { "id": "cat_burger",  "name": "Burger",   "icon": "🍔", "count": 12 },
+  { "id": "cat_chicken", "name": "Pollo",    "icon": "🍗", "count": 8 },
+  { "id": "cat_sides",   "name": "Contorni", "icon": "🍟", "count": 15 },
+  { "id": "cat_drinks",  "name": "Bevande",  "icon": "🥤", "count": 20 },
+  { "id": "cat_dessert", "name": "Dolci",    "icon": "🍦", "count": 6 },
+  { "id": "cat_menu",    "name": "Menu",     "icon": "🍱", "count": 10 }
+]

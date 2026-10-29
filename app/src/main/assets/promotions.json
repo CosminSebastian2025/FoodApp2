@@ -1,0 +1,9 @@
+[
+  {
+    "id": "promo_ritiro",
+    "title": "Ritiro in negozio",
+    "subtitle": "Ordina in app. Salta la fila. Ritira caldo in cassa.",
+    "badges": ["Zero costi di consegna", "Pass QR code rapido"],
+    "imageUrl": "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=800"
+  }
+]
