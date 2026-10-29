@@ -9,7 +9,7 @@ class AssetsJsonReader(private val context: Context) {
     private val gson = Gson()
 
     private fun readJson(fileName: String): String {
-        return context.assets.open("prototipi/$fileName").bufferedReader().use { it.readText() }
+        return context.assets.open("assets/$fileName").bufferedReader().use { it.readText() }
     }
 
     // ottieni tutte le promozioni disponibili
@@ -30,7 +30,7 @@ class AssetsJsonReader(private val context: Context) {
 
     fun getAllProducts(): List<Product> {
         val type = object : TypeToken<List<Product>>() {}.type
-        return gson.fromJson(readJson("products_full.json"), type)
+        return gson.fromJson(readJson("products.json"), type)
     }
 
     fun getProductById(id: String): Product? =

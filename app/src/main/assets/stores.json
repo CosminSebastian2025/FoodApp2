@@ -1,0 +1,4 @@
+[
+  { "id": "store_milano_centro", "name": "FastBite Milano Centro",       "address": "Via Dante 12, Milano",         "distanceKm": 1.2, "readyInMinutes": 15, "openingHours": "10:00-23:00", "isPreferred": true },
+  { "id": "store_milano_porta",  "name": "FastBite Porta Romana",        "address": "Corso di Porta Romana 45, MI", "distanceKm": 2.8, "readyInMinutes": 20, "openingHours": "10:00-23:30", "isPreferred": false }
+]
