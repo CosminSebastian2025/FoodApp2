@@ -1,0 +1,62 @@
+[
+  {
+    "IdProduct": "p_bigmac",
+    "nameProduct": "Big Mac",
+    "description": "Doppio manzo, salsa speciale, lattuga, formaggio, cetrioli",
+    "basePrice": 5.99,
+    "imageUrl": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+    "category": "cat_burger",
+    "isPopular": true,
+    "allergens": ["glutine", "latticini", "uova"]
+  },
+  {
+    "IdProduct": "p_quarter",
+    "nameProduct": "Quarter Pounder",
+    "description": "Manzo fresco, formaggio cheddar, cipolla, cetrioli",
+    "basePrice": 6.49,
+    "imageUrl": "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400",
+    "category": "cat_burger",
+    "isPopular": true,
+    "allergens": ["glutine", "latticini"]
+  },
+  {
+    "IdProduct": "p_nuggets",
+    "nameProduct": "Chicken McNuggets",
+    "description": "10 pezzi di pollo croccante con salsa",
+    "basePrice": 4.99,
+    "imageUrl": "https://images.unsplash.com/photo-1562967914-608f82629710?w=400",
+    "category": "cat_chicken",
+    "isPopular": true,
+    "allergens": ["glutine"]
+  },
+  {
+    "IdProduct": "p_fries",
+    "nameProduct": "Patatine Fritte Large",
+    "description": "Patatine croccanti e dorate, porzione grande",
+    "basePrice": 3.49,
+    "imageUrl": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400",
+    "category": "cat_sides",
+    "isPopular": true,
+    "allergens": []
+  },
+  {
+    "IdProduct": "p_mcflurry",
+    "nameProduct": "McFlurry Oreo",
+    "description": "Gelato cremoso con pezzi di Oreo",
+    "basePrice": 3.99,
+    "imageUrl": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400",
+    "category": "cat_desserts",
+    "isPopular": true,
+    "allergens": ["latticini", "glutine"]
+  },
+  {
+    "IdProduct": "p_coca",
+    "nameProduct": "Coca Cola Grande",
+    "description": "Bevanda gassata formato grande",
+    "basePrice": 2.49,
+    "imageUrl": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400",
+    "category": "cat_drinks",
+    "isPopular": true,
+    "allergens": []
+  }
+]

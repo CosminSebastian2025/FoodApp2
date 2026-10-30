@@ -34,7 +34,7 @@ class AssetsJsonReader(private val context: Context) {
 
     fun getPopularProducts(): List<Product> {
         val type = object : TypeToken<List<Product>>() {}.type
-        return gson.fromJson(readJson("products_popular.json"), type)
+        return gson.fromJson(readJson("product_populars.json"), type)
     }
 
     fun getAllProducts(): List<Product> {
@@ -64,7 +64,7 @@ class AssetsJsonReader(private val context: Context) {
         return gson.fromJson(readJson("payment_methods.json"), type)
     }
 
-    fun getCartRules(): CartRules = gson.fromJson(readJson("cart_summary_rules.json"), CartRules::class.java)
+    fun getCartRules(): CartRules = gson.fromJson(readJson("cart_rules.json"), CartRules::class.java)
 
     fun createPickupOrder(req: PickupOrderRequest): PickupOrderConfirmation {
         val store = getStores().find { it.id == req.storeId }

@@ -83,7 +83,14 @@ fun AddNavigation() {
                     onSearchClick = {navController.navigate("search")}
                 )
             }
-            composable("menu") {
+            composable("menu?category={category}",
+                arguments = listOf(
+                    navArgument("category") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    }
+                )) {
                 val vm: MenuViewModel = viewModel(factory = MenuViewModelFactory(repo))
                 MenuScreen(vm, onProductClick = { navController.navigate("product/$it") })
             }
@@ -124,8 +131,7 @@ fun AddNavigation() {
                     navArgument("quantity") { type = NavType.IntType }
                 )
             ) { backEntryStack ->
-                val productId =
-                    backEntryStack.arguments?.getString("productId") ?: return@composable
+                val productId = backEntryStack.arguments?.getString("productId") ?: return@composable
                 val quantity = backEntryStack.arguments?.getInt("quantity") ?: 1
 
                 val lastItem = cartVm.items.value.lastOrNull { it.productId == productId }
