@@ -1,7 +1,7 @@
 package com.example.foodapp.data.model
 
 data class Promotion(
-    val id: Int,
+    val id: String,
     val title: String,
     val subtitle: String,
     val badges: List<String>,
@@ -19,7 +19,7 @@ data class Product(
     val IdProduct: String,
     val nameProduct: String,
     val description: String,
-    val basePrice: Int,
+    val basePrice: Double,
     val imageUrl: String,
     val category: String,
     val isPopular: Boolean = false,
@@ -57,11 +57,18 @@ data class Store(
 
 data class PickupSlots(
     val immediated: ImmediateSlot,
-    val scheduledSlot: ScheduledSlot
+    val scheduled: List<ScheduledSlot>
 )
 
 data class ImmediateSlot ( val label: String, val availableAt: String)
 data class ScheduledSlot ( val slotId: String, val time: String, val available: Boolean )
+
+data class PaymentMethod(
+    val id: String,
+    val type: String,
+    val label: String,
+    val isDefault: Boolean
+)
 
 data class CartRules(
     val pickupFee: Double,

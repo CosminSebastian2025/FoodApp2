@@ -3,16 +3,14 @@ package com.example.foodapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import com.example.foodapp.navigation.AppNavigation
-import com.example.foodapp.ui.theme.FastBiteTheme
+import com.example.foodapp.navigation.AddNavigation
+import com.example.foodapp.ui.Theme.FastBiteTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FastBiteTheme { AppNavigation() }
+            FastBiteTheme { AddNavigation() }
         }
     }
 }

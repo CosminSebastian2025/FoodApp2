@@ -1,10 +1,9 @@
 package com.example.foodapp.data.repository
 
-import com.example.foodapp.data.model.*
+import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.data.remote.FastBiteApi
 
 class FastBiteRepository(private val api: FastBiteApi) {
-
     suspend fun getPromotions() = api.getPromotions()
     suspend fun getCategories() = api.getCategories()
     suspend fun getPopularProducts() = api.getPopularProducts()
@@ -13,6 +12,7 @@ class FastBiteRepository(private val api: FastBiteApi) {
     suspend fun getProductOptions(id: String) = api.getProductOptions(id)
     suspend fun getStores() = api.getStores()
     suspend fun getPickupSlots() = api.getPickupSlots()
+    suspend fun getPaymentMethod() = api.getPaymentMethods()
     suspend fun getCartRules() = api.getCartRules()
     suspend fun createPickupOrder(req: PickupOrderRequest) = api.createPickupOrder(req)
 }

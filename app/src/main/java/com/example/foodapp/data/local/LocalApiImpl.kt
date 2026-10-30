@@ -1,17 +1,11 @@
 package com.example.foodapp.data.local
 
-import com.example.foodapp.data.model.CartRules
-import com.example.foodapp.data.model.PickupOrderConfirmation
 import com.example.foodapp.data.model.PickupOrderRequest
-import com.example.foodapp.data.model.PickupSlots
-import com.example.foodapp.data.model.Product
 import com.example.foodapp.data.model.ProductOptionsResponse
-import com.example.foodapp.data.model.Store
 import com.example.foodapp.data.remote.FastBiteApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
-import okhttp3.Dispatcher
 
 class LocalApiImpl(private val reader: AssetsJsonReader): FastBiteApi {
 
@@ -52,6 +46,10 @@ class LocalApiImpl(private val reader: AssetsJsonReader): FastBiteApi {
 
     override suspend fun getPickupSlots() = withContext(Dispatchers.IO) {
         reader.getPickupSlots()
+    }
+
+    override suspend fun getPaymentMethods() = withContext(Dispatchers.IO) {
+        reader.getPaymentMethods()
     }
 
     override suspend fun getCartRules() = withContext(Dispatchers.IO) {

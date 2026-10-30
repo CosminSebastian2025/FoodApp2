@@ -1,7 +1,16 @@
 package com.example.foodapp.data.local
 
 import android.content.Context
-import com.example.foodapp.data.model.*
+import com.example.foodapp.data.model.CartRules
+import com.example.foodapp.data.model.Category
+import com.example.foodapp.data.model.PaymentMethod
+import com.example.foodapp.data.model.PickupOrderConfirmation
+import com.example.foodapp.data.model.PickupOrderRequest
+import com.example.foodapp.data.model.PickupSlots
+import com.example.foodapp.data.model.Product
+import com.example.foodapp.data.model.ProductOptionsResponse
+import com.example.foodapp.data.model.Promotion
+import com.example.foodapp.data.model.Store
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -50,6 +59,10 @@ class AssetsJsonReader(private val context: Context) {
 
     fun getPickupSlots(): PickupSlots = gson.fromJson(readJson("pickup_slots.json"), PickupSlots::class.java)
 
+    fun getPaymentMethods(): List<PaymentMethod> {
+        val type = object : TypeToken<List<PaymentMethod>>() {}.type
+        return gson.fromJson(readJson("payment_methods.json"), type)
+    }
 
     fun getCartRules(): CartRules = gson.fromJson(readJson("cart_summary_rules.json"), CartRules::class.java)
 

@@ -1,17 +1,45 @@
-package com.fastbite.app.ui.home
+package com.example.foodapp.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,11 +53,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import com.fastbite.app.data.model.*
-import com.fastbite.app.data.repository.FastBiteRepository
-import com.fastbite.app.ui.theme.*
+import coil3.compose.AsyncImage
+import com.example.foodapp.data.model.Category
+import com.example.foodapp.data.model.Product
+import com.example.foodapp.data.model.Promotion
+import com.example.foodapp.data.repository.FastBiteRepository
+import com.example.foodapp.ui.Theme.FastBiteGray
+import com.example.foodapp.ui.Theme.FastBiteRed
+import com.example.foodapp.ui.Theme.FastBiteTextGray
+import com.example.foodapp.ui.Theme.FastBiteTheme
+import com.example.foodapp.ui.Theme.FastBiteYellow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -102,10 +135,14 @@ fun HomeScreen(
         }
     ) { padding ->
         when {
-            state.isLoading -> Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            state.isLoading -> Box(Modifier
+                .fillMaxSize()
+                .padding(padding), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(color = FastBiteRed)
             }
-            state.error != null -> Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            state.error != null -> Box(Modifier
+                .fillMaxSize()
+                .padding(padding), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Errore: ${state.error}")
                     Button(onClick = { vm.loadData() }) { Text("Riprova") }
@@ -113,7 +150,10 @@ fun HomeScreen(
             }
             else -> LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 12.dp),
                 contentPadding = PaddingValues(vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -126,7 +166,7 @@ fun HomeScreen(
                         TextButton(onClick = {}) { Text("Vedi tutti") }
                     }
                 }
-                items(state.popularProducts) { p -> ProductCard(p) { onProductClick(p.id) } }
+                items(state.popularProducts) { p -> ProductCard(p) { onProductClick(p.IdProduct) } }
             }
         }
     }
@@ -135,13 +175,23 @@ fun HomeScreen(
 @Composable
 private fun PromotionBanner(promo: Promotion?) {
     promo ?: return
-    Card(modifier = Modifier.fillMaxWidth().height(200.dp), shape = RoundedCornerShape(16.dp)) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .height(200.dp), shape = RoundedCornerShape(16.dp)) {
         Box {
-            AsyncImage(model = promo.imageUrl, contentDescription = null,
+            AsyncImage(
+                model = promo.ImageUrl, contentDescription = null,
                 modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-            Box(Modifier.fillMaxSize().background(Brush.verticalGradient(
-                listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f)))))
-            Column(Modifier.align(Alignment.BottomStart).padding(16.dp)) {
+            Box(Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f))
+                    )
+                ))
+            Column(Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)) {
                 Surface(color = FastBiteRed, shape = RoundedCornerShape(6.dp)) {
                     Text("Solo Asporto", color = Color.White, fontSize = 11.sp,
                         fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
@@ -163,13 +213,16 @@ private fun CategoriesSection(categories: List<Category>, onClick: (String) -> U
         }
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(categories) { cat ->
-                Column(Modifier.width(72.dp).clickable { onClick(cat.id) },
+                Column(
+                    Modifier
+                        .width(72.dp)
+                        .clickable { onClick(cat.idCategory) },
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     Surface(shape = CircleShape, color = FastBiteGray, modifier = Modifier.size(60.dp)) {
                         Box(contentAlignment = Alignment.Center) { Text(cat.icon, fontSize = 28.sp) }
                     }
                     Spacer(Modifier.height(6.dp))
-                    Text(cat.name, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text(cat.nameCategory, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                     Text("${cat.count} piatti", fontSize = 10.sp, color = FastBiteTextGray)
                 }
             }
@@ -179,12 +232,18 @@ private fun CategoriesSection(categories: List<Category>, onClick: (String) -> U
 
 @Composable
 private fun ProductCard(product: Product, onClick: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp), elevation = CardDefaults.cardElevation(2.dp)) {
         Column {
             Box {
-                AsyncImage(model = product.imageUrl, contentDescription = product.name,
-                    modifier = Modifier.fillMaxWidth().height(110.dp), contentScale = ContentScale.Crop)
+                AsyncImage(
+                    model = product.imageUrl,
+                    contentDescription = product.nameProduct,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(110.dp), contentScale = ContentScale.Crop)
                 if (product.isPopular) Surface(color = FastBiteYellow,
                     shape = RoundedCornerShape(bottomEnd = 8.dp),
                     modifier = Modifier.align(Alignment.TopStart)) {
@@ -193,7 +252,8 @@ private fun ProductCard(product: Product, onClick: () -> Unit) {
                 }
             }
             Column(Modifier.padding(10.dp)) {
-                Text(product.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                Text(
+                    product.nameProduct, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
                     maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(4.dp))
                 Text("€ ${"%.2f".format(product.basePrice)}", color = FastBiteRed,
@@ -248,12 +308,12 @@ private fun HomeProductCardPreview() {
 }
 
 // Repo fittizio per preview
-private class FakeRepoForPreview : FastBiteRepository(
-    object : com.fastbite.app.data.local.AssetsJsonReader(
-        androidx.compose.ui.platform.LocalContext.current.let {
-            throw UnsupportedOperationException()
-        }
-    ) {
-        override fun getPromotions(): List<Promotion> = emptyList()
-    }
-)
+//private class FakeRepoForPreview : FastBiteRepository(
+//    object : AssetsJsonReader(
+//        LocalContext.current.let {
+//            throw UnsupportedOperationException()
+//        }
+//    ) {
+//        override fun getPromotions(): List<Promotion> = emptyList()
+//    }
+//)

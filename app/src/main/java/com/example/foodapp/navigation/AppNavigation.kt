@@ -14,10 +14,31 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import androidx.savedstate.SavedState
 import com.example.foodapp.data.local.AssetsJsonReader
+import com.example.foodapp.data.local.LocalApiImpl
 import com.example.foodapp.data.repository.FastBiteRepository
-import com.example.foodapp.ui.theme.components.bottomNavItem
+import com.example.foodapp.ui.cart.AddedToCartScreen
+import com.example.foodapp.ui.cart.CartScreen
+import com.example.foodapp.ui.cart.CartViewModel
+import com.example.foodapp.ui.cart.CartViewModelFactory
+import com.example.foodapp.ui.checkout.CheckoutScreen
+import com.example.foodapp.ui.components.FastBiteBottomBar
+import com.example.foodapp.ui.components.bottomNavItems
+import com.example.foodapp.ui.confirmation.ConfirmationScreen
+import com.example.foodapp.ui.home.HomeScreen
+import com.example.foodapp.ui.home.HomeViewModel
+import com.example.foodapp.ui.home.HomeViewModelFactory
+import com.example.foodapp.ui.menu.MenuScreen
+import com.example.foodapp.ui.menu.MenuViewModel
+import com.example.foodapp.ui.menu.MenuViewModelFactory
+import com.example.foodapp.ui.product.ProductDetailScreen
+import com.example.foodapp.ui.product.ProductDetailViewModel
+import com.example.foodapp.ui.product.ProductDetailViewModelFactory
+import com.example.foodapp.ui.profile.ProfileScreen
+import com.example.foodapp.ui.search.SearchScreen
+import com.example.foodapp.ui.search.SearchViewModel
+import com.example.foodapp.ui.search.SearchViewModelFactory
+
 
 @Composable
 fun AddNavigation() {
@@ -28,18 +49,20 @@ fun AddNavigation() {
     //CartViewModel condiviso
     val context = LocalContext.current
     val reader = remember { AssetsJsonReader(context) }
-    val repo = remember { FastBiteRepository(reader) }
+    val api = remember { LocalApiImpl(reader) }
+    val repo = remember { FastBiteRepository(api) }
+
     val cartVm: CartViewModel = viewModel(factory = CartViewModelFactory(repo))
 
-    val screensWithBottomBar = bottomNavItem.map { it.route } + listOf("product/{productId}")
+    val screensWithBottomBar = bottomNavItems.map { it.route } + listOf("product/{productId}")
     val showBottomBar = currentRoute in screensWithBottomBar
 
     Scaffold(
-        bottombar = {
+        bottomBar = {
             if(showBottomBar) {
                 FastBiteBottomBar(currentRoute, cartVm) { route ->
                     navController.navigate(route) {
-                        popUpTo(navController.graph.startDestinationId) { svaeState= true }
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -54,31 +77,85 @@ fun AddNavigation() {
         ) {
             composable("Home") {
                 val vm: HomeViewModel = viewModel(factory = HomeViewModelFactory(repo))
-                HomeViewModel(vm,
+                HomeScreen(
+                    vm,
                     onProductClick = {navController.navigate("product/$it")},
-                    onCategory = {navController.navigate("menu?category=$it")},
+                    onCategoryClick = { navController.navigate("menu?category=$it") },
                     onSearchClick = {navController.navigate("search")}
                 )
             }
             composable("menu") {
                 val vm: MenuViewModel = viewModel(factory = MenuViewModelFactory(repo))
-                MenuViewModel(vm, onProductClick = { navController.navigate("product/$it") })
+                MenuScreen(vm, onProductClick = { navController.navigate("product/$it") })
             }
             composable("search") {
                 val vm: SearchViewModel = viewModel(factory = SearchViewModelFactory(repo))
-                SearchViewModel(vm, onProductClick = { navController.navigate("product/$it") })
+                SearchScreen(vm, onProductClick = { navController.navigate("product/$it") })
             }
             composable("cart") {
                 CartScreen(cartVm,
                     onCheckout = { navController.navigate("checkout") },
-                    onBrowserMenu = { navController.navigate("menu") }
+                    onBrowseMenu = { navController.navigate("menu") }
                 )
             }
             composable("profile") { ProfileScreen() }
-            composable("product/{productId}", arguments = listOf(navArgument("productId") { type = object : NavType.StringType })) {
+
+            composable(
+                "product/{productId}",
+                arguments = listOf(navArgument("productId") { type = NavType.StringType })
+            ) {
                 backStackEntry ->
                 val productID = backStackEntry.arguments?.getString("productId") ?: return@composable
-                val vm: ProductDetailViewModel = viewModel( factory = ProductViewModelFactory) { }
+                val vm: ProductDetailViewModel =
+                    viewModel(factory = ProductDetailViewModelFactory(productID, repo))
+                ProductDetailScreen(
+                    vm = vm,
+                    cartVm = cartVm,
+                    onBack = { navController.popBackStack() },
+                    onAddedToCart = { item ->
+                        navController.navigate("addedToCart/${item.productId}/${item.quantity}")
+                    }
+                )
+            }
+
+            composable(
+                "addedToCart/{productId}/{quantity}",
+                arguments = listOf(
+                    navArgument("productId") { type = NavType.StringType },
+                    navArgument("quantity") { type = NavType.IntType }
+                )
+            ) { backEntryStack ->
+                val productId =
+                    backEntryStack.arguments?.getString("productId") ?: return@composable
+                val quantity = backEntryStack.arguments?.getInt("quantity") ?: 1
+
+                val lastItem = cartVm.items.value.lastOrNull { it.productId == productId }
+
+                if (lastItem != null) {
+                    AddedToCartScreen(
+                        item = lastItem,
+                        onGoToCart = {
+                            navController.navigate("cart") {
+                                popUpTo("Home") { inclusive = false }
+                            }
+                        },
+                        onContinueShopping = { navController.popBackStack() }
+                    )
+                }
+            }
+
+            composable("checkout") {
+                CheckoutScreen(
+                    total = cartVm.calculateTotals().total,
+                    onSubmit = { navController.navigate("confirmation") { popUpTo("Home") } }
+                )
+            }
+
+            composable("confirmation") {
+                ConfirmationScreen(onBackHome = {
+                    cartVm.clearCart()
+                    navController.navigate("Home") { popUpTo(0) { inclusive = true } }
+                })
             }
         }
     }

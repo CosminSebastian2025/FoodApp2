@@ -1,17 +1,48 @@
-package com.fastbite.app.ui.cart
+package com.example.foodapp.ui.cart
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,11 +50,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.fastbite.app.data.model.CartItem
-import com.fastbite.app.data.model.CartRules
-import com.fastbite.app.data.repository.FastBiteRepository
-import com.fastbite.app.ui.components.EmptyStateView
-import com.fastbite.app.ui.theme.*
+import com.example.foodapp.data.model.CartItem
+import com.example.foodapp.data.model.CartRules
+import com.example.foodapp.data.repository.FastBiteRepository
+import com.example.foodapp.ui.Theme.FastBiteRed
+import com.example.foodapp.ui.Theme.FastBiteTextGray
+import com.example.foodapp.ui.Theme.FastBiteTheme
+import com.example.foodapp.ui.components.EmptyStateView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -101,6 +134,7 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
     val totals = vm.calculateTotals()
     var couponInput by remember { mutableStateOf("") }
     var couponError by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(topBar = {
         TopAppBar(title = { Text("Riepilogo Asporto", fontWeight = FontWeight.Bold) },
@@ -111,12 +145,17 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
             })
     }) { padding ->
         if (items.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            Box(Modifier
+                .fillMaxSize()
+                .padding(padding), contentAlignment = Alignment.Center) {
                 EmptyStateView(Icons.Default.ShoppingCart, "Il tuo carrello è vuoto",
                     "Aggiungi prodotti dal menu per iniziare", "Sfoglia Menu", onBrowseMenu)
             }
         } else {
-            Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())) {
+            Column(Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())) {
                 // Lista articoli
                 items.forEachIndexed { i, item ->
                     CartItemRow(item,
@@ -126,7 +165,9 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
                 }
 
                 // Codice sconto
-                Card(Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(12.dp)) {
+                Card(Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), shape = RoundedCornerShape(12.dp)) {
                     Column(Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.LocalOffer, null, tint = FastBiteRed)
@@ -144,7 +185,7 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
                             )
                             Spacer(Modifier.width(8.dp))
                             Button(onClick = {
-                                viewModelScope.launch {
+                                coroutineScope.launch {
                                     vm.applyCoupon(couponInput)
                                         .onSuccess { couponError = null }
                                         .onFailure { couponError = it.message }
@@ -167,7 +208,9 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
                 }
 
                 // Totali
-                Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                Card(Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(12.dp)) {
                     Column(Modifier.padding(16.dp)) {
                         SummaryRow("Subtotale articoli", "€${"%.2f".format(totals.subtotal)}")
@@ -183,7 +226,10 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
 
                 Button(
                     onClick = onCheckout,
-                    modifier = Modifier.fillMaxWidth().padding(16.dp).height(52.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = FastBiteRed)
                 ) {
@@ -197,7 +243,9 @@ fun CartScreen(vm: CartViewModel, onCheckout: () -> Unit = {}, onBrowseMenu: () 
 
 @Composable
 private fun CartItemRow(item: CartItem, onPlus: () -> Unit, onMinus: () -> Unit, onRemove: () -> Unit) {
-    Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+    Card(Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 4.dp),
         shape = RoundedCornerShape(12.dp)) {
         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
@@ -233,7 +281,9 @@ private fun CartItemRow(item: CartItem, onPlus: () -> Unit, onMinus: () -> Unit,
 
 @Composable
 private fun SummaryRow(label: String, value: String, color: Color = Color.Unspecified, bold: Boolean = false) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 4.dp),
+    Row(Modifier
+        .fillMaxWidth()
+        .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, color = FastBiteTextGray,
             fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
