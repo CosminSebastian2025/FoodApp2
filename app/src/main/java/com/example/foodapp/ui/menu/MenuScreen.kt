@@ -1,13 +1,30 @@
-package com.fastbite.app.ui.menu
+package com.example.foodapp.ui.menu
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -19,14 +36,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImage
-import com.fastbite.app.data.model.Category
-import com.fastbite.app.data.model.Product
-import com.fastbite.app.data.repository.FastBiteRepository
-import com.fastbite.app.ui.theme.FastBiteRed
-import com.fastbite.app.ui.theme.FastBiteTheme
+import coil3.compose.AsyncImage
+import com.example.foodapp.data.model.Category
+import com.example.foodapp.data.model.Product
+import com.example.foodapp.data.repository.FastBiteRepository
+import com.example.foodapp.ui.Theme.FastBiteRed
+import com.example.foodapp.ui.Theme.FastBiteTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class MenuUiState(
@@ -69,10 +87,14 @@ fun MenuScreen(vm: MenuViewModel, onProductClick: (String) -> Unit = {}) {
     Scaffold(topBar = {
         TopAppBar(title = { Text("Menu Completo", fontWeight = FontWeight.Bold) })
     }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
+        Column(Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             // Filtro categorie
             LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
@@ -85,9 +107,9 @@ fun MenuScreen(vm: MenuViewModel, onProductClick: (String) -> Unit = {}) {
                 }
                 items(state.categories) { cat ->
                     FilterChip(
-                        selected = state.selectedCategory == cat.id,
-                        onClick = { vm.selectCategory(cat.id) },
-                        label = { Text("${cat.icon} ${cat.name}") }
+                        selected = state.selectedCategory == cat.idCategory,
+                        onClick = { vm.selectCategory(cat.idCategory) },
+                        label = { Text("${cat.icon} ${cat.nameCategory}") }
                     )
                 }
             }
@@ -95,19 +117,30 @@ fun MenuScreen(vm: MenuViewModel, onProductClick: (String) -> Unit = {}) {
             // Griglia prodotti
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(state.products) { p ->
-                    Card(modifier = Modifier.fillMaxWidth().clickable { onProductClick(p.id) },
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onProductClick(p.IdProduct) },
                         shape = RoundedCornerShape(12.dp)) {
                         Column {
-                            AsyncImage(model = p.imageUrl, contentDescription = p.name,
-                                modifier = Modifier.fillMaxWidth().height(110.dp),
+                            AsyncImage(
+                                model = p.imageUrl, contentDescription = p.nameProduct,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(110.dp),
                                 contentScale = ContentScale.Crop)
                             Column(Modifier.padding(10.dp)) {
-                                Text(p.name, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+                                Text(
+                                    p.nameProduct,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 14.sp,
                                     maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Spacer(Modifier.height(4.dp))
                                 Text("€ ${"%.2f".format(p.basePrice)}", color = FastBiteRed,
@@ -128,7 +161,9 @@ private fun MenuScreenPreview() {
     FastBiteTheme {
         // Preview statico
         Column {
-            LazyRow(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            LazyRow(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)) {
                 item { FilterChip(selected = true, onClick = {}, label = { Text("Tutti") }) }
@@ -136,13 +171,17 @@ private fun MenuScreenPreview() {
                 item { FilterChip(selected = false, onClick = {}, label = { Text("🍗 Pollo") }) }
             }
             LazyVerticalGrid(columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(4) { i ->
                     Card(shape = RoundedCornerShape(12.dp)) {
                         Column {
-                            Surface(Modifier.fillMaxWidth().height(110.dp), color = Color(0xFFEEEEEE)) {}
+                            Surface(Modifier
+                                .fillMaxWidth()
+                                .height(110.dp), color = Color(0xFFEEEEEE)) {}
                             Column(Modifier.padding(10.dp)) {
                                 Text("Prodotto $i", fontWeight = FontWeight.SemiBold)
                                 Text("€ 5.99", color = FastBiteRed, fontWeight = FontWeight.Bold)

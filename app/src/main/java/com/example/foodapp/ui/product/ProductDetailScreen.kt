@@ -1,14 +1,45 @@
-package com.fastbite.app.ui.product
+package com.example.foodapp.ui.product
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,13 +51,21 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImage
-import com.fastbite.app.data.model.*
-import com.fastbite.app.data.repository.FastBiteRepository
-import com.fastbite.app.ui.cart.CartViewModel
-import com.fastbite.app.ui.theme.*
+import coil3.compose.AsyncImage
+import com.example.foodapp.data.model.CartItem
+import com.example.foodapp.data.model.OptionGroup
+import com.example.foodapp.data.model.Product
+import com.example.foodapp.data.model.ProductOptionsResponse
+import com.example.foodapp.data.repository.FastBiteRepository
+import com.example.foodapp.ui.Theme.FastBiteGray
+import com.example.foodapp.ui.Theme.FastBiteRed
+import com.example.foodapp.ui.Theme.FastBiteTextGray
+import com.example.foodapp.ui.Theme.FastBiteTheme
+import com.example.foodapp.ui.cart.CartViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 data class ProductDetailUiState(
     val isLoading: Boolean = true,
@@ -53,8 +92,8 @@ class ProductDetailViewModel(
                 val product = repo.getProductById(productId) ?: throw Exception("Prodotto non trovato")
                 val options = repo.getProductOptions(productId) ?: ProductOptionsResponse(productId, emptyList())
                 val preselected = options.groups
-                    .filter { it.selectionType == "single" && it.choices.isNotEmpty() }
-                    .associate { it.groupId to setOf(it.choices.first().id) }
+                    .filter { it.selectionType == "single" && it.choises.isNotEmpty() }
+                    .associate { it.groupId to setOf(it.choises.first().id) }
                 _uiState.value = ProductDetailUiState(
                     isLoading = false, product = product, options = options,
                     selectedOptions = preselected
@@ -90,7 +129,7 @@ class ProductDetailViewModel(
         var modifier = 0.0
         for (group in options.groups) {
             val selected = _uiState.value.selectedOptions[group.groupId] ?: emptySet()
-            for (choice in group.choices) if (choice.id in selected) modifier += choice.priceModifier
+            for (choice in group.choises) if (choice.id in selected) modifier += choice.priceModifier
         }
         return product.basePrice + modifier
     }
@@ -106,7 +145,8 @@ class ProductDetailViewModel(
     fun buildCartItem(): CartItem? {
         val p = _uiState.value.product ?: return null
         val s = _uiState.value
-        return CartItem(p.id, p.name, p.basePrice, s.quantity,
+        return CartItem(
+            p.IdProduct, p.nameProduct, p.basePrice, s.quantity,
             s.selectedOptions.values.flatten(), computeUnitPrice() - p.basePrice)
     }
 }
@@ -124,16 +164,15 @@ fun ProductDetailScreen(
     vm: ProductDetailViewModel,
     cartVm: CartViewModel,
     onBack: () -> Unit = {},
-    onAddedToCart: () -> Unit = {}
+    onAddedToCart: (CartItem) -> Unit = {}
 ) {
     val state by vm.uiState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
-                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, null) } },
+                navigationIcon = { IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null) } },
                 actions = { IconButton(onClick = {}) { Icon(Icons.Default.FavoriteBorder, null) } }
             )
         },
@@ -153,11 +192,15 @@ fun ProductDetailScreen(
                         Spacer(Modifier.height(4.dp))
                         Button(
                             onClick = {
-                                vm.buildCartItem()?.let { cartVm.addItem(it) }
-                                showDialog = true
+                                vm.buildCartItem()?.let { item ->
+                                    cartVm.addItem(item)
+                                    onAddedToCart(item)
+                                }
                             },
                             enabled = vm.isSelectionValid(),
-                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = FastBiteRed)
                         ) {
@@ -170,15 +213,26 @@ fun ProductDetailScreen(
         }
     ) { padding ->
         when {
-            state.isLoading -> Box(Modifier.fillMaxSize().padding(padding),
+            state.isLoading -> Box(Modifier
+                .fillMaxSize()
+                .padding(padding),
                 contentAlignment = Alignment.Center) { CircularProgressIndicator(color = FastBiteRed) }
-            state.error != null -> Box(Modifier.fillMaxSize().padding(padding),
+            state.error != null -> Box(Modifier
+                .fillMaxSize()
+                .padding(padding),
                 contentAlignment = Alignment.Center) { Text("Errore: ${state.error}") }
-            else -> Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())) {
+            else -> Column(Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())) {
                 AsyncImage(model = state.product?.imageUrl, contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().height(260.dp), contentScale = ContentScale.Crop)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp), contentScale = ContentScale.Crop)
                 Column(Modifier.padding(16.dp)) {
-                    Text(state.product?.name ?: "", style = MaterialTheme.typography.headlineSmall,
+                    Text(
+                        state.product?.nameProduct ?: "",
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(4.dp))
                     Text("€ ${"%.2f".format(state.product?.basePrice ?: 0.0)}",
@@ -216,14 +270,6 @@ fun ProductDetailScreen(
             }
         }
     }
-
-    if (showDialog) AlertDialog(
-        onDismissRequest = { showDialog = false },
-        title = { Text("Aggiunto al carrello ✓") },
-        text = { Text("Vuoi procedere al carrello o continuare lo shopping?") },
-        confirmButton = { TextButton(onClick = { showDialog = false; onAddedToCart() }) { Text("Vai al Carrello") } },
-        dismissButton = { TextButton(onClick = { showDialog = false }) { Text("Continua") } }
-    )
 }
 
 @Composable
@@ -243,11 +289,13 @@ private fun OptionGroupSection(
             }
         }
         Spacer(Modifier.height(10.dp))
-        group.choices.forEach { choice ->
+        group.choises.forEach { choice ->
             val isSelected = choice.id in selected
             Surface(
                 onClick = { if (group.selectionType == "single") onSingle(choice.id) else onToggle(choice.id) },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 shape = RoundedCornerShape(10.dp),
                 color = if (isSelected) FastBiteRed.copy(alpha = 0.08f) else MaterialTheme.colorScheme.surface,
                 border = BorderStroke(1.dp, if (isSelected) FastBiteRed else Color.LightGray.copy(alpha = 0.5f))
@@ -272,32 +320,13 @@ private fun OptionGroupSection(
     }
 }
 
-// ===== PREVIEW =====
-@Preview(showBackground = true, showSystemUi = true, name = "Product - Opzioni")
+// ===== PREVIEW BIANCA (vuota) =====
+@Preview(showBackground = true, showSystemUi = true, name = "Product Detail - Vuota")
 @Composable
-private fun ProductOptionsPreview() {
+private fun ProductDetailEmptyPreview() {
     FastBiteTheme {
-        Column(Modifier.padding(16.dp)) {
-            Text("Big Mac", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text("€ 5.99", color = FastBiteRed, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(16.dp))
-            OptionGroupSection(
-                group = OptionGroup("size", "Dimensione Porzione", true, "single", listOf(
-                    OptionChoice("std", "Standard", 0.0),
-                    OptionChoice("maxi", "Maxi", 1.0)
-                )),
-                selected = setOf("std"),
-                onSingle = {}, onToggle = {}
-            )
-            Spacer(Modifier.height(16.dp))
-            OptionGroupSection(
-                group = OptionGroup("extras", "Aggiungi Ingredienti Extra", false, "multiple", listOf(
-                    OptionChoice("bacon", "Bacon extra", 0.50),
-                    OptionChoice("cheese", "Formaggio extra", 0.50)
-                )),
-                selected = setOf("bacon"),
-                onSingle = {}, onToggle = {}
-            )
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = FastBiteRed)
         }
     }
 }

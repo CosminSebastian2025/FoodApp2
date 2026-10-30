@@ -1,10 +1,34 @@
-package com.fastbite.app.ui.profile
+package com.example.foodapp.ui.profile
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Store
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,8 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fastbite.app.ui.theme.FastBiteRed
-import com.fastbite.app.ui.theme.FastBiteTheme
+import com.example.foodapp.ui.Theme.FastBiteRed
+import com.example.foodapp.ui.Theme.FastBiteTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,10 +55,14 @@ fun ProfileScreen(
     Scaffold(topBar = {
         TopAppBar(title = { Text("Il Mio Profilo FastBite", fontWeight = FontWeight.Bold) })
     }) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
+        Column(Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             if (!isLoggedIn) {
                 // Login card
-                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                Card(Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
                     Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Surface(shape = CircleShape, color = FastBiteRed.copy(alpha = 0.1f),
                             modifier = Modifier.size(80.dp)) {
@@ -61,7 +89,9 @@ fun ProfileScreen(
                 }
             } else {
                 // Profile info
-                Card(Modifier.fillMaxWidth().padding(16.dp)) {
+                Card(Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                         Surface(shape = CircleShape, color = FastBiteRed,
                             modifier = Modifier.size(60.dp)) {
@@ -85,7 +115,9 @@ fun ProfileScreen(
 
             if (isLoggedIn) {
                 Spacer(Modifier.weight(1f))
-                TextButton(onClick = onLogout, modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                TextButton(onClick = onLogout, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
                     Text("Disconnetti Profilo", color = FastBiteRed)
                 }
             }
