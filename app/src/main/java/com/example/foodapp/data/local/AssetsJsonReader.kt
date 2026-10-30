@@ -18,7 +18,7 @@ class AssetsJsonReader(private val context: Context) {
     private val gson = Gson()
 
     private fun readJson(fileName: String): String {
-        return context.assets.open("assets/$fileName").bufferedReader().use { it.readText() }
+        return context.assets.open(fileName).bufferedReader().use { it.readText() }
     }
 
     // ottieni tutte le promozioni disponibili
