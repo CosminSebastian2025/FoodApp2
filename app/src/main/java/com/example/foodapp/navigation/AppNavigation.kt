@@ -39,7 +39,6 @@ import com.example.foodapp.ui.search.SearchScreen
 import com.example.foodapp.ui.search.SearchViewModel
 import com.example.foodapp.ui.search.SearchViewModelFactory
 
-
 @Composable
 fun AddNavigation() {
     val navController = rememberNavController()
@@ -72,10 +71,10 @@ fun AddNavigation() {
     ) {
         padding ->
         NavHost(
-            navController, "Home",
+            navController, "home",
             modifier = Modifier.padding(padding)
         ) {
-            composable("Home") {
+            composable("home") {
                 val vm: HomeViewModel = viewModel(factory = HomeViewModelFactory(repo))
                 HomeScreen(
                     vm,
@@ -136,7 +135,7 @@ fun AddNavigation() {
                         item = lastItem,
                         onGoToCart = {
                             navController.navigate("cart") {
-                                popUpTo("Home") { inclusive = false }
+                                popUpTo("home") { inclusive = false }
                             }
                         },
                         onContinueShopping = { navController.popBackStack() }
@@ -147,14 +146,14 @@ fun AddNavigation() {
             composable("checkout") {
                 CheckoutScreen(
                     total = cartVm.calculateTotals().total,
-                    onSubmit = { navController.navigate("confirmation") { popUpTo("Home") } }
+                    onSubmit = { navController.navigate("confirmation") { popUpTo("home") } }
                 )
             }
 
             composable("confirmation") {
                 ConfirmationScreen(onBackHome = {
                     cartVm.clearCart()
-                    navController.navigate("Home") { popUpTo(0) { inclusive = true } }
+                    navController.navigate("home") { popUpTo(0) { inclusive = true } }
                 })
             }
         }
