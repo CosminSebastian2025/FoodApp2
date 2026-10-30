@@ -309,7 +309,7 @@ private fun HomeProductCardPreview() {
 
 // Repo fittizio per preview
 //private class FakeRepoForPreview : FastBiteRepository(
-//    object : AssetsJsonReader(
+//    AssetsJsonReader(
 //        LocalContext.current.let {
 //            throw UnsupportedOperationException()
 //        }
