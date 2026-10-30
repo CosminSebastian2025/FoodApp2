@@ -1,7 +1,11 @@
 package com.example.foodapp.data.local
 
+import com.example.foodapp.data.model.CartRules
+import com.example.foodapp.data.model.PaymentMethod
 import com.example.foodapp.data.model.PickupOrderRequest
+import com.example.foodapp.data.model.PickupSlots
 import com.example.foodapp.data.model.ProductOptionsResponse
+import com.example.foodapp.data.model.Store
 import com.example.foodapp.data.remote.FastBiteApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,26 +37,25 @@ class LocalApiImpl(private val reader: AssetsJsonReader): FastBiteApi {
         reader.getProductById(id)
     }
 
-    override suspend fun getProductOptions(productId: String): ProductOptionsResponse? = withContext(Dispatchers.IO) {
+    override suspend fun getProductOptions(productId: String): ProductOptionsResponse? =
         withContext (Dispatchers.IO) {
             delay(200)
             reader.getProductOptions(productId)
         }
-    }
 
-    override suspend fun getStores() = withContext(Dispatchers.IO) {
+    override suspend fun getStores(): List<Store> = withContext(Dispatchers.IO) {
         reader.getStores()
     }
 
-    override suspend fun getPickupSlots() = withContext(Dispatchers.IO) {
+    override suspend fun getPickupSlots(): PickupSlots = withContext(Dispatchers.IO) {
         reader.getPickupSlots()
     }
 
-    override suspend fun getPaymentMethods() = withContext(Dispatchers.IO) {
+    override suspend fun getPaymentMethods(): List<PaymentMethod> = withContext(Dispatchers.IO) {
         reader.getPaymentMethods()
     }
 
-    override suspend fun getCartRules() = withContext(Dispatchers.IO) {
+    override suspend fun getCartRules(): CartRules = withContext(Dispatchers.IO) {
         reader.getCartRules()
     }
 

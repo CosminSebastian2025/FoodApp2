@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.foodapp"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.foodapp"
         minSdk = 24
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.gson)
