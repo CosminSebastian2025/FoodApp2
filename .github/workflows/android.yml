@@ -31,9 +31,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      # 5. Decodifica il keystore dai secrets (vedi README qui sotto)
+      # 5. Decodifica il keystore dai secrets (versione robusta per Ubuntu)
       - name: Decode keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > app/fastbite-release.keystore
+        run: |
+          mkdir -p app
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\r' | base64 --decode > app/fastbite-release.keystore
 
       # 6. Build firmata: AAB (per Play Store) + APK (per test diretti)
       - name: Build signed release AAB & APK
