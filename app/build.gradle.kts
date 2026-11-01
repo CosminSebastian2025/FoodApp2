@@ -6,13 +6,13 @@ plugins {
 android {
     namespace = "com.example.foodapp"
     compileSdk {
-        version = release(34)
+        version = release(37)
     }
 
     defaultConfig {
         applicationId = "com.example.foodapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -21,19 +21,22 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("fastbite-release.keystore")
-            //Legge le variabili d'ambiente impostate dal workflow di Github
-            storePassword = System.getenv("KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
+            val ksFile = file("fastbite-release.keystore")
+            storeFile = ksFile
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+            keyAlias = System.getenv("KEY_ALIAS") ?: ""
+            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
         }
     }
 
     buildTypes {
         release {
-
-            //Collega la configurazione di firma al tipo di build "release"
-            signingConfig = signingConfigs.getByName("release")
+            val ksFile = file("fastbite-release.keystore")
+            if (ksFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+            }
 
             isMinifyEnabled = true
             isShrinkResources = true
