@@ -125,6 +125,15 @@ data class CartItem(
     val itemTotal: Double get() = product.price + size.price + extras.sumOf { it.price }
 }
 
+data class OrderHistoryItem(
+    val id: String,
+    val date: String,
+    val storeName: String,
+    val itemsSummary: String,
+    val total: Double,
+    val status: String = "Completato"
+)
+
 // ---------- Dati ----------
 val stores = listOf(
     Store(1, "FastBite - Via Roma", "Via Roma 42, Milano", "350m", "10-15 min", true),
@@ -226,6 +235,26 @@ class AppState {
     val cart = mutableStateListOf<CartItem>().apply {
         add(CartItem(products[0], sizeOptions[0], listOf(extraOptions[1]), 1))
     }
+    val orderHistory = mutableStateListOf<OrderHistoryItem>().apply {
+        add(
+            OrderHistoryItem(
+                "#3842",
+                "Oggi, 12:30",
+                stores[0].name,
+                "1x Fast Bacon Burger, 1x Coca Cola Zero 33cl",
+                12.00
+            )
+        )
+        add(
+            OrderHistoryItem(
+                "#2910",
+                "Ieri, 19:45",
+                stores[1].name,
+                "2x Pizza Margherita DOC",
+                15.00
+            )
+        )
+    }
 
     val cartSubtotal: Double get() = cart.sumOf { it.itemTotal * it.quantity }
     val discountAmount: Double get() = if (promoApplied) cartSubtotal * 0.10 else 0.0
@@ -260,12 +289,20 @@ class AppState {
     }
 
     fun simulateLogin() {
-        isLoggedIn = true; screen = "checkout"
+        isLoggedIn = true; screen = "profile"
     }
 
     fun confirmOrder() {
         orderId = "#${Random.nextInt(1000, 10000)}"
         pickupPin = "PIN-${Random.nextInt(100, 1000)}"
+        val summary =
+            if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.name}" } else "Ordine FastBite"
+        val timeStr = "Oggi, " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            .format(java.util.Date())
+        orderHistory.add(
+            0,
+            OrderHistoryItem(orderId, timeStr, selectedStore.name, summary, cartFinalTotal)
+        )
         screen = "confirmation"
     }
 
@@ -1076,7 +1113,10 @@ fun CheckoutScreen(state: AppState) {
                         fontWeight = FontWeight.Bold,
                         color = Slate400
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         TimeChip(
                             "Subito",
                             "~ ${state.selectedStore.prepTime}",
@@ -1139,14 +1179,26 @@ fun TimeChip(label: String, value: String, selected: Boolean, onClick: () -> Uni
             .width(24.dp)
             .clickable(onClick = onClick)
     ) {
-        Column(Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                label.uppercase(), fontSize = 8.sp, fontWeight = FontWeight.Bold,
-                color = if (selected) Color.White else Slate400
+                label.uppercase(),
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (selected) Color.White else Slate400,
+                textAlign = TextAlign.Center,
+                maxLines = 1
             )
+            Spacer(Modifier.height(2.dp))
             Text(
-                value, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold,
-                color = if (selected) Color.White else Slate700
+                value,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = if (selected) Color.White else Slate700,
+                textAlign = TextAlign.Center,
+                maxLines = 1
             )
         }
     }
@@ -1684,101 +1736,224 @@ fun ConfirmationScreen(state: AppState) {
 // ============================================================
 @Composable
 fun ProfileScreen(state: AppState) {
-    Column(
+    LazyColumn(
         Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Text("Il Mio Profilo FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
-        Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
-            Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(Brand),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        if (state.isLoggedIn) "M" else "G", color = Color.White,
-                        fontWeight = FontWeight.Black, fontSize = 16.sp
-                    )
-                }
-                Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        if (state.isLoggedIn) "Marco Rossi" else "Utente Ospite",
-                        fontWeight = FontWeight.Bold, fontSize = 13.sp
-                    )
-                    Text(
-                        if (state.isLoggedIn) "marco.rossi@email.it" else "Accedi per salvare i locali preferiti",
-                        fontSize = 11.sp, color = Slate500
-                    )
-                }
-                if (!state.isLoggedIn)
-                    TextButton(onClick = { state.screen = "auth" }) {
-                        Text(
-                            "Accedi",
-                            color = Brand
-                        )
-                    }
-            }
+        item {
+            Text("Il Mio Profilo FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
         }
-        Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
-            Column {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable { state.screen = "store-select" }
-                        .padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.Store,
-                            null,
-                            tint = Brand,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(Modifier.width(10.dp))
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(Brand),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            "Punto Vendita Preferito",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            if (state.isLoggedIn) "M" else "G", color = Color.White,
+                            fontWeight = FontWeight.Black, fontSize = 16.sp
                         )
                     }
-                    Text(state.selectedStore.name, fontSize = 11.sp, color = Slate400)
-                }
-                HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(14.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.AccountBox,
-                            null,
-                            tint = Brand,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(Modifier.width(10.dp))
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
                         Text(
-                            "Metodi di Pagamento Salvati",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            if (state.isLoggedIn) "Marco Rossi" else "Utente Ospite",
+                            fontWeight = FontWeight.Bold, fontSize = 13.sp
+                        )
+                        Text(
+                            if (state.isLoggedIn) "marco.rossi@email.it" else "Accedi per salvare i locali preferiti",
+                            fontSize = 11.sp, color = Slate500
                         )
                     }
-                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                    if (!state.isLoggedIn)
+                        TextButton(onClick = { state.screen = "auth" }) {
+                            Text(
+                                "Accedi",
+                                color = Brand
+                            )
+                        }
                 }
             }
         }
-        if (state.isLoggedIn)
-            OutlinedButton(
-                onClick = { state.isLoggedIn = false },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            ) { Text("Disconnetti Profilo") }
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "store-select" }
+                            .padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Store,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Punto Vendita Preferito",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Text(state.selectedStore.name, fontSize = 11.sp, color = Slate400)
+                    }
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.AccountBox,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Metodi di Pagamento Salvati",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                    }
+                }
+            }
+        }
+
+        // ---------- Sezione Storico Ordini ----------
+        item {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Storico Ordini", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                if (state.orderHistory.isNotEmpty()) {
+                    Text(
+                        "${state.orderHistory.size} ordini",
+                        fontSize = 11.sp,
+                        color = Slate400
+                    )
+                }
+            }
+        }
+
+        if (state.orderHistory.isEmpty()) {
+            item {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("📋", fontSize = 32.sp)
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Nessun ordine nello storico",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            color = Slate700
+                        )
+                        Text(
+                            "I tuoi ordini completati appariranno qui.",
+                            fontSize = 11.sp,
+                            color = Slate400
+                        )
+                    }
+                }
+            }
+        } else {
+            items(state.orderHistory) { order ->
+                OrderHistoryCard(order)
+            }
+        }
+
+        if (state.isLoggedIn) {
+            item {
+                OutlinedButton(
+                    onClick = { state.isLoggedIn = false },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) { Text("Disconnetti Profilo") }
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderHistoryCard(order: OrderHistoryItem) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(Color.White),
+        elevation = CardDefaults.cardElevation(1.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(order.id, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp)
+                    Spacer(Modifier.width(8.dp))
+                    Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
+                        Text(
+                            order.status,
+                            Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Emerald
+                        )
+                    }
+                }
+                Text(order.date, fontSize = 10.sp, color = Slate400)
+            }
+            Text(
+                "📍 ${order.storeName}",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Slate700
+            )
+            Text(
+                order.itemsSummary,
+                fontSize = 11.sp,
+                color = Slate500,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Totale Ordine", fontSize = 11.sp, color = Slate400)
+                Text(
+                    "€${"%.2f".format(order.total)}",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 13.sp,
+                    color = Brand
+                )
+            }
+        }
     }
 }
 
@@ -1793,7 +1968,7 @@ fun StoreSelectScreen(state: AppState) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        BackHeader("Seleziona Punto Vendita") { state.screen = "home" }
+        BackHeader("Seleziona Punto Vendita") { state.screen = "profile" }
         stores.forEach { store ->
             val sel = state.selectedStore.id == store.id
             Card(
@@ -1805,7 +1980,7 @@ fun StoreSelectScreen(state: AppState) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        state.selectedStore = store; state.screen = "home"
+                        state.selectedStore = store; state.screen = "profile"
                     }
             ) {
                 Row(Modifier.padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
