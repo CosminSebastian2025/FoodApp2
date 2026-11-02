@@ -58,6 +58,8 @@ android {
 
 dependencies {
 
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.runtime)
