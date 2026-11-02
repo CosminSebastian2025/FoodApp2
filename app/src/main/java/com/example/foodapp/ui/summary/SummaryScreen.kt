@@ -1,0 +1,185 @@
+package com.example.foodapp.ui.summary
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.foodapp.AppState
+import com.example.foodapp.Brand
+import com.example.foodapp.Slate100
+import com.example.foodapp.Slate400
+import com.example.foodapp.Slate700
+import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.InfoRow
+import com.example.foodapp.ui.components.SectionHeader
+import com.example.foodapp.ui.components.TotalsCard
+
+@Composable
+fun SummaryScreen(state: AppState) {
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            BackHeader("Verifica & Riepilogo Finale") { state.screen = "checkout" }
+            Text(
+                "Controlla che i dati siano corretti prima di procedere",
+                fontSize = 10.sp, color = Slate400
+            )
+        }
+        // Articoli
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    SectionHeader("Articoli Selezionati", "Modifica Carrello") {
+                        state.screen = "cart"
+                    }
+                    state.cart.forEach { item ->
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(color = Slate100, shape = RoundedCornerShape(8.dp)) {
+                                    Text(
+                                        "${item.quantity}x",
+                                        Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                }
+                                Spacer(Modifier.width(8.dp))
+                                Column {
+                                    Text(
+                                        item.product.name,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(item.size.name, fontSize = 9.sp, color = Slate400)
+                                }
+                            }
+                            Text(
+                                "€${"%.2f".format(item.itemTotal * item.quantity)}",
+                                fontSize = 12.sp, fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+                    // Aggiunta last-minute
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = Brand.copy(alpha = 0.08f),
+                        border = BorderStroke(
+                            1.dp,
+                            Brand.copy(alpha = 0.4f)
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "add-more" }
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.AddCircle,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                "+ Aggiungi altri articoli al tuo ordine",
+                                fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Brand
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        // Info ritiro
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SectionHeader("Info Ritiro", "Modifica") { state.screen = "checkout" }
+                    InfoRow("Punto Vendita:", state.selectedStore.name)
+                    InfoRow("Indirizzo:", state.selectedStore.address)
+                    InfoRow(
+                        "Orario Previsto:",
+                        if (state.pickupTime == "ASAP") "Subito (${state.selectedStore.prepTime})" else state.pickupTime,
+                        valueColor = Brand
+                    )
+                }
+            }
+        }
+        // Pagamento
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SectionHeader("Metodo di Pagamento", "Modifica") { state.screen = "checkout" }
+                    val label = when (state.paymentMethod) {
+                        "card" -> "💳 Carta di Credito / Google Pay"
+                        "paypal" -> "💸 PayPal"
+                        else -> "💵 Contanti al ritiro in cassa"
+                    }
+                    Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Slate700)
+                }
+            }
+        }
+        item { TotalsCard(state) }
+        item {
+            Button(
+                onClick = { state.confirmOrder() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(18.dp),
+                colors = ButtonDefaults.buttonColors(Brand)
+            ) {
+                Row(
+                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Conferma ed Effettua Ordine", fontWeight = FontWeight.Bold)
+                    Text(
+                        "€${"%.2f".format(state.cartFinalTotal)}",
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+            }
+        }
+    }
+}

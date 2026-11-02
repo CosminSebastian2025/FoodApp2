@@ -1,5 +1,8 @@
 package com.example.foodapp.ui.profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,147 +13,223 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Store
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.foodapp.ui.Theme.FastBiteRed
-import com.example.foodapp.ui.Theme.FastBiteTheme
+import com.example.foodapp.AppState
+import com.example.foodapp.Brand
+import com.example.foodapp.Slate100
+import com.example.foodapp.Slate400
+import com.example.foodapp.Slate500
+import com.example.foodapp.Slate700
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
-    isLoggedIn: Boolean = false,
-    preferredStore: String = "FastBite Milano Centro",
-    onLogin: () -> Unit = {},
-    onStore: () -> Unit = {},
-    onPayments: () -> Unit = {},
-    onHistory: () -> Unit = {},
-    onLogout: () -> Unit = {}
-) {
-    Scaffold(topBar = {
-        TopAppBar(title = { Text("Il Mio Profilo FastBite", fontWeight = FontWeight.Bold) })
-    }) { padding ->
-        Column(Modifier
+fun ProfileScreen(state: AppState) {
+    LazyColumn(
+        Modifier
             .fillMaxSize()
-            .padding(padding)) {
-            if (!isLoggedIn) {
-                // Login card
-                Card(Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Surface(shape = CircleShape, color = FastBiteRed.copy(alpha = 0.1f),
-                            modifier = Modifier.size(80.dp)) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.Person, null, tint = FastBiteRed,
-                                    modifier = Modifier.size(40.dp))
-                            }
-                        }
-                        Spacer(Modifier.height(16.dp))
-                        Text("Accedi a FastBite", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                        Spacer(Modifier.height(8.dp))
-                        Text("Salva i tuoi ordini e punti vendita preferiti",
-                            color = Color.Gray, fontSize = 13.sp)
-                        Spacer(Modifier.height(16.dp))
-                        OutlinedButton(onClick = onLogin, modifier = Modifier.fillMaxWidth()) {
-                            Text("🔵 Continua con Google")
-                        }
-                        Spacer(Modifier.height(8.dp))
-                        Button(onClick = onLogin, modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = FastBiteRed)) {
-                            Text("Accedi / Registrati", color = Color.White)
-                        }
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            Text("Il Mio Profilo FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+        }
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(Brand),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            if (state.isLoggedIn) "M" else "G", color = Color.White,
+                            fontWeight = FontWeight.Black, fontSize = 16.sp
+                        )
                     }
-                }
-            } else {
-                // Profile info
-                Card(Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Surface(shape = CircleShape, color = FastBiteRed,
-                            modifier = Modifier.size(60.dp)) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Text("MR", color = Color.White, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                        Spacer(Modifier.width(16.dp))
-                        Column {
-                            Text("Mario Rossi", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                            Text("mario.rossi@email.com", color = Color.Gray, fontSize = 13.sp)
-                        }
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            if (state.isLoggedIn) "Marco Rossi" else "Utente Ospite",
+                            fontWeight = FontWeight.Bold, fontSize = 13.sp
+                        )
+                        Text(
+                            if (state.isLoggedIn) "marco.rossi@email.it" else "Accedi per salvare i locali preferiti",
+                            fontSize = 11.sp, color = Slate500
+                        )
                     }
-                }
-            }
-
-            // Menu items
-            ProfileMenuItem(Icons.Default.Store, "Punto Vendita Preferito", preferredStore, onStore)
-            ProfileMenuItem(Icons.Default.CreditCard, "Metodi di Pagamento Salvati", "Visa •••• 4242", onPayments)
-            ProfileMenuItem(Icons.Default.History, "Cronologia Ordini Asporto", "3 ordini", onHistory)
-
-            if (isLoggedIn) {
-                Spacer(Modifier.weight(1f))
-                TextButton(onClick = onLogout, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Text("Disconnetti Profilo", color = FastBiteRed)
+                    if (!state.isLoggedIn)
+                        TextButton(onClick = { state.screen = "auth" }) {
+                            Text(
+                                "Accedi",
+                                color = Brand
+                            )
+                        }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ProfileMenuItem(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
-    ListItem(
-        headlineContent = { Text(title, fontWeight = FontWeight.SemiBold) },
-        supportingContent = { Text(subtitle, color = Color.Gray, fontSize = 13.sp) },
-        leadingContent = {
-            Surface(shape = CircleShape, color = FastBiteRed.copy(alpha = 0.1f),
-                modifier = Modifier.size(40.dp)) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(icon, null, tint = FastBiteRed, modifier = Modifier.size(20.dp))
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "store-select" }
+                            .padding(14.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Store,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Punto Vendita Preferito",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Text(state.selectedStore.name, fontSize = 11.sp, color = Slate400)
+                    }
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "payment-history" }
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.AccountBox,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Metodi di Pagamento Salvati",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                    }
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "payment-history" }
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.ShoppingCart,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Storico Pagamenti",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                    }
                 }
             }
-        },
-        trailingContent = { Icon(Icons.Default.ChevronRight, null, tint = Color.Gray) },
-        modifier = Modifier.padding(horizontal = 8.dp)
-    )
-}
+        }
 
-@Preview(showBackground = true, showSystemUi = true, name = "Profile - Non loggato")
-@Composable
-private fun ProfileLoggedOutPreview() {
-    FastBiteTheme { ProfileScreen(isLoggedIn = false) }
-}
+        // ---------- Sezione Storico Ordini ----------
+        item {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Storico Ordini", fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                if (state.orderHistory.isNotEmpty()) {
+                    Text(
+                        "${state.orderHistory.size} ordini",
+                        fontSize = 11.sp,
+                        color = Slate400
+                    )
+                }
+            }
+        }
 
-@Preview(showBackground = true, showSystemUi = true, name = "Profile - Loggato")
-@Composable
-private fun ProfileLoggedInPreview() {
-    FastBiteTheme { ProfileScreen(isLoggedIn = true) }
+        if (state.orderHistory.isEmpty()) {
+            item {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("📋", fontSize = 32.sp)
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Nessun ordine nello storico",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            color = Slate700
+                        )
+                        Text(
+                            "I tuoi ordini completati appariranno qui.",
+                            fontSize = 11.sp,
+                            color = Slate400
+                        )
+                    }
+                }
+            }
+        } else {
+            items(state.orderHistory) { order ->
+                OrderHistoryCard(order) { state.openOrderDetail(order) }
+            }
+        }
+
+        if (state.isLoggedIn) {
+            item {
+                OutlinedButton(
+                    onClick = { state.isLoggedIn = false },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) { Text("Disconnetti Profilo") }
+            }
+        }
+    }
 }
