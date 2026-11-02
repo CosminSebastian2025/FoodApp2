@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -134,6 +135,14 @@ data class OrderHistoryItem(
     val status: String = "Completato"
 )
 
+data class PaymentHistoryItem(
+    val id: String,
+    val date: String,
+    val amount: Double,
+    val paymentMethod: String,
+    val status: String = "Pagato"
+)
+
 // ---------- Dati ----------
 val stores = listOf(
     Store(1, "FastBite - Via Roma", "Via Roma 42, Milano", "350m", "10-15 min", true),
@@ -255,6 +264,10 @@ class AppState {
             )
         )
     }
+    val paymentHistory = mutableStateListOf<PaymentHistoryItem>().apply {
+        add(PaymentHistoryItem("TRX-9821", "Oggi, 12:30", 12.00, "💳 Carta di Credito"))
+        add(PaymentHistoryItem("TRX-4412", "Ieri, 19:45", 15.00, "💸 PayPal"))
+    }
 
     val cartSubtotal: Double get() = cart.sumOf { it.itemTotal * it.quantity }
     val discountAmount: Double get() = if (promoApplied) cartSubtotal * 0.10 else 0.0
@@ -299,10 +312,20 @@ class AppState {
             if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.name}" } else "Ordine FastBite"
         val timeStr = "Oggi, " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
             .format(java.util.Date())
+        val payMethodLabel = when (paymentMethod) {
+            "card" -> "💳 Carta di Credito"
+            "paypal" -> "💸 PayPal"
+            else -> "💵 Contanti al ritiro"
+        }
         orderHistory.add(
             0,
             OrderHistoryItem(orderId, timeStr, selectedStore.name, summary, cartFinalTotal)
         )
+        paymentHistory.add(
+            0,
+            PaymentHistoryItem("TRX-${Random.nextInt(1000, 9999)}", timeStr, cartFinalTotal, payMethodLabel)
+        )
+        screen = "confirmation"
         screen = "confirmation"
     }
 
@@ -352,6 +375,7 @@ fun FastBiteApp(state: AppState) {
                 "confirmation" -> ConfirmationScreen(state)
                 "profile" -> ProfileScreen(state)
                 "store-select" -> StoreSelectScreen(state)
+                "payment-history" -> PaymentHistoryScreen(state)
                 "auth" -> AuthScreen(state)
             }
         }
@@ -1170,13 +1194,13 @@ fun CheckoutScreen(state: AppState) {
 }
 
 @Composable
-fun TimeChip(label: String, value: String, selected: Boolean, onClick: () -> Unit) {
+fun RowScope.TimeChip(label: String, value: String, selected: Boolean, onClick: () -> Unit) {
     Surface(
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(6.dp),
         color = if (selected) Brand else Slate100,
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (selected) Brand else Slate200),
+        border = androidx.compose.foundation.BorderStroke(1.5.dp, if (selected) Brand else Slate200),
         modifier = Modifier
-            .width(24.dp)
+            .weight(1f)
             .clickable(onClick = onClick)
     ) {
         Column(
@@ -1191,7 +1215,7 @@ fun TimeChip(label: String, value: String, selected: Boolean, onClick: () -> Uni
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
-            Spacer(Modifier.height(2.dp))
+            Spacer(Modifier.height(3.dp))
             Text(
                 value,
                 fontSize = 12.sp,
@@ -1809,6 +1833,7 @@ fun ProfileScreen(state: AppState) {
                     Row(
                         Modifier
                             .fillMaxWidth()
+                            .clickable { state.screen = "payment-history" }
                             .padding(14.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -1822,6 +1847,30 @@ fun ProfileScreen(state: AppState) {
                             Spacer(Modifier.width(10.dp))
                             Text(
                                 "Metodi di Pagamento Salvati",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                    }
+                    HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { state.screen = "payment-history" }
+                            .padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.ShoppingCart,
+                                null,
+                                tint = Brand,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Text(
+                                "Storico Pagamenti",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -1958,6 +2007,113 @@ fun OrderHistoryCard(order: OrderHistoryItem) {
 }
 
 // ============================================================
+//  Schermata — Storico Pagamenti
+// ============================================================
+@Composable
+fun PaymentHistoryScreen(state: AppState) {
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            BackHeader("Storico Pagamenti") { state.screen = "profile" }
+        }
+        item {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(Slate900),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text("PAGAMENTI EFFETTUATI", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "€${"%.2f".format(state.paymentHistory.sumOf { it.amount })}",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White
+                    )
+                    Text(
+                        "${state.paymentHistory.size} transazioni registrate",
+                        fontSize = 11.sp,
+                        color = Slate400
+                    )
+                }
+            }
+        }
+        if (state.paymentHistory.isEmpty()) {
+            item {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("💳", fontSize = 32.sp)
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Nessun pagamento registrato",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            color = Slate700
+                        )
+                    }
+                }
+            }
+        } else {
+            items(state.paymentHistory) { pay ->
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(Color.White),
+                    elevation = CardDefaults.cardElevation(1.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        Modifier
+                            .padding(14.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(pay.id, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
+                                Spacer(Modifier.width(8.dp))
+                                Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
+                                    Text(
+                                        pay.status,
+                                        Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Emerald
+                                    )
+                                }
+                            }
+                            Spacer(Modifier.height(2.dp))
+                            Text(pay.paymentMethod, fontSize = 11.sp, color = Slate700, fontWeight = FontWeight.SemiBold)
+                            Text(pay.date, fontSize = 10.sp, color = Slate400)
+                        }
+                        Text(
+                            "-€${"%.2f".format(pay.amount)}",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 13.sp,
+                            color = Slate900
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================
 //  Schermata 12 — Selezione punto vendita
 // ============================================================
 @Composable
@@ -2024,7 +2180,7 @@ fun AuthScreen(state: AppState) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        BackHeader("Accedi / Registrati") { state.screen = "home" }
+        BackHeader("Accedi / Registrati") { state.screen = "profile" }
         Spacer(Modifier.height(8.dp))
         OutlinedButton(
             onClick = { state.simulateLogin() },
