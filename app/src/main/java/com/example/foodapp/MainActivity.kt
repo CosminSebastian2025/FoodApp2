@@ -132,7 +132,11 @@ data class OrderHistoryItem(
     val storeName: String,
     val itemsSummary: String,
     val total: Double,
-    val status: String = "Completato"
+    val storeAddress: String = "Via Roma 42, Milano",
+    val orderType: String = "Asporto - Ritiro in Cassa",
+    val paymentMethod: String = "💳 Carta di Credito",
+    val status: String = "Completato",
+    val pin: String = "PIN-782"
 )
 
 data class PaymentHistoryItem(
@@ -241,6 +245,12 @@ class AppState {
     var selectedSize by mutableStateOf(sizeOptions[0])
     val selectedExtras = mutableStateListOf<ExtraOption>()
     var customQty by mutableStateOf(1)
+    var activeOrderHistoryItem by mutableStateOf<OrderHistoryItem?>(null)
+
+    fun openOrderDetail(item: OrderHistoryItem) {
+        activeOrderHistoryItem = item
+        screen = "order-detail"
+    }
     val cart = mutableStateListOf<CartItem>().apply {
         add(CartItem(products[0], sizeOptions[0], listOf(extraOptions[1]), 1))
     }
@@ -313,19 +323,27 @@ class AppState {
         val timeStr = "Oggi, " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
             .format(java.util.Date())
         val payMethodLabel = when (paymentMethod) {
-            "card" -> "💳 Carta di Credito"
+            "card" -> "💳 Carta di Credito / Google Pay"
             "paypal" -> "💸 PayPal"
             else -> "💵 Contanti al ritiro"
         }
-        orderHistory.add(
-            0,
-            OrderHistoryItem(orderId, timeStr, selectedStore.name, summary, cartFinalTotal)
+        val newOrder = OrderHistoryItem(
+            id = orderId,
+            date = timeStr,
+            storeName = selectedStore.name,
+            storeAddress = selectedStore.address,
+            orderType = "Asporto - Ritiro in Cassa ($pickupTime)",
+            paymentMethod = payMethodLabel,
+            itemsSummary = summary,
+            total = cartFinalTotal,
+            status = "In Preparazione",
+            pin = pickupPin
         )
+        orderHistory.add(0, newOrder)
         paymentHistory.add(
             0,
             PaymentHistoryItem("TRX-${Random.nextInt(1000, 9999)}", timeStr, cartFinalTotal, payMethodLabel)
         )
-        screen = "confirmation"
         screen = "confirmation"
     }
 
@@ -376,6 +394,7 @@ fun FastBiteApp(state: AppState) {
                 "profile" -> ProfileScreen(state)
                 "store-select" -> StoreSelectScreen(state)
                 "payment-history" -> PaymentHistoryScreen(state)
+                "order-detail" -> OrderDetailScreen(state)
                 "auth" -> AuthScreen(state)
             }
         }
@@ -1930,7 +1949,7 @@ fun ProfileScreen(state: AppState) {
             }
         } else {
             items(state.orderHistory) { order ->
-                OrderHistoryCard(order)
+                OrderHistoryCard(order) { state.openOrderDetail(order) }
             }
         }
 
@@ -1947,12 +1966,12 @@ fun ProfileScreen(state: AppState) {
 }
 
 @Composable
-fun OrderHistoryCard(order: OrderHistoryItem) {
+fun OrderHistoryCard(order: OrderHistoryItem, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(1.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
     ) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
@@ -2001,6 +2020,133 @@ fun OrderHistoryCard(order: OrderHistoryItem) {
                     fontSize = 13.sp,
                     color = Brand
                 )
+            }
+        }
+    }
+}
+
+// ============================================================
+//  Schermata — Dettaglio Ordine
+// ============================================================
+@Composable
+fun OrderDetailScreen(state: AppState) {
+    val order = state.activeOrderHistoryItem ?: return
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            BackHeader("Dettaglio Ordine ${order.id}") { state.screen = "profile" }
+        }
+
+        // Card Numero Ordine & Stato
+        item {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(Slate900),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("NUMERO ORDINE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                        Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
+                            Text(
+                                order.status,
+                                Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Emerald
+                            )
+                        }
+                    }
+                    Text(order.id, fontSize = 24.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    Text("Data: ${order.date}", fontSize = 11.sp, color = Slate400)
+                }
+            }
+        }
+
+        // Tipo di ordine, Dove lo va a ritirare, Pin
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("INFORMAZIONI DI RITIRO", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Tipo di Ordine:", fontSize = 11.sp, color = Slate500)
+                        Text(order.orderType, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Slate700)
+                    }
+
+                    HorizontalDivider(color = Slate100)
+
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text("Dove lo va a ritirare:", fontSize = 11.sp, color = Slate500)
+                        Spacer(Modifier.height(2.dp))
+                        Text(order.storeName, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Slate900)
+                        Text(order.storeAddress, fontSize = 11.sp, color = Slate500)
+                    }
+
+                    HorizontalDivider(color = Slate100)
+
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("PIN Ritiro Cassa:", fontSize = 11.sp, color = Slate500)
+                        Text(order.pin, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = Brand)
+                    }
+                }
+            }
+        }
+
+        // Tipo di pagamento fatto & Totale spesa
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("PAGAMENTO E SPESA", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Tipo di Pagamento:", fontSize = 11.sp, color = Slate500)
+                        Text(order.paymentMethod, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Slate700)
+                    }
+
+                    HorizontalDivider(color = Slate100)
+
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("Totale Spesa:", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            "€${"%.2f".format(order.total)}",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Brand
+                        )
+                    }
+                }
+            }
+        }
+
+        // Articoli ordinati
+        item {
+            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text("ARTICOLI", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    Text(order.itemsSummary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Slate700)
+                }
+            }
+        }
+
+        item {
+            Button(
+                onClick = { state.screen = "profile" },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(Slate900)
+            ) {
+                Text("Torna al Profilo", fontWeight = FontWeight.Bold)
             }
         }
     }
