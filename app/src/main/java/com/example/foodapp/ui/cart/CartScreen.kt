@@ -31,7 +31,6 @@ import com.example.foodapp.ui.components.TotalsCard
 @Composable
 fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
     val cartRules by viewModel.cartRules.collectAsState()
-    val paymentMethods by viewModel.paymentMethods.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadCartData()
@@ -188,7 +187,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                                 fontWeight = FontWeight.Bold, color = Emerald
                             )
                         cartRules?.let {
-                            Text("Costi di gestione server: €${it.managementFee}", fontSize = 9.sp, color = Slate400)
+                            Text("Spese gestione: €${it.managementFee}", fontSize = 9.sp, color = Slate400)
                         }
                     }
                 }
@@ -196,7 +195,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
             item { TotalsCard(state) }
             item {
                 Button(
-                    onClick = { state.proceedToCheckout() },
+                    onClick = { state.screen = "summary" },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
@@ -207,7 +206,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                         Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Procedi al Checkout", fontWeight = FontWeight.Bold)
+                        Text("Riepilogo Ordine & Opzioni", fontWeight = FontWeight.Bold)
                         Text(
                             "€${"%.2f".format(state.cartFinalTotal)}",
                             fontWeight = FontWeight.ExtraBold

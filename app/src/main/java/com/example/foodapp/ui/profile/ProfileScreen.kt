@@ -2,18 +2,35 @@ package com.example.foodapp.ui.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Store
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
-import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
@@ -75,11 +91,13 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text(
-                            if (state.isLoggedIn) (userProfile?.name ?: "Marco Rossi") else "Utente Ospite",
+                            if (state.isLoggedIn) (userProfile?.name
+                                ?: "Marco Rossi") else "Utente Ospite",
                             fontWeight = FontWeight.Bold, fontSize = 13.sp
                         )
                         Text(
-                            if (state.isLoggedIn) (userProfile?.email ?: "marco.rossi@email.it") else "Accedi per ordinare in velocità",
+                            if (state.isLoggedIn) (userProfile?.email
+                                ?: "marco.rossi@email.it") else "Accedi per ordinare in velocità",
                             fontSize = 11.sp, color = Slate500
                         )
                     }
@@ -118,11 +136,25 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Store, null, tint = Brand, modifier = Modifier.size(20.dp))
+                        Icon(
+                            Icons.Default.Store,
+                            null,
+                            tint = Brand,
+                            modifier = Modifier.size(20.dp)
+                        )
                         Spacer(Modifier.width(10.dp))
                         Column {
-                            Text("Punto Vendita Preferito", fontSize = 10.sp, color = Slate400, fontWeight = FontWeight.Bold)
-                            Text(state.selectedStore.name, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                            Text(
+                                "Punto Vendita Preferito",
+                                fontSize = 10.sp,
+                                color = Slate400,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                state.selectedStore.name,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
                         }
                     }
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
@@ -145,7 +177,12 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CreditCard, null, tint = Brand, modifier = Modifier.size(20.dp))
+                        Icon(
+                            Icons.Default.CreditCard,
+                            null,
+                            tint = Brand,
+                            modifier = Modifier.size(20.dp)
+                        )
                         Spacer(Modifier.width(10.dp))
                         Text("Storico Pagamenti", fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
@@ -161,8 +198,16 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
 
         if (state.orderHistory.isEmpty() && orderHistoryApi.isEmpty()) {
             item {
-                Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(Color.White)) {
-                    Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(Color.White)
+                ) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text("Nessun ordine effettuato", fontSize = 12.sp, color = Slate500)
                     }
                 }
@@ -174,10 +219,25 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     colors = CardDefaults.cardColors(Color.White),
                     modifier = Modifier.clickable { state.openOrderDetail(order) }
                 ) {
-                    Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Ordine ${order.id}", fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                            Text("€${"%.2f".format(order.total)}", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Brand)
+                    Column(
+                        Modifier.padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                "Ordine ${order.id}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                            Text(
+                                "€${"%.2f".format(order.total)}",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = Brand
+                            )
                         }
                         Text(order.itemsSummary, fontSize = 11.sp, color = Slate500)
                         Text("${order.date} • ${order.status}", fontSize = 10.sp, color = Slate400)
