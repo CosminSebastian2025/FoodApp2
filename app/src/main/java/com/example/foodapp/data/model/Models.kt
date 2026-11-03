@@ -115,3 +115,27 @@ data class PickupOrderConfirmation(
     val qrCodeUrl: String,
     val total: Double
 )
+
+data class AuthRequest(val email: String, val pass: String)
+data class AuthResponse(val success: Boolean, val userId: String, val message: String)
+data class UserProfile(val userId: String, val name: String, val email: String, val phone: String)
+data class OrderHistoryItemResponse(
+    val id: String,
+    val date: String,
+    val storeName: String,
+    val itemsSummary: String,
+    val total: Double,
+    val storeAddress: String,
+    val orderType: String,
+    val paymentMethod: String,
+    val status: String,
+    val pin: String
+)
+data class PaymentHistoryItemResponse(
+    val id: String,
+    val date: String,
+    val amount: Double,
+    val paymentMethod: String,
+    val status: String
+)
+

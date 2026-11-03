@@ -1,4 +1,4 @@
-package com.example.foodapp.Retrofit
+package com.example.foodapp.retrofit
 
 import com.example.foodapp.api.FoodApiService
 import retrofit2.Retrofit
@@ -15,5 +15,4 @@ object RetrofitClient {
             .build()
             .create(FoodApiService::class.java)
     }
-
 }

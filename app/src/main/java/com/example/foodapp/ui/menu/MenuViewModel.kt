@@ -2,13 +2,11 @@ package com.example.foodapp.ui.menu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.foodapp.Retrofit.RetrofitClient
+import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-// Unused legacy menu screen
 
 class MenuViewModel : ViewModel() {
     private val _prodotti = MutableStateFlow<List<Product>>(emptyList())

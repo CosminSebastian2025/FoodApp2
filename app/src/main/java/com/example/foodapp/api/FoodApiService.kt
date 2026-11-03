@@ -1,15 +1,6 @@
 package com.example.foodapp.api
 
-import com.example.foodapp.data.model.CartRules
-import com.example.foodapp.data.model.Category
-import com.example.foodapp.data.model.PaymentMethod
-import com.example.foodapp.data.model.PickupOrderConfirmation
-import com.example.foodapp.data.model.PickupOrderRequest
-import com.example.foodapp.data.model.PickupSlots
-import com.example.foodapp.data.model.Product
-import com.example.foodapp.data.model.ProductOptionsResponse
-import com.example.foodapp.data.model.Promotion
-import com.example.foodapp.data.model.Store
+import com.example.foodapp.data.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -44,10 +35,45 @@ interface FoodApiService {
     @GET("index.php")
     suspend fun getProductOptionsResponse(@Query("endpoint") endpoint: String = "options"): List<ProductOptionsResponse>
 
+    @GET("index.php")
+    suspend fun searchProducts(
+        @Query("query") query: String,
+        @Query("endpoint") endpoint: String = "search"
+    ): List<Product>
+
+    @GET("index.php")
+    suspend fun getUserProfile(
+        @Query("userId") userId: String,
+        @Query("endpoint") endpoint: String = "profile"
+    ): UserProfile
+
+    @GET("index.php")
+    suspend fun getOrderHistory(
+        @Query("userId") userId: String,
+        @Query("endpoint") endpoint: String = "order_history"
+    ): List<OrderHistoryItemResponse>
+
+    @GET("index.php")
+    suspend fun getPaymentHistory(
+        @Query("userId") userId: String,
+        @Query("endpoint") endpoint: String = "payment_history"
+    ): List<PaymentHistoryItemResponse>
 
     @POST("index.php")
     suspend fun createOrder(
         @Query("endpoint") endpoint: String = "create_order",
         @Body orderRequest: PickupOrderRequest
     ): PickupOrderConfirmation
+
+    @POST("index.php")
+    suspend fun loginUser(
+        @Query("endpoint") endpoint: String = "login",
+        @Body request: AuthRequest
+    ): AuthResponse
+
+    @POST("index.php")
+    suspend fun registerUser(
+        @Query("endpoint") endpoint: String = "register",
+        @Body request: AuthRequest
+    ): AuthResponse
 }
