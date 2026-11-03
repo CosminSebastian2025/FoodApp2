@@ -3,6 +3,7 @@ package com.example.foodapp.ui.home
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,15 +19,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate200
@@ -34,16 +40,48 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.categories
-import com.example.foodapp.products
 import com.example.foodapp.ui.components.ProductCard
 
 @Composable
-fun HomeScreen(state: AppState) {
+fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
+    val promotions by viewModel.promotions.collectAsState()
+    val stores by viewModel.stores.collectAsState()
+    val popularProducts by viewModel.popularProducts.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadHomeData()
+    }
+
+    val mappedPopulars = popularProducts.map { p ->
+        com.example.foodapp.Product(
+            id = p.IdProduct.hashCode(),
+            category = p.category,
+            name = p.nameProduct,
+            description = p.description,
+            price = p.basePrice,
+            emoji = "🍔"
+        )
+    }
+
+    if (isLoading) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
     LazyColumn(
         Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        errorMessage?.let { err ->
+            item {
+                Text(err, color = Brand, fontSize = 12.sp)
+            }
+        }
         // Banner punto vendita
         item {
             Card(
@@ -141,6 +179,6 @@ fun HomeScreen(state: AppState) {
                 fontSize = 14.sp
             )
         }
-        items(products.take(4)) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
+        items(mappedPopulars) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
     }
 }
