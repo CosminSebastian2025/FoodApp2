@@ -2,23 +2,11 @@ package com.example.foodapp.ui.checkout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,18 +14,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate800
 import com.example.foodapp.Slate900
+import com.example.foodapp.data.model.CartItem as ApiCartItem
+import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.ui.components.BackHeader
-import com.example.foodapp.ui.components.PayOption
-import com.example.foodapp.ui.components.TimeChip
 
 @Composable
-fun CheckoutScreen(state: AppState) {
+fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -45,6 +37,13 @@ fun CheckoutScreen(state: AppState) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item { BackHeader("Checkout & Pagamento") { state.screen = "cart" } }
+
+        errorMessage?.let { err ->
+            item {
+                Text(err, color = Brand, fontSize = 12.sp)
+            }
+        }
+
         // Locale + mappa
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
@@ -92,67 +91,50 @@ fun CheckoutScreen(state: AppState) {
                 }
             }
         }
-        // Orario
-        item {
-            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        "ORARIO DI RITIRO",
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Slate400
-                    )
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TimeChip(
-                            "Subito",
-                            "~ ${state.selectedStore.prepTime}",
-                            state.pickupTime == "ASAP"
-                        ) {
-                            state.pickupTime = "ASAP"
-                        }
-                        TimeChip(
-                            "Programmato",
-                            "12:45",
-                            state.pickupTime == "12:45"
-                        ) { state.pickupTime = "12:45" }
-                        TimeChip(
-                            "Programmato",
-                            "13:15",
-                            state.pickupTime == "13:15"
-                        ) { state.pickupTime = "13:15" }
-                    }
-                }
-            }
-        }
-        // Pagamento
-        item {
-            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        "METODO DI PAGAMENTO",
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Slate400
-                    )
-                    PayOption("card", "💳 Carta di Credito / Google Pay", state)
-                    PayOption("paypal", "💸 PayPal", state)
-                    PayOption("cash", "💵 Paga in cassa al ritiro", state)
-                }
-            }
-        }
+
         item {
             Button(
-                onClick = { state.screen = "summary" },
+                onClick = {
+                    val apiItems = state.cart.map { ci ->
+                        ApiCartItem(
+                            productId = ci.product.id.toString(),
+                            productName = ci.product.name,
+                            basePrice = ci.product.price,
+                            quantity = ci.quantity,
+                            selectedOptions = listOf(ci.size.name) + ci.extras.map { it.name },
+                            optionPriceModifier = ci.size.price + ci.extras.sumOf { it.price }
+                        )
+                    }
+                    val request = PickupOrderRequest(
+                        userId = "user_123",
+                        storeId = state.selectedStore.id.toString(),
+                        pickupType = "immediate",
+                        scheduledTime = null,
+                        discountCode = if (state.promoApplied) state.promoInput else null,
+                        items = apiItems,
+                        subTotal = state.cartSubtotal,
+                        discount = state.discountAmount,
+                        managementFee = 1.50,
+                        total = state.cartFinalTotal
+                    )
+                    viewModel.submitOrder(request) { confirmation ->
+                        state.orderId = confirmation.orderId
+                        state.pickupPin = confirmation.pickupPin
+                        state.cart.clear()
+                        state.screen = "confirmation"
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(52.dp),
                 shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(Slate900)
+                colors = ButtonDefaults.buttonColors(Brand)
             ) {
-                Text("Vai al Riepilogo Ordine", fontWeight = FontWeight.Bold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Conferma e Invia Ordine al Server", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
