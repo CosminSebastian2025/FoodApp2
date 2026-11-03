@@ -29,7 +29,7 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        BackHeader("Accedi / Registrati") { state.screen = "profile" }
+        BackHeader("Accedi / Registrati") { state.screen = "home" }
         Spacer(Modifier.height(8.dp))
 
         errorMessage?.let { err ->
@@ -37,7 +37,10 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
         }
 
         OutlinedButton(
-            onClick = { state.simulateLogin() },
+            onClick = {
+                state.simulateLogin()
+                state.screen = "profile"
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

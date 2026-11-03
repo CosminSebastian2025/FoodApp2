@@ -23,6 +23,7 @@ import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
+import com.example.foodapp.products
 
 @Composable
 fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
@@ -36,15 +37,21 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
         }
     }
 
-    val mappedResults = searchResults.map { p ->
-        com.example.foodapp.Product(
-            id = p.IdProduct.hashCode(),
-            category = p.category,
-            name = p.nameProduct,
-            description = p.description,
-            price = p.basePrice,
-            emoji = "🍔"
-        )
+    val displayList = if (query.isBlank()) {
+        products
+    } else if (searchResults.isNotEmpty()) {
+        searchResults.map { p ->
+            com.example.foodapp.Product(
+                id = p.IdProduct.toIntOrNull() ?: p.IdProduct.hashCode(),
+                category = p.category,
+                name = p.nameProduct,
+                description = p.description,
+                price = p.basePrice,
+                emoji = "🍔"
+            )
+        }
+    } else {
+        products.filter { it.name.lowercase().contains(query.lowercase()) || it.description.lowercase().contains(query.lowercase()) }
     }
 
     LazyColumn(
@@ -93,7 +100,7 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
                 }
             }
         } else {
-            items(mappedResults) { p ->
+            items(displayList) { p ->
                 Card(
                     shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White),
                     elevation = CardDefaults.cardElevation(1.dp)
