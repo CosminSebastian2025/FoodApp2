@@ -1,93 +1,103 @@
 package com.example.foodapp.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Promotion(
-    val id: String,
-    val title: String,
-    val subtitle: String,
-    val badges: List<String>,
-    val ImageUrl: String
+    @SerializedName("id") val id: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("subtitle") val subtitle: String,
+    @SerializedName("badges") val badges: List<String>,
+    @SerializedName("image_url") val ImageUrl: String
 )
 
 data class Category(
-    val idCategory: String,
-    val nameCategory: String,
-    val icon: String,
-    val count: Int
+    @SerializedName("id_category") val idCategory: String,
+    @SerializedName("name_category") val nameCategory: String,
+    @SerializedName("icon") val icon: String,
+    @SerializedName("count") val count: Int
 )
 
 data class Product(
-    val IdProduct: String,
-    val nameProduct: String,
-    val description: String,
-    val basePrice: Double,
-    val imageUrl: String,
-    val category: String,
-    val isPopular: Boolean = false,
-    val allergens: List<String> = emptyList()
+    @SerializedName("id_product") val IdProduct: String,
+    @SerializedName("name_product") val nameProduct: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("base_price") val basePrice: Double,
+    @SerializedName("image_url") val imageUrl: String,
+    @SerializedName("category") val category: String,
+    @SerializedName("is_popular") val isPopular: Boolean = false,
+    @SerializedName("allergens") val allergens: List<String> = emptyList()
 )
 
 data class ProductOptionsResponse(
-    val productId: String,
-    val groups: List<OptionGroup>
+    @SerializedName("product_id") val productId: String,
+    @SerializedName("groups") val groups: List<OptionGroup>
 )
 
 data class OptionGroup(
-    val groupId: String,
-    val groupName: String,
-    val isRequired: Boolean,
-    val selectionType: String,
-    val choises: List<OptionChoise>
+    @SerializedName("group_id") val groupId: String,
+    @SerializedName("group_name") val groupName: String,
+    @SerializedName("is_required") val isRequired: Boolean,
+    @SerializedName("selection_type") val selectionType: String,
+    @SerializedName("choises") val choises: List<OptionChoise>
 )
 
 data class OptionChoise(
-    val id: String,
-    val name: String,
-    val priceModifier: Double
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("price_modifier") val priceModifier: Double
 )
 
 data class Store(
-    val id: String,
-    val name: String,
-    val address: String,
-    val distanceKm: Double,
-    val readyInMinutes: Int,
-    val openingHours: String,
-    val isPreferred: Boolean
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("address") val address: String,
+    @SerializedName("distance_km") val distanceKm: Double,
+    @SerializedName("ready_in_minutes") val readyInMinutes: Int,
+    @SerializedName("opening_hours") val openingHours: String,
+    @SerializedName("is_preferred") val isPreferred: Boolean
 )
 
 data class PickupSlots(
-    val immediated: ImmediateSlot,
-    val scheduled: List<ScheduledSlot>
+    @SerializedName("immediated") val immediated: ImmediateSlot,
+    @SerializedName("scheduled") val scheduled: List<ScheduledSlot>
 )
 
-data class ImmediateSlot ( val label: String, val availableAt: String)
-data class ScheduledSlot ( val slotId: String, val time: String, val available: Boolean )
+data class ImmediateSlot(
+    @SerializedName("label") val label: String,
+    @SerializedName("available_at") val availableAt: String
+)
+
+data class ScheduledSlot(
+    @SerializedName("slot_id") val slotId: String,
+    @SerializedName("time") val time: String,
+    @SerializedName("available") val available: Boolean
+)
 
 data class PaymentMethod(
-    val id: String,
-    val type: String,
-    val label: String,
-    val isDefault: Boolean
+    @SerializedName("id") val id: String,
+    @SerializedName("type") val type: String,
+    @SerializedName("label") val label: String,
+    @SerializedName("is_default") val isDefault: Boolean
 )
 
 data class CartRules(
-    val pickupFee: Double,
-    val managementFee: Double,
-    val discountCode: String,
-    val discountPercent: Int,
-    val currency: String
+    @SerializedName("pickup_fee") val pickupFee: Double,
+    @SerializedName("management_fee") val managementFee: Double,
+    @SerializedName("discount_code") val discountCode: String,
+    @SerializedName("discount_percent") val discountPercent: Int,
+    @SerializedName("currency") val currency: String
 )
 
 // === CART ===
 
 data class CartItem(
-    val productId: String,
-    val productName: String,
-    val basePrice: Double,
-    val quantity: Int,
-    val selectedOptions: List<String>,
-    val optionPriceModifier: Double
-){
+    @SerializedName("product_id") val productId: String,
+    @SerializedName("product_name") val productName: String,
+    @SerializedName("base_price") val basePrice: Double,
+    @SerializedName("quantity") val quantity: Int,
+    @SerializedName("selected_options") val selectedOptions: List<String>,
+    @SerializedName("option_price_modifier") val optionPriceModifier: Double
+) {
     val unitPrice: Double get() = basePrice + optionPriceModifier
     val totalPrice: Double get() = unitPrice * quantity
 }
@@ -95,47 +105,62 @@ data class CartItem(
 // === ORDER ===
 
 data class PickupOrderRequest(
-    val userId: String,
-    val storeId: String,
-    val pickupType: String,
-    val scheduledTime: String?,
-    val discountCode: String?,
-    val items: List<CartItem>,
-    val subTotal: Double,
-    val discount: Double,
-    val managementFee: Double,
-    val total: Double
+    @SerializedName("user_id") val userId: String,
+    @SerializedName("store_id") val storeId: String,
+    @SerializedName("pickup_type") val pickupType: String,
+    @SerializedName("scheduled_time") val scheduledTime: String?,
+    @SerializedName("discount_code") val discountCode: String?,
+    @SerializedName("items") val items: List<CartItem>,
+    @SerializedName("sub_total") val subTotal: Double,
+    @SerializedName("discount") val discount: Double,
+    @SerializedName("management_fee") val managementFee: Double,
+    @SerializedName("total") val total: Double
 )
 
 data class PickupOrderConfirmation(
-    val orderId: String,
-    val pickupPin: String,
-    val pickupTime: String,
-    val storeName: String,
-    val qrCodeUrl: String,
-    val total: Double
+    @SerializedName("order_id") val orderId: String,
+    @SerializedName("pickup_pin") val pickupPin: String,
+    @SerializedName("pickup_time") val pickupTime: String,
+    @SerializedName("store_name") val storeName: String,
+    @SerializedName("qr_code_url") val qrCodeUrl: String,
+    @SerializedName("total") val total: Double
 )
 
-data class AuthRequest(val email: String, val pass: String)
-data class AuthResponse(val success: Boolean, val userId: String, val message: String)
-data class UserProfile(val userId: String, val name: String, val email: String, val phone: String)
+data class AuthRequest(
+    @SerializedName("email") val email: String,
+    @SerializedName("pass") val pass: String
+)
+
+data class AuthResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("userId") val userId: String,
+    @SerializedName("message") val message: String
+)
+
+data class UserProfile(
+    @SerializedName("user_id") val userId: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("phone") val phone: String
+)
+
 data class OrderHistoryItemResponse(
-    val id: String,
-    val date: String,
-    val storeName: String,
-    val itemsSummary: String,
-    val total: Double,
-    val storeAddress: String,
-    val orderType: String,
-    val paymentMethod: String,
+    @SerializedName("id") val id: String,
+    @SerializedName("date") val date: String,
+    @SerializedName("store_name") val storeName: String,
+    @SerializedName("items_summary") val itemsSummary: String,
+    @SerializedName("total") val total: Double,
+    @SerializedName("store_address") val storeAddress: String,
+    @SerializedName("order_type") val orderType: String,
+    @SerializedName("payment_method") val paymentMethod: String,
     val status: String,
     val pin: String
 )
-data class PaymentHistoryItemResponse(
-    val id: String,
-    val date: String,
-    val amount: Double,
-    val paymentMethod: String,
-    val status: String
-)
 
+data class PaymentHistoryItemResponse(
+    @SerializedName("id") val id: String,
+    @SerializedName("date") val date: String,
+    @SerializedName("amount") val amount: Double,
+    @SerializedName("payment_method") val paymentMethod: String,
+    @SerializedName("status") val status: String
+)
