@@ -2,48 +2,38 @@ package com.example.foodapp.ui.summary
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
+import com.example.foodapp.data.model.CartItem as ApiCartItem
+import com.example.foodapp.data.model.PickupOrderRequest
+import com.example.foodapp.ui.checkout.CheckoutViewModel
 import com.example.foodapp.ui.components.BackHeader
 import com.example.foodapp.ui.components.InfoRow
 import com.example.foodapp.ui.components.SectionHeader
 import com.example.foodapp.ui.components.TotalsCard
 
 @Composable
-fun SummaryScreen(state: AppState) {
+fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -51,13 +41,20 @@ fun SummaryScreen(state: AppState) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            BackHeader("Verifica & Riepilogo Finale") { state.screen = "checkout" }
+            BackHeader("Verifica & Riepilogo Finale") { state.screen = "cart" }
             Text(
-                "Controlla che i dati siano corretti prima di procedere",
+                "Controlla i dati, modifica il pagamento o il punto ritiro",
                 fontSize = 10.sp, color = Slate400
             )
         }
-        // Articoli
+
+        errorMessage?.let { err ->
+            item {
+                Text(err, color = Brand, fontSize = 12.sp)
+            }
+        }
+
+        // Articoli Selezionati
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -99,13 +96,13 @@ fun SummaryScreen(state: AppState) {
                     Surface(
                         shape = RoundedCornerShape(14.dp),
                         color = Brand.copy(alpha = 0.08f),
-                        border = BorderStroke(
-                            1.dp,
-                            Brand.copy(alpha = 0.4f)
-                        ),
+                        border = BorderStroke(1.dp, Brand.copy(alpha = 0.4f)),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { state.screen = "add-more" }
+                            .clickable {
+                                state.previousScreen = "summary"
+                                state.screen = "add-more"
+                            }
                     ) {
                         Row(
                             Modifier
@@ -130,11 +127,15 @@ fun SummaryScreen(state: AppState) {
                 }
             }
         }
-        // Info ritiro
+
+        // Info Ritiro (Store + Orario)
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SectionHeader("Info Ritiro", "Modifica") { state.screen = "checkout" }
+                    SectionHeader("Info Ritiro", "Cambia") {
+                        state.previousScreen = "summary"
+                        state.screen = "store-select"
+                    }
                     InfoRow("Punto Vendita:", state.selectedStore.name)
                     InfoRow("Indirizzo:", state.selectedStore.address)
                     InfoRow(
@@ -145,11 +146,15 @@ fun SummaryScreen(state: AppState) {
                 }
             }
         }
-        // Pagamento
+
+        // Metodo di Pagamento con tasto Modifica che rimanda a payment-select
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    SectionHeader("Metodo di Pagamento", "Modifica") { state.screen = "checkout" }
+                    SectionHeader("Metodo di Pagamento", "Cambia") {
+                        state.previousScreen = "summary"
+                        state.screen = "payment-select"
+                    }
                     val label = when (state.paymentMethod) {
                         "card" -> "💳 Carta di Credito / Google Pay"
                         "paypal" -> "💸 PayPal"
@@ -159,25 +164,60 @@ fun SummaryScreen(state: AppState) {
                 }
             }
         }
+
         item { TotalsCard(state) }
+
         item {
             Button(
-                onClick = { state.confirmOrder() },
+                onClick = {
+                    val apiItems = state.cart.map { ci ->
+                        ApiCartItem(
+                            productId = ci.product.id.toString(),
+                            productName = ci.product.name,
+                            basePrice = ci.product.price,
+                            quantity = ci.quantity,
+                            selectedOptions = listOf(ci.size.name) + ci.extras.map { it.name },
+                            optionPriceModifier = ci.size.price + ci.extras.sumOf { it.price }
+                        )
+                    }
+                    val request = PickupOrderRequest(
+                        userId = "user_123",
+                        storeId = state.selectedStore.id.toString(),
+                        pickupType = state.pickupTime,
+                        scheduledTime = if (state.pickupTime != "ASAP") state.pickupTime else null,
+                        discountCode = if (state.promoApplied) state.promoInput else null,
+                        items = apiItems,
+                        subTotal = state.cartSubtotal,
+                        discount = state.discountAmount,
+                        managementFee = 1.50,
+                        total = state.cartFinalTotal
+                    )
+                    viewModel.submitOrder(request) { confirmation ->
+                        state.orderId = confirmation.orderId
+                        state.pickupPin = confirmation.pickupPin
+                        state.cart.clear()
+                        state.screen = "confirmation"
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(52.dp),
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(Brand)
             ) {
-                Row(
-                    Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Conferma ed Effettua Ordine", fontWeight = FontWeight.Bold)
-                    Text(
-                        "€${"%.2f".format(state.cartFinalTotal)}",
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                if (isLoading) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
+                } else {
+                    Row(
+                        Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Conferma ed Effettua Ordine", fontWeight = FontWeight.Bold)
+                        Text(
+                            "€${"%.2f".format(state.cartFinalTotal)}",
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
                 }
             }
         }

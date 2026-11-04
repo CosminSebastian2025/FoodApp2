@@ -3,13 +3,32 @@ package com.example.foodapp.ui.checkout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,10 +45,10 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate800
 import com.example.foodapp.Slate900
-import com.example.foodapp.data.model.CartItem as ApiCartItem
 import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.ui.components.BackHeader
 import com.example.foodapp.ui.components.TotalsCard
+import com.example.foodapp.data.model.CartItem as ApiCartItem
 
 @Composable
 fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
@@ -152,7 +171,10 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         Surface(
                             shape = RoundedCornerShape(14.dp),
                             color = if (sel) Brand.copy(alpha = 0.06f) else Slate100,
-                            border = if (sel) BorderStroke(2.dp, Brand) else BorderStroke(1.dp, Slate200),
+                            border = if (sel) BorderStroke(2.dp, Brand) else BorderStroke(
+                                1.dp,
+                                Slate200
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { state.paymentMethod = id }
@@ -162,7 +184,12 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Slate800)
+                                Text(
+                                    label,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Slate800
+                                )
                                 RadioButton(
                                     selected = sel,
                                     onClick = { state.paymentMethod = id },
@@ -218,11 +245,19 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                 colors = ButtonDefaults.buttonColors(Brand)
             ) {
                 if (isLoading) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 } else {
-                    Text("Conferma e Invia Ordine (€${"%.2f".format(state.cartFinalTotal)})", fontWeight = FontWeight.Bold)
+                    Text(
+                        "Conferma e Invia Ordine (€${"%.2f".format(state.cartFinalTotal)})",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
     }
 }
+
+
