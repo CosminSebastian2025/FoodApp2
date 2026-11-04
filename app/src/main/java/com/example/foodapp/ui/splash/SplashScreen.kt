@@ -2,26 +2,11 @@ package com.example.foodapp.ui.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +23,7 @@ import com.example.foodapp.BrandDark
 import com.example.foodapp.EmeraldBg
 
 @Composable
-fun SplashScreen(state: AppState) {
+fun SplashScreen(state: AppState, onStart: () -> Unit = { state.screen = "home" }) {
     Box(
         Modifier
             .fillMaxSize()
@@ -100,7 +85,7 @@ fun SplashScreen(state: AppState) {
             }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = { state.screen = "home" },
+                onClick = onStart,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
