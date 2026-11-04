@@ -2,6 +2,7 @@ package com.example.foodapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
+/** Modello dati per le promozioni in evidenza nella home. */
 data class Promotion(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,
@@ -10,6 +11,7 @@ data class Promotion(
     @SerializedName("image_url") val ImageUrl: String
 )
 
+/** Modello dati per le categorie di cibo. */
 data class Category(
     @SerializedName("id_category") val idCategory: String,
     @SerializedName("name_category") val nameCategory: String,
@@ -17,6 +19,7 @@ data class Category(
     @SerializedName("count") val count: Int
 )
 
+/** Modello dati per i prodotti del menu. */
 data class Product(
     @SerializedName("id_product") val IdProduct: String,
     @SerializedName("name_product") val nameProduct: String,
@@ -28,11 +31,13 @@ data class Product(
     @SerializedName("allergens") val allergens: List<String> = emptyList()
 )
 
+/** Risposta contenente le opzioni di personalizzazione di un prodotto. */
 data class ProductOptionsResponse(
     @SerializedName("product_id") val productId: String,
     @SerializedName("groups") val groups: List<OptionGroup>
 )
 
+/** Gruppo di opzioni di personalizzazione (es. Salse, Ingredienti). */
 data class OptionGroup(
     @SerializedName("group_id") val groupId: String,
     @SerializedName("group_name") val groupName: String,
@@ -41,12 +46,14 @@ data class OptionGroup(
     @SerializedName("choises") val choises: List<OptionChoise>
 )
 
+/** Singola scelta all'interno di un gruppo di opzioni. */
 data class OptionChoise(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
     @SerializedName("price_modifier") val priceModifier: Double
 )
 
+/** Modello dati per i punti vendita FastBite. */
 data class Store(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
@@ -57,6 +64,7 @@ data class Store(
     @SerializedName("is_preferred") val isPreferred: Boolean
 )
 
+/** Slot orari disponibili per il ritiro. */
 data class PickupSlots(
     @SerializedName("immediated") val immediated: ImmediateSlot,
     @SerializedName("scheduled") val scheduled: List<ScheduledSlot>
@@ -73,6 +81,7 @@ data class ScheduledSlot(
     @SerializedName("available") val available: Boolean
 )
 
+/** Metodo di pagamento accettato. */
 data class PaymentMethod(
     @SerializedName("id") val id: String,
     @SerializedName("type") val type: String,
@@ -80,6 +89,7 @@ data class PaymentMethod(
     @SerializedName("is_default") val isDefault: Boolean
 )
 
+/** Regole e tariffe del carrello. */
 data class CartRules(
     @SerializedName("pickup_fee") val pickupFee: Double,
     @SerializedName("management_fee") val managementFee: Double,
@@ -90,6 +100,7 @@ data class CartRules(
 
 // === CART ===
 
+/** Articolo inserito nel carrello con opzioni e quantità. */
 data class CartItem(
     @SerializedName("product_id") val productId: String,
     @SerializedName("product_name") val productName: String,
@@ -104,6 +115,7 @@ data class CartItem(
 
 // === ORDER ===
 
+/** Richiesta POST per la creazione di un nuovo ordine. */
 data class PickupOrderRequest(
     @SerializedName("user_id") val userId: String,
     @SerializedName("store_id") val storeId: String,
@@ -117,6 +129,7 @@ data class PickupOrderRequest(
     @SerializedName("total") val total: Double
 )
 
+/** Conferma dell'ordine ricevuto dal server con PIN di ritiro e QR code. */
 data class PickupOrderConfirmation(
     @SerializedName("order_id") val orderId: String,
     @SerializedName("pickup_pin") val pickupPin: String,
@@ -126,17 +139,20 @@ data class PickupOrderConfirmation(
     @SerializedName("total") val total: Double
 )
 
+/** Richiesta di autenticazione o registrazione utente. */
 data class AuthRequest(
     @SerializedName("email") val email: String,
     @SerializedName("pass") val pass: String
 )
 
+/** Risposta del server all'autenticazione. */
 data class AuthResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("userId") val userId: String,
     @SerializedName("message") val message: String
 )
 
+/** Profilo dell'utente. */
 data class UserProfile(
     @SerializedName("user_id") val userId: String,
     @SerializedName("name") val name: String,
@@ -144,6 +160,7 @@ data class UserProfile(
     @SerializedName("phone") val phone: String
 )
 
+/** Storico degli ordini ricevuti dal server. */
 data class OrderHistoryItemResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,
@@ -157,6 +174,7 @@ data class OrderHistoryItemResponse(
     val pin: String
 )
 
+/** Storico dei pagamenti ricevuti dal server. */
 data class PaymentHistoryItemResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,

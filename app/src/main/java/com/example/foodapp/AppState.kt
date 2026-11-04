@@ -10,7 +10,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
-// ---------- Palette ----------
+// ---------- Palette Colori del Brand ----------
 val Brand = Color(0xFFFF4757)
 val BrandDark = Color(0xFFC12332)
 val Slate900 = Color(0xFF0F172A)
@@ -24,7 +24,7 @@ val Slate700 = Color(0xFF334155)
 val Emerald = Color(0xFF059669)
 val EmeraldBg = Color(0xFFD1FAE5)
 
-// ---------- Modelli ----------
+// ---------- Modelli di Stato UI locali ----------
 data class Store(
     val id: Int, val name: String, val address: String,
     val distance: String, val prepTime: String, val isNearest: Boolean
@@ -40,6 +40,7 @@ data class Product(
 data class SizeOption(val id: Int, val name: String, val price: Double)
 data class ExtraOption(val id: Int, val name: String, val price: Double)
 
+/** Elemento nel carrello dell'app (UI locale). */
 data class CartItem(
     val product: Product, val size: SizeOption,
     val extras: List<ExtraOption>, val quantity: Int
@@ -47,6 +48,7 @@ data class CartItem(
     val itemTotal: Double get() = product.price + size.price + extras.sumOf { it.price }
 }
 
+/** Storico ordini locale. */
 data class OrderHistoryItem(
     val id: String,
     val date: String,
@@ -60,6 +62,7 @@ data class OrderHistoryItem(
     val pin: String = "PIN-782"
 )
 
+/** Storico pagamenti locale. */
 data class PaymentHistoryItem(
     val id: String,
     val date: String,
@@ -68,7 +71,7 @@ data class PaymentHistoryItem(
     val status: String = "Pagato"
 )
 
-// ---------- Dati ----------
+// ---------- Dati Statici di Fallback ----------
 val stores = listOf(
     Store(1, "FastBite - Via Roma", "Via Roma 42, Milano", "350m", "10-15 min", true),
     Store(2, "FastBite - Duomo", "Piazza del Duomo 8, Milano", "1.2 km", "15-20 min", false),
@@ -147,7 +150,9 @@ val extraOptions = listOf(
     ExtraOption(3, "Salsa BBQ", 0.5)
 )
 
-// ---------- Stato ----------
+/**
+ * Gestore dello stato globale dell'applicazione e della navigazione tra le schermate (Composable).
+ */
 class AppState {
     var screen by mutableStateOf("splash")
     var previousScreen by mutableStateOf("home")
@@ -168,47 +173,34 @@ class AppState {
     var customQty by mutableStateOf(1)
     var activeOrderHistoryItem by mutableStateOf<OrderHistoryItem?>(null)
 
+    /** Apre il dettaglio di un ordine precedente. */
     fun openOrderDetail(item: OrderHistoryItem) {
         activeOrderHistoryItem = item
         screen = "order-detail"
     }
-    val cart = mutableStateListOf<CartItem>().apply {
-        add(CartItem(products[0], sizeOptions[0], listOf(extraOptions[1]), 1))
-    }
-    val orderHistory = mutableStateListOf<OrderHistoryItem>().apply {
-        add(
-            OrderHistoryItem(
-                "#3842",
-                "Oggi, 12:30",
-                stores[0].name,
-                "1x Fast Bacon Burger, 1x Coca Cola Zero 33cl",
-                12.00
-            )
-        )
-        add(
-            OrderHistoryItem(
-                "#2910",
-                "Ieri, 19:45",
-                stores[1].name,
-                "2x Pizza Margherita DOC",
-                15.00
-            )
-        )
-    }
-    val paymentHistory = mutableStateListOf<PaymentHistoryItem>().apply {
-        add(PaymentHistoryItem("TRX-9821", "Oggi, 12:30", 12.00, "💳 Carta di Credito"))
-        add(PaymentHistoryItem("TRX-4412", "Ieri, 19:45", 15.00, "💸 PayPal"))
-    }
 
+    val cart = mutableStateListOf<CartItem>()
+    val orderHistory = mutableStateListOf<OrderHistoryItem>()
+    val paymentHistory = mutableStateListOf<PaymentHistoryItem>()
+
+    /** Calcola il subtotale del carrello. */
     val cartSubtotal: Double get() = cart.sumOf { it.itemTotal * it.quantity }
+
+    /** Calcola lo sconto applicato tramite codice promozionale. */
     val discountAmount: Double get() = if (promoApplied) cartSubtotal * 0.10 else 0.0
-    val cartFinalTotal: Double get() = maxOf(0.0, cartSubtotal - discountAmount + 0.50)
+
+    /** Calcola il totale finale del carrello inclusi costi di gestione. */
+    val cartFinalTotal: Double get() = maxOf(0.0, cartSubtotal - discountAmount + 1.50)
+
+    /** Conta il numero totale di articoli nel carrello. */
     val cartTotalCount: Int get() = cart.sumOf { it.quantity }
 
+    /** Ritorna alla schermata precedente dopo la personalizzazione di un articolo. */
     fun goBackFromCustomize() {
         screen = if (previousScreen == "add-more") "summary" else previousScreen
     }
 
+    /** Apre la schermata di personalizzazione per un prodotto. */
     fun openCustomize(p: Product) {
         previousScreen = screen
         activeProduct = p
@@ -218,24 +210,29 @@ class AppState {
         screen = "item-customize"
     }
 
+    /** Conferma l'aggiunta del prodotto personalizzato al carrello. */
     fun confirmAddToCart() {
         val p = activeProduct ?: return
         cart.add(CartItem(p, selectedSize, selectedExtras.toList(), customQty))
         screen = if (previousScreen == "add-more") "summary" else previousScreen
     }
 
+    /** Applica un codice promozionale (es. FAST10). */
     fun applyPromo() {
         if (promoInput.trim().uppercase() == "FAST10") promoApplied = true
     }
 
+    /** Avanza verso il riepilogo o l'autenticazione. */
     fun proceedToCheckout() {
-        screen = if (isLoggedIn) "checkout" else "auth"
+        screen = if (isLoggedIn) "summary" else "auth"
     }
 
+    /** Simula il login dell'utente. */
     fun simulateLogin() {
         isLoggedIn = true; screen = "profile"
     }
 
+    /** Conferma l'ordine e lo aggiunge allo storico. */
     fun confirmOrder() {
         orderId = "#${Random.nextInt(1000, 10000)}"
         pickupPin = "PIN-${Random.nextInt(100, 1000)}"
@@ -267,6 +264,7 @@ class AppState {
         screen = "confirmation"
     }
 
+    /** Resetta lo stato dell'applicazione. */
     fun resetApp() {
         cart.clear(); promoApplied = false; promoInput = ""; screen = "home"
     }
