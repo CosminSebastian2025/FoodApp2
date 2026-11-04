@@ -32,12 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.BrandDark
 import com.example.foodapp.EmeraldBg
 
 @Composable
-fun SplashScreen(onStart: () -> Unit) {
+fun SplashScreen(state: AppState) {
     Box(
         Modifier
             .fillMaxSize()
@@ -99,7 +100,7 @@ fun SplashScreen(onStart: () -> Unit) {
             }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = onStart,
+                onClick = { state.screen = "home" },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),

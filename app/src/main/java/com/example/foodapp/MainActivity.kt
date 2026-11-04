@@ -86,7 +86,7 @@ fun FastBiteApp(state: AppState) {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             when (state.screen) {
-                "splash" -> SplashScreen { state.screen = "home" }
+                "splash" -> SplashScreen(state)
                 "home" -> HomeScreen(state)
                 "search" -> SearchScreen(state)
                 "categories" -> CategoriesScreen(state)
@@ -198,15 +198,6 @@ fun BottomBar(state: AppState) {
                 )
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun FastBiteAppPreview() {
-    MaterialTheme(colorScheme = lightColorScheme(primary = Brand, surface = Color.White)) {
-        val state = remember { AppState() }
-        FastBiteApp(state)
     }
 }
 
