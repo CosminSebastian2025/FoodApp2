@@ -51,6 +51,7 @@ import com.example.foodapp.ui.auth.AuthScreen
 import com.example.foodapp.ui.cart.CartScreen
 import com.example.foodapp.ui.categories.CategoriesScreen
 import com.example.foodapp.ui.checkout.CheckoutScreen
+import com.example.foodapp.ui.checkout.PaymentMethodSelectScreen
 import com.example.foodapp.ui.confirmation.ConfirmationScreen
 import com.example.foodapp.ui.customize.CustomizeScreen
 import com.example.foodapp.ui.home.HomeScreen
@@ -92,6 +93,7 @@ fun FastBiteApp(state: AppState) {
                 "cart" -> CartScreen(state)
                 "checkout" -> CheckoutScreen(state)
                 "summary" -> SummaryScreen(state)
+                "payment-select" -> PaymentMethodSelectScreen(state)
                 "add-more" -> AddMoreScreen(state)
                 "item-customize" -> CustomizeScreen(state)
                 "confirmation" -> ConfirmationScreen(state)
@@ -119,7 +121,10 @@ fun Header(state: AppState) {
                 Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { state.screen = "store-select" }
+                    .clickable {
+                        state.previousScreen = state.screen
+                        state.screen = "store-select"
+                    }
                     .padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
