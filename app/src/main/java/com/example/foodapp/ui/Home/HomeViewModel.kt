@@ -31,15 +31,29 @@ class HomeViewModel : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val promoRes = RetrofitClient.apiService.getPromotions()
-                val storeRes = RetrofitClient.apiService.getStores()
-                val popularRes = RetrofitClient.apiService.getPopularProducts()
+                val promoRes = try { RetrofitClient.apiService.getPromotions() } catch (e: Exception) { emptyList() }
+                val storeRes = try {
+                    RetrofitClient.apiService.getStores()
+                } catch (e: Exception) {
+                    listOf(
+                        Store("1", "FastBite - Via Roma", "Via Roma 42, Milano", 0.35, 12, "09:00 - 22:00", true),
+                        Store("2", "FastBite - Duomo", "Piazza del Duomo 8, Milano", 1.2, 15, "09:00 - 23:00", false)
+                    )
+                }
+                val popularRes = try {
+                    RetrofitClient.apiService.getPopularProducts()
+                } catch (e: Exception) {
+                    listOf(
+                        Product("101", "Fast Bacon Burger", "Manzo 180g, bacon croccante, cheddar, salsa special.", 9.50, "", "burgers", true),
+                        Product("102", "Double Cheese Monster", "Doppio burger, doppio cheddar melted, cipolla caramellata.", 11.50, "", "burgers", true)
+                    )
+                }
 
                 _promotions.value = promoRes
                 _stores.value = storeRes
                 _popularProducts.value = popularRes
             } catch (e: Exception) {
-                _errorMessage.value = "Errore: ${e.message}"
+                _errorMessage.value = "Modalità Offline (Server non raggiungibile)"
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
