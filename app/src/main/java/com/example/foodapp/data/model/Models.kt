@@ -4,29 +4,29 @@ import com.google.gson.annotations.SerializedName
 
 /** Modello dati per le promozioni in evidenza nella home. */
 data class Promotion(
-    @SerializedName("id") val id: String,
-    @SerializedName("title") val title: String,
-    @SerializedName("subtitle") val subtitle: String,
-    @SerializedName("badges") val badges: List<String>,
-    @SerializedName("image_url") val ImageUrl: String
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("title") val title: String? = null,
+    @SerializedName("subtitle") val subtitle: String? = null,
+    @SerializedName("badges") val badges: List<String>? = null,
+    @SerializedName("image_url") val ImageUrl: String? = null
 )
 
 /** Modello dati per le categorie di cibo. */
 data class Category(
-    @SerializedName("id_category") val idCategory: String,
-    @SerializedName("name_category") val nameCategory: String,
-    @SerializedName("icon") val icon: String,
-    @SerializedName("count") val count: Int
+    @SerializedName("id_category") val idCategory: String? = null,
+    @SerializedName("name_category") val nameCategory: String? = null,
+    @SerializedName("icon") val icon: String? = null,
+    @SerializedName("count") val count: Int? = 0
 )
 
 /** Modello dati per i prodotti del menu. */
 data class Product(
     @SerializedName("id_product") val IdProduct: String? = null,
-    @SerializedName("name_product") val nameProduct: String,
-    @SerializedName("description") val description: String,
-    @SerializedName("base_price") val basePrice: Double,
-    @SerializedName("image_url") val imageUrl: String,
-    @SerializedName("category") val category: String,
+    @SerializedName("name_product") val nameProduct: String = "",
+    @SerializedName("description") val description: String = "",
+    @SerializedName("base_price") val basePrice: Double = 0.0,
+    @SerializedName("image_url") val imageUrl: String = "",
+    @SerializedName("category") val category: String = "",
     @SerializedName("is_popular") val isPopular: Boolean = false,
     @SerializedName("allergens") val allergens: List<String> = emptyList()
 ) {
@@ -52,7 +52,8 @@ data class Product(
         basePrice = price,
         imageUrl = emoji,
         category = category,
-        isPopular = isPopular
+        isPopular = isPopular,
+        allergens = emptyList()
     )
 }
 
