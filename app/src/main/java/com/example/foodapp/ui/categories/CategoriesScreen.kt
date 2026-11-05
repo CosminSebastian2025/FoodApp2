@@ -1,11 +1,22 @@
 package com.example.foodapp.ui.categories
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,9 +27,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.CategoryItem
+import com.example.foodapp.data.*
+import com.example.foodapp.data.model.Product
+import com.example.foodapp.ui.components.ProductCard
 import com.example.foodapp.categories as localCategories
 import com.example.foodapp.products as localProducts
-import com.example.foodapp.ui.components.ProductCard
 
 @Composable
 fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel()) {
@@ -41,8 +54,10 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
 
     val mappedProducts = if (products.isNotEmpty()) {
         products.mapNotNull { p ->
+            val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+
             com.example.foodapp.Product(
-                id = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null,
+                id = productId,
                 category = p.category,
                 name = p.nameProduct,
                 description = p.description,
@@ -80,7 +95,13 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
                     FilterChip(
                         selected = sel,
                         onClick = { viewModel.selectCategory(cat.id) },
-                        label = { Text("${cat.emoji} ${cat.name}", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        label = {
+                            Text(
+                                "${cat.emoji} ${cat.name}",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Brand,
                             selectedLabelColor = Color.White

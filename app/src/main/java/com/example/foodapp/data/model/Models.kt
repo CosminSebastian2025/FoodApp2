@@ -29,7 +29,32 @@ data class Product(
     @SerializedName("category") val category: String,
     @SerializedName("is_popular") val isPopular: Boolean = false,
     @SerializedName("allergens") val allergens: List<String> = emptyList()
-)
+) {
+    // Proprietà di compatibilità per la UI
+    val id: String get() = IdProduct ?: ""
+    val name: String get() = nameProduct
+    val price: Double get() = basePrice
+    val emoji: String get() = imageUrl
+
+    // Costruttore secondario per compatibilità con il codice UI locale
+    constructor(
+        id: String,
+        category: String,
+        name: String,
+        description: String,
+        price: Double,
+        emoji: String,
+        isPopular: Boolean = false
+    ) : this(
+        IdProduct = id,
+        nameProduct = name,
+        description = description,
+        basePrice = price,
+        imageUrl = emoji,
+        category = category,
+        isPopular = isPopular
+    )
+}
 
 /** Risposta contenente le opzioni di personalizzazione di un prodotto. */
 data class ProductOptionsResponse(
@@ -139,20 +164,18 @@ data class PickupOrderConfirmation(
     @SerializedName("total") val total: Double
 )
 
-/** Richiesta di autenticazione o registrazione utente. */
+/** Auth */
 data class AuthRequest(
     @SerializedName("email") val email: String,
     @SerializedName("pass") val pass: String
 )
 
-/** Risposta del server all'autenticazione. */
 data class AuthResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("userId") val userId: String,
     @SerializedName("message") val message: String
 )
 
-/** Profilo dell'utente. */
 data class UserProfile(
     @SerializedName("user_id") val userId: String,
     @SerializedName("name") val name: String,
@@ -160,7 +183,6 @@ data class UserProfile(
     @SerializedName("phone") val phone: String
 )
 
-/** Storico degli ordini ricevuti dal server. */
 data class OrderHistoryItemResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,
@@ -174,7 +196,6 @@ data class OrderHistoryItemResponse(
     val pin: String
 )
 
-/** Storico dei pagamenti ricevuti dal server. */
 data class PaymentHistoryItemResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,

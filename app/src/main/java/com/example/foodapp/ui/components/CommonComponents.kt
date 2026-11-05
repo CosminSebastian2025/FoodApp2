@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.sp
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
-import com.example.foodapp.Product
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
+import com.example.foodapp.data.model.Product
 
 @Composable
 fun BackHeader(title: String, onBack: () -> Unit) {
@@ -164,7 +164,8 @@ fun SmallQtyButton(text: String, onClick: () -> Unit) {
 @Composable
 fun ProductCard(p: Product, onCustomize: () -> Unit) {
     Card(
-        shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Row(Modifier.padding(12.dp)) {
@@ -174,18 +175,18 @@ fun ProductCard(p: Product, onCustomize: () -> Unit) {
                     .clip(RoundedCornerShape(14.dp))
                     .background(Slate100),
                 contentAlignment = Alignment.Center
-            ) { Text(p.emoji, fontSize = 32.sp) }
+            ) { Text(p.imageUrl, fontSize = 32.sp) }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
-                        p.name,
+                        p.nameProduct,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
-                        "€${"%.2f".format(p.price)}",
+                        "€${"%.2f".format(p.basePrice)}",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 12.sp
                     )
