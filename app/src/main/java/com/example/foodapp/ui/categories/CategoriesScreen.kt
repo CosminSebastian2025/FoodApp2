@@ -27,8 +27,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.CategoryItem
-import com.example.foodapp.data.*
-import com.example.foodapp.data.model.Product
 import com.example.foodapp.ui.components.ProductCard
 import com.example.foodapp.categories as localCategories
 import com.example.foodapp.products as localProducts
@@ -53,20 +51,13 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
     }
 
     val mappedProducts = if (products.isNotEmpty()) {
-        products.mapNotNull { p ->
-            val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-
-            com.example.foodapp.Product(
-                id = productId,
-                category = p.category,
-                name = p.nameProduct,
-                description = p.description,
-                price = p.basePrice,
-                emoji = "🍔"
-            )
+        products.filter { product ->
+            !product.IdProduct.isNullOrBlank()
         }
     } else {
-        localProducts
+        localProducts.filter { product ->
+            !product.IdProduct.isNullOrBlank()
+        }
     }
 
     val filtered = if (selectedCategory == "all") mappedProducts

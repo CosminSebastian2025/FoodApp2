@@ -65,19 +65,11 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     val displayList = if (query.isBlank()) {
         products
     } else if (searchResults.isNotEmpty()) {
-        searchResults.mapNotNull { p ->
-            val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-
-            com.example.foodapp.Product(
-                id = productId,
-                category = p.category,
-                name = p.nameProduct,
-                description = p.description,
-                price = p.basePrice,
-                emoji = "🍔"
-            )
+        searchResults.filter { product ->
+            !product.IdProduct.isNullOrBlank()
         }
-    } else {
+    }
+    else {
         products.filter {
             it.name.lowercase().contains(query.lowercase()) || it.description.lowercase()
                 .contains(query.lowercase())
