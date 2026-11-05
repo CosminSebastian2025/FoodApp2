@@ -1,7 +1,6 @@
 package com.example.foodapp.ui.splash
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -78,7 +77,11 @@ fun SplashScreen(state: AppState, onStart: () -> Unit = { state.screen = "home" 
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(Modifier.width(8.dp))
-                            Text(it, color = Color.White, fontSize = 12.sp)
+                            Text(
+                                text = it,
+                                color = Color.White,
+                                modifier = Modifier.weight(1f),
+                                fontSize = 12.sp)
                         }
                     }
                 }

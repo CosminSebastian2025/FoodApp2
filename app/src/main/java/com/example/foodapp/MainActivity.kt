@@ -86,7 +86,7 @@ fun FastBiteApp(state: AppState) {
     ) { padding ->
         Box(Modifier.padding(padding)) {
             when (state.screen) {
-                "splash" -> SplashScreen(state)
+                "splash" -> SplashScreen(state, onStart = { state.screen = "home" })
                 "home" -> HomeScreen(state)
                 "search" -> SearchScreen(state)
                 "categories" -> CategoriesScreen(state)
