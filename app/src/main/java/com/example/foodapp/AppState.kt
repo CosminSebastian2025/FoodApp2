@@ -5,10 +5,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.example.foodapp.data.model.Product
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
+
+// Typealias per garantire compatibilità trasparente con tutte le schermate UI
+typealias Product = com.example.foodapp.data.model.Product
 
 // ---------- Palette Colori del Brand ----------
 val Brand = Color(0xFFFF4757)
@@ -32,11 +36,6 @@ data class Store(
 
 data class CategoryItem(val id: String, val name: String, val emoji: String)
 
-data class Product(
-    val id: String, val category: String, val name: String,
-    val description: String, val price: Double, val emoji: String
-)
-
 data class SizeOption(val id: Int, val name: String, val price: Double)
 data class ExtraOption(val id: Int, val name: String, val price: Double)
 
@@ -45,7 +44,7 @@ data class CartItem(
     val product: Product, val size: SizeOption,
     val extras: List<ExtraOption>, val quantity: Int
 ) {
-    val itemTotal: Double get() = product.price + size.price + extras.sumOf { it.price }
+    val itemTotal: Double get() = product.basePrice + size.price + extras.sumOf { it.price }
 }
 
 /** Storico ordini locale. */
@@ -94,52 +93,58 @@ val categories = listOf(
 
 val products = listOf(
     Product(
-        "101",
-        "burgers",
-        "Fast Bacon Burger",
-        "Manzo 180g, bacon croccante, cheddar, salsa special.",
-        9.50,
-        "\uD83C\uDF54"
+        IdProduct = "101",
+        category = "burgers",
+        nameProduct = "Fast Bacon Burger",
+        description = "Manzo 180g, bacon croccante, cheddar, salsa special.",
+        basePrice = 9.50,
+        imageUrl = "\uD83C\uDF54",
+        isPopular = true
     ),
     Product(
-        "102",
-        "burgers",
-        "Double Cheese Monster",
-        "Doppio burger, doppio cheddar melted, cipolla caramellata.",
-        11.50,
-        "\uD83C\uDF54"
+        IdProduct = "102",
+        category = "burgers",
+        nameProduct = "Double Cheese Monster",
+        description = "Doppio burger, doppio cheddar melted, cipolla caramellata.",
+        basePrice = 11.50,
+        imageUrl = "\uD83C\uDF54",
+        isPopular = true
     ),
     Product(
-        "103",
-        "pizzas",
-        "Pizza Margherita DOC",
-        "Pomodoro bio, mozzarella di bufala, basilico fresco.",
-        7.50,
-        "\uD83C\uDF55"
+        IdProduct = "103",
+        category = "pizzas",
+        nameProduct = "Pizza Margherita DOC",
+        description = "Pomodoro bio, mozzarella di bufala, basilico fresco.",
+        basePrice = 7.50,
+        imageUrl = "\uD83C\uDF55",
+        isPopular = true
     ),
     Product(
-        "104",
-        "pizzas",
-        "Diavola Spicy Special",
-        "Pomodoro, mozzarella, salame piccante, olio al peperoncino.",
-        8.50,
-        "\uD83C\uDF55"
+        IdProduct = "104",
+        category = "pizzas",
+        nameProduct = "Diavola Spicy Special",
+        description = "Pomodoro, mozzarella, salame piccante, olio al peperoncino.",
+        basePrice = 8.50,
+        imageUrl = "\uD83C\uDF55",
+        isPopular = false
     ),
     Product(
-        "105",
-        "drinks",
-        "Coca Cola Zero 33cl",
-        "Lattina da 33cl servita fredda.",
-        2.50,
-        "\uD83E\uDDC3"
+        IdProduct = "105",
+        category = "drinks",
+        nameProduct = "Coca Cola Zero 33cl",
+        description = "Lattina da 33cl servita fredda.",
+        basePrice = 2.50,
+        imageUrl = "\uD83E\uDDC3",
+        isPopular = false
     ),
     Product(
-        "106",
-        "desserts",
-        "Tiramisù della Casa",
-        "Mascarpone, savoiardi al caffè, cacao amaro.",
-        4.50,
-        "\uD83C\uDF66"
+        IdProduct = "106",
+        category = "desserts",
+        nameProduct = "Tiramisù della Casa",
+        description = "Mascarpone, savoiardi al caffè, cacao amaro.",
+        basePrice = 4.50,
+        imageUrl = "\uD83C\uDF66",
+        isPopular = false
     )
 )
 
@@ -237,7 +242,7 @@ class AppState {
         orderId = "#${Random.nextInt(1000, 10000)}"
         pickupPin = "PIN-${Random.nextInt(100, 1000)}"
         val summary =
-            if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.name}" } else "Ordine FastBite"
+            if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.nameProduct}" } else "Ordine FastBite"
         val timeStr = "Oggi, " + SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         val payMethodLabel = when (paymentMethod) {
             "card" -> "💳 Carta di Credito / Google Pay"

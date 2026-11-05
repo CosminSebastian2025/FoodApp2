@@ -35,12 +35,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
-import com.example.foodapp.Product
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.categories
+import com.example.foodapp.data.model.*
 
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
@@ -54,9 +54,10 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
         viewModel.loadHomeData()
     }
 
-    val mappedPopulars = popularProducts.map { p ->
+    val mappedPopulars = popularProducts.mapNotNull { p ->
+        val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
         Product(
-            id = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@map null,
+            id = productId,
             category = p.category,
             name = p.nameProduct,
             description = p.description,
@@ -179,9 +180,9 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                 fontSize = 14.sp
             )
         }
-        val mappedPopulars = popularProducts.mapNotNull { p ->
-            val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-        }
+//        val mappedPopulars = popularProducts.mapNotNull { p ->
+//            val productId = p.IdProduct.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+//        }
 //        items(mappedPopulars) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
     }
 }
