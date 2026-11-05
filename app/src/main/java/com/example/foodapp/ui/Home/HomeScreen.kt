@@ -41,7 +41,6 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.categories
-import com.example.foodapp.ui.components.ProductCard
 
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
@@ -180,6 +179,9 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                 fontSize = 14.sp
             )
         }
-        items(mappedPopulars) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
+        val mappedPopulars = popularProducts.mapNotNull { p ->
+            val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+        }
+//        items(mappedPopulars) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
     }
 }

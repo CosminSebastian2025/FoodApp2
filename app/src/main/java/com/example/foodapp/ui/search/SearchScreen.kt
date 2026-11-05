@@ -40,9 +40,9 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     val displayList = if (query.isBlank()) {
         products
     } else if (searchResults.isNotEmpty()) {
-        searchResults.map { p ->
+        searchResults.mapNotNull { p ->
             com.example.foodapp.Product(
-                id = p.IdProduct.toIntOrNull() ?: p.IdProduct.hashCode(),
+                id = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null,
                 category = p.category,
                 name = p.nameProduct,
                 description = p.description,

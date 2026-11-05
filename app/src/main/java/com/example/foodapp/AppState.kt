@@ -33,7 +33,7 @@ data class Store(
 data class CategoryItem(val id: String, val name: String, val emoji: String)
 
 data class Product(
-    val id: String?, val category: String, val name: String,
+    val id: String, val category: String, val name: String,
     val description: String, val price: Double, val emoji: String
 )
 
@@ -259,7 +259,12 @@ class AppState {
         orderHistory.add(0, newOrder)
         paymentHistory.add(
             0,
-            PaymentHistoryItem("TRX-${Random.nextInt(1000, 9999)}", timeStr, cartFinalTotal, payMethodLabel)
+            PaymentHistoryItem(
+                "TRX-${Random.nextInt(1000, 9999)}",
+                timeStr,
+                cartFinalTotal,
+                payMethodLabel
+            )
         )
         screen = "confirmation"
     }
