@@ -33,7 +33,11 @@ data class Store(
     val distance: String, val prepTime: String, val isNearest: Boolean
 )
 
-data class CategoryItem(val id: String, val name: String, val emoji: String)
+data class CategoryItem(
+    val id: String = "",
+    val name: String = "",
+    val emoji: String = ""
+)
 
 data class SizeOption(val id: Int, val name: String, val price: Double)
 data class ExtraOption(val id: Int, val name: String, val price: Double)
