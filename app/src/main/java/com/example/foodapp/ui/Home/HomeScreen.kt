@@ -41,6 +41,8 @@ import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.categories
 import com.example.foodapp.data.model.*
+import com.example.foodapp.ui.components.ProductCard
+import com.example.foodapp.ui.menu.ProductCard
 
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
@@ -54,16 +56,8 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
         viewModel.loadHomeData()
     }
 
-    val mappedPopulars = popularProducts.mapNotNull { p ->
-        val productId = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-        Product(
-            id = productId,
-            category = p.category,
-            name = p.nameProduct,
-            description = p.description,
-            price = p.basePrice,
-            emoji = "🍔"
-        )
+    val mappedPopulars = popularProducts.filter { product ->
+        !product.IdProduct.isNullOrBlank()
     }
 
     if (isLoading) {
@@ -183,6 +177,10 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
 //        val mappedPopulars = popularProducts.mapNotNull { p ->
 //            val productId = p.IdProduct.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 //        }
-//        items(mappedPopulars) { p -> ProductCard(p, onCustomize = { state.openCustomize(p) }) }
+        items(mappedPopulars) { p ->
+            ProductCard(p) {
+                state.openCustomize(p)
+            }
+        }
     }
 }
