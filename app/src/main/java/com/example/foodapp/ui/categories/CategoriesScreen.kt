@@ -44,10 +44,13 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
 
     val displayCategories: List<CategoryItem> = if (categories.isNotEmpty()) {
         listOf(CategoryItem("all", "Tutti", "🍔")) + categories.filterNotNull().map { cat ->
+            val catId = cat.idCategory
+            val catName = cat.nameCategory
+            val catIcon = cat.icon
             CategoryItem(
-                id = cat?.idCategory?.takeIf { it.isNotBlank() } ?: "unknown",
-                name = cat?.nameCategory?.takeIf { it.isNotBlank() } ?: "Categoria",
-                emoji = cat?.icon?.takeIf { !it.isBlank() } ?: "🍕"
+                id = if (!catId.isNullOrBlank()) catId else "unknown",
+                name = if (!catName.isNullOrBlank()) catName else "Categoria",
+                emoji = if (!catIcon.isNullOrBlank()) catIcon else "🍕"
             )
         }
     } else {
