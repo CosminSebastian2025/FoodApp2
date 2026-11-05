@@ -40,9 +40,9 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
     }
 
     val mappedProducts = if (products.isNotEmpty()) {
-        products.map { p ->
+        products.mapNotNull { p ->
             com.example.foodapp.Product(
-                id = p.IdProduct.toIntOrNull() ?: p.IdProduct.hashCode(),
+                id = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@mapNotNull null,
                 category = p.category,
                 name = p.nameProduct,
                 description = p.description,

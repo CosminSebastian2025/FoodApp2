@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.sp
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
+import com.example.foodapp.Product
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
-import com.example.foodapp.Product
 
 @Composable
 fun BackHeader(title: String, onBack: () -> Unit) {
@@ -65,7 +65,10 @@ fun RowScope.TimeChip(label: String, value: String, selected: Boolean, onClick: 
     Surface(
         shape = RoundedCornerShape(6.dp),
         color = if (selected) Brand else Slate100,
-        border = androidx.compose.foundation.BorderStroke(1.5.dp, if (selected) Brand else Slate200),
+        border = androidx.compose.foundation.BorderStroke(
+            1.5.dp,
+            if (selected) Brand else Slate200
+        ),
         modifier = Modifier
             .weight(1f)
             .clickable(onClick = onClick)
@@ -159,7 +162,7 @@ fun SmallQtyButton(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ProductCard(p: Product?, onCustomize: () -> Unit) {
+fun ProductCard(p: Product, onCustomize: () -> Unit) {
     Card(
         shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(2.dp)
