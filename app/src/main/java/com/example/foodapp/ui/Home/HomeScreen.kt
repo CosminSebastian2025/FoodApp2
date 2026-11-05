@@ -40,9 +40,7 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.categories
-import com.example.foodapp.data.model.*
 import com.example.foodapp.ui.components.ProductCard
-import com.example.foodapp.ui.menu.ProductCard
 
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
