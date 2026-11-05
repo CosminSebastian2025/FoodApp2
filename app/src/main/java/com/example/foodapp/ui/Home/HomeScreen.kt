@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
+import com.example.foodapp.Product
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
@@ -55,8 +56,8 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
     }
 
     val mappedPopulars = popularProducts.map { p ->
-        com.example.foodapp.Product(
-            id = p.IdProduct.hashCode(),
+        Product(
+            id = p.IdProduct?.takeIf { it.isNotBlank() } ?: return@map null,
             category = p.category,
             name = p.nameProduct,
             description = p.description,

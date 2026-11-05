@@ -1,7 +1,6 @@
 package com.example.foodapp.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -160,7 +159,7 @@ fun SmallQtyButton(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ProductCard(p: Product, onCustomize: () -> Unit) {
+fun ProductCard(p: Product?, onCustomize: () -> Unit) {
     Card(
         shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(2.dp)

@@ -21,7 +21,7 @@ data class Category(
 
 /** Modello dati per i prodotti del menu. */
 data class Product(
-    @SerializedName("id_product") val IdProduct: String,
+    @SerializedName("id_product") val IdProduct: String? = null,
     @SerializedName("name_product") val nameProduct: String,
     @SerializedName("description") val description: String,
     @SerializedName("base_price") val basePrice: Double,

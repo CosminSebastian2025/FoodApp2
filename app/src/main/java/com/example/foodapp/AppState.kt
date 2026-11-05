@@ -33,7 +33,7 @@ data class Store(
 data class CategoryItem(val id: String, val name: String, val emoji: String)
 
 data class Product(
-    val id: Int, val category: String, val name: String,
+    val id: String?, val category: String, val name: String,
     val description: String, val price: Double, val emoji: String
 )
 
@@ -94,7 +94,7 @@ val categories = listOf(
 
 val products = listOf(
     Product(
-        101,
+        "101",
         "burgers",
         "Fast Bacon Burger",
         "Manzo 180g, bacon croccante, cheddar, salsa special.",
@@ -102,7 +102,7 @@ val products = listOf(
         "\uD83C\uDF54"
     ),
     Product(
-        102,
+        "102",
         "burgers",
         "Double Cheese Monster",
         "Doppio burger, doppio cheddar melted, cipolla caramellata.",
@@ -110,7 +110,7 @@ val products = listOf(
         "\uD83C\uDF54"
     ),
     Product(
-        103,
+        "103",
         "pizzas",
         "Pizza Margherita DOC",
         "Pomodoro bio, mozzarella di bufala, basilico fresco.",
@@ -118,7 +118,7 @@ val products = listOf(
         "\uD83C\uDF55"
     ),
     Product(
-        104,
+        "104",
         "pizzas",
         "Diavola Spicy Special",
         "Pomodoro, mozzarella, salame piccante, olio al peperoncino.",
@@ -126,7 +126,7 @@ val products = listOf(
         "\uD83C\uDF55"
     ),
     Product(
-        105,
+        "105",
         "drinks",
         "Coca Cola Zero 33cl",
         "Lattina da 33cl servita fredda.",
@@ -134,7 +134,7 @@ val products = listOf(
         "\uD83E\uDDC3"
     ),
     Product(
-        106,
+        "106",
         "desserts",
         "Tiramisù della Casa",
         "Mascarpone, savoiardi al caffè, cacao amaro.",
@@ -201,7 +201,7 @@ class AppState {
     }
 
     /** Apre la schermata di personalizzazione per un prodotto. */
-    fun openCustomize(p: Product) {
+    fun openCustomize(p: Product?) {
         previousScreen = screen
         activeProduct = p
         selectedSize = sizeOptions[0]
