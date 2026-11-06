@@ -45,17 +45,13 @@ import com.example.foodapp.ui.components.ProductCard
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
     val promotions by viewModel.promotions.collectAsState()
-    val stores by viewModel.stores.collectAsState()
+//    val stores by viewModel.stores.collectAsState()
     val popularProducts by viewModel.popularProducts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadHomeData()
-    }
-
-    val mappedPopulars = popularProducts.filter { product ->
-        !product.IdProduct.isNullOrBlank()
     }
 
     if (isLoading) {
@@ -75,55 +71,73 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                 Text(err, color = Brand, fontSize = 12.sp)
             }
         }
-        // Banner punto vendita
+        // 2. Inseriamo il LazyRow orizzontale dentro un item della LazyColumn
         item {
-            Card(
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(Slate900),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(Modifier.padding(16.dp)) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Surface(color = Brand.copy(alpha = 0.3f), shape = RoundedCornerShape(50)) {
-                            Text(
-                                "SOLO ASPORTO",
-                                Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Brand.copy(alpha = 0.9f)
-                            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "PROMOZIONI IN EVIDENZA",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Slate400
+                )
+
+                // 3. Scroll Orizzontale delle promozioni
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(promotions) { promo ->
+                        Card(
+                            shape = RoundedCornerShape(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = Slate900),
+                            modifier = Modifier
+                                .width(280.dp)
+                                .height(140.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                if (!promo.badges.isNullOrEmpty()) {
+                                    Surface(
+                                        color = Brand.copy(alpha = 0.3f),
+                                        shape = RoundedCornerShape(50)
+                                    ) {
+                                        Text(
+                                            text = promo.badges.first(),
+                                            modifier = Modifier.padding(
+                                                horizontal = 8.dp,
+                                                vertical = 3.dp
+                                            ),
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Brand
+                                        )
+                                    }
+                                }
+
+                                Column {
+                                    Text(
+                                        text = promo.title,
+                                        color = Color.White,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                    Spacer(Modifier.height(2.dp))
+                                    Text(
+                                        text = promo.subtitle,
+                                        color = Slate400,
+                                        fontSize = 11.sp
+                                    )
+                                }
+                            }
                         }
-                        Text(
-                            "📍 ${state.selectedStore.distance}",
-                            color = Slate400,
-                            fontSize = 11.sp
-                        )
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        state.selectedStore.name,
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                    Text(state.selectedStore.address, color = Slate400, fontSize = 11.sp)
-                    Spacer(Modifier.height(10.dp))
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp)
-                    ) {
-                        Text(
-                            "⏱ Pronto in: ${state.selectedStore.prepTime}",
-                            color = Slate400,
-                            fontSize = 11.sp
-                        )
-                        Text("Ritiro: ", color = Slate400, fontSize = 11.sp)
                     }
                 }
             }
         }
+
         // Categorie
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -175,7 +189,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
 //        val mappedPopulars = popularProducts.mapNotNull { p ->
 //            val productId = p.IdProduct.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 //        }
-        items(mappedPopulars) { p ->
+        items(popularProducts) { p ->
             ProductCard(p) {
                 state.openCustomize(p)
             }

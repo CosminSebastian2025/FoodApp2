@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.example.foodapp.data.model.OrderHistoryItemResponse
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -34,9 +35,9 @@ data class Store(
 )
 
 data class CategoryItem(
-    val id: String = "",
-    val name: String = "",
-    val emoji: String = ""
+    val id: String,
+    val name: String,
+    val emoji: String
 )
 
 data class SizeOption(val id: Int, val name: String, val price: Double)
@@ -179,10 +180,10 @@ class AppState {
     var selectedSize by mutableStateOf(sizeOptions[0])
     val selectedExtras = mutableStateListOf<ExtraOption>()
     var customQty by mutableStateOf(1)
-    var activeOrderHistoryItem by mutableStateOf<OrderHistoryItem?>(null)
+    var activeOrderHistoryItem by mutableStateOf<OrderHistoryItemResponse?>(null)
 
     /** Apre il dettaglio di un ordine precedente. */
-    fun openOrderDetail(item: OrderHistoryItem) {
+    fun openOrderDetail(item: OrderHistoryItemResponse) {
         activeOrderHistoryItem = item
         screen = "order-detail"
     }

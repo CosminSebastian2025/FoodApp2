@@ -32,21 +32,23 @@ import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
 import com.example.foodapp.EmeraldBg
-import com.example.foodapp.OrderHistoryItem
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
+import com.example.foodapp.data.model.OrderHistoryItemResponse
 import com.example.foodapp.ui.components.BackHeader
 
 @Composable
-fun OrderHistoryCard(order: OrderHistoryItem, onClick: () -> Unit) {
+fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(Color.White),
         elevation = CardDefaults.cardElevation(1.dp),
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
@@ -103,6 +105,7 @@ fun OrderHistoryCard(order: OrderHistoryItem, onClick: () -> Unit) {
 @Composable
 fun OrderDetailScreen(state: AppState) {
     val order = state.activeOrderHistoryItem ?: return
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -110,7 +113,7 @@ fun OrderDetailScreen(state: AppState) {
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            BackHeader("Dettaglio Ordine ${order.id}") { state.screen = "profile" }
+            BackHeader("Dettaglio Ordine") { state.screen = "profile" }
         }
 
         // Card Numero Ordine & Stato
@@ -126,7 +129,12 @@ fun OrderDetailScreen(state: AppState) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("NUMERO ORDINE", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                        Text(
+                            "NUMERO ORDINE",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate400
+                        )
                         Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
                             Text(
                                 order.status,
@@ -137,7 +145,12 @@ fun OrderDetailScreen(state: AppState) {
                             )
                         }
                     }
-                    Text(order.id, fontSize = 24.sp, fontWeight = FontWeight.Black, color = Color.White)
+                    Text(
+                        order.id,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White
+                    )
                     Text("Data: ${order.date}", fontSize = 11.sp, color = Slate400)
                 }
             }
@@ -147,11 +160,21 @@ fun OrderDetailScreen(state: AppState) {
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("INFORMAZIONI DI RITIRO", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    Text(
+                        "INFORMAZIONI DI RITIRO",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate400
+                    )
 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Tipo di Ordine:", fontSize = 11.sp, color = Slate500)
-                        Text(order.orderType, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Slate700)
+                        Text(
+                            order.orderType,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate700
+                        )
                     }
 
                     HorizontalDivider(color = Slate100)
@@ -159,7 +182,12 @@ fun OrderDetailScreen(state: AppState) {
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text("Dove lo va a ritirare:", fontSize = 11.sp, color = Slate500)
                         Spacer(Modifier.height(2.dp))
-                        Text(order.storeName, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Slate900)
+                        Text(
+                            order.storeName,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate900
+                        )
                         Text(order.storeAddress, fontSize = 11.sp, color = Slate500)
                     }
 
@@ -167,7 +195,12 @@ fun OrderDetailScreen(state: AppState) {
 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("PIN Ritiro Cassa:", fontSize = 11.sp, color = Slate500)
-                        Text(order.pin, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, color = Brand)
+                        Text(
+                            order.pin,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Brand
+                        )
                     }
                 }
             }
@@ -177,11 +210,21 @@ fun OrderDetailScreen(state: AppState) {
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("PAGAMENTO E SPESA", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    Text(
+                        "PAGAMENTO E SPESA",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate400
+                    )
 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Tipo di Pagamento:", fontSize = 11.sp, color = Slate500)
-                        Text(order.paymentMethod, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Slate700)
+                        Text(
+                            order.paymentMethod,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Slate700
+                        )
                     }
 
                     HorizontalDivider(color = Slate100)
@@ -203,8 +246,18 @@ fun OrderDetailScreen(state: AppState) {
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("ARTICOLI", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
-                    Text(order.itemsSummary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Slate700)
+                    Text(
+                        "ARTICOLI",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate400
+                    )
+                    Text(
+                        order.itemsSummary,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Slate700
+                    )
                 }
             }
         }

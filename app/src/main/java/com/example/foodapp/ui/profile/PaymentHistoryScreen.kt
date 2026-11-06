@@ -17,12 +17,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Emerald
 import com.example.foodapp.EmeraldBg
@@ -32,7 +35,11 @@ import com.example.foodapp.Slate900
 import com.example.foodapp.ui.components.BackHeader
 
 @Composable
-fun PaymentHistoryScreen(state: AppState) {
+fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
+
+    val paymentHystory by viewModel.paymentHistory.collectAsState()
+    val orderHystory by viewModel.orderHistory.collectAsState()
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -49,10 +56,15 @@ fun PaymentHistoryScreen(state: AppState) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("PAGAMENTI EFFETTUATI", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Slate400)
+                    Text(
+                        "PAGAMENTI EFFETTUATI",
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Slate400
+                    )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "€${"%.2f".format(state.paymentHistory.sumOf { it.amount })}",
+                        "€${"%.2f".format(paymentHystory.sumOf { it.amount })}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
@@ -65,7 +77,7 @@ fun PaymentHistoryScreen(state: AppState) {
                 }
             }
         }
-        if (state.paymentHistory.isEmpty()) {
+        if (paymentHystory.isNotEmpty()) {
             item {
                 Card(
                     shape = RoundedCornerShape(16.dp),
@@ -90,7 +102,7 @@ fun PaymentHistoryScreen(state: AppState) {
                 }
             }
         } else {
-            items(state.paymentHistory) { pay ->
+            items(orderHystory) { pay ->
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(Color.White),
@@ -119,11 +131,16 @@ fun PaymentHistoryScreen(state: AppState) {
                                 }
                             }
                             Spacer(Modifier.height(2.dp))
-                            Text(pay.paymentMethod, fontSize = 11.sp, color = Slate700, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                pay.paymentMethod,
+                                fontSize = 11.sp,
+                                color = Slate700,
+                                fontWeight = FontWeight.SemiBold
+                            )
                             Text(pay.date, fontSize = 10.sp, color = Slate400)
                         }
                         Text(
-                            "-€${"%.2f".format(pay.amount)}",
+                            "-€${"%.2f".format(pay.total)}",
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 13.sp,
                             color = Slate900

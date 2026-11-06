@@ -2,9 +2,9 @@ package com.example.foodapp.ui.checkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.PickupOrderConfirmation
 import com.example.foodapp.data.model.PickupOrderRequest
+import com.example.foodapp.retrofit.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

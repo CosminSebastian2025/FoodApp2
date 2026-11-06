@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 /** Modello dati per le promozioni in evidenza nella home. */
 data class Promotion(
-    @SerializedName("id") val id: String? = null,
-    @SerializedName("title") val title: String? = null,
-    @SerializedName("subtitle") val subtitle: String? = null,
-    @SerializedName("badges") val badges: List<String>? = null,
-    @SerializedName("image_url") val ImageUrl: String? = null
+    @SerializedName("id") val id: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("subtitle") val subtitle: String,
+    @SerializedName("badges") val badges: List<String>,
+    @SerializedName("image_url") val ImageUrl: String
 )
 
 /** Modello dati per le categorie di cibo. */
 data class Category(
-    @SerializedName("id_category") val idCategory: String? = null,
-    @SerializedName("name_category") val nameCategory: String? = null,
-    @SerializedName("icon") val icon: String? = null,
-    @SerializedName("count") val count: Int? = 0
+    @SerializedName("id_category") val idCategory: String,
+    @SerializedName("name_category") val nameCategory: String,
+    @SerializedName("icon") val icon: String,
+    @SerializedName("count") val count: Int
 )
 
 /** Modello dati per i prodotti del menu. */
@@ -168,7 +168,8 @@ data class PickupOrderConfirmation(
 /** Auth */
 data class AuthRequest(
     @SerializedName("email") val email: String,
-    @SerializedName("pass") val pass: String
+    @SerializedName("pass") val pass: String,
+    @SerializedName("name") val name: String? = null
 )
 
 data class AuthResponse(
