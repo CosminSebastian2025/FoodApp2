@@ -94,8 +94,6 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
                         state.isLoggedIn = true
                         state.screen = "profile"
                     }
-                } else {
-                    state.screen = "profile"
                 }
             },
             modifier = Modifier
