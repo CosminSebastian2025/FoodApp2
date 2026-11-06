@@ -57,7 +57,6 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
 
         OutlinedButton(
             onClick = {
-                state.simulateLogin()
                 state.screen = "profile"
             },
             modifier = Modifier
