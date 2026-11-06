@@ -26,7 +26,7 @@ class ProfileViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    fun loadProfileData(userId: String) {
+    fun loadProfileData(userId: String?) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null

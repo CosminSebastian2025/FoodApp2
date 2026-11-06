@@ -41,7 +41,13 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
     val paymentHystory by viewModel.paymentHistory.collectAsState()
 
     LaunchedEffect(state.userId) {
-        viewModel.loadProfileData(state.userId ?: "user_123")
+        val userId = state.userId
+        if (userId.isNullOrBlank()) {
+            viewModel.loadProfileData(userId)
+        }
+        else {
+            state.screen = "auth"
+        }
     }
 
     LazyColumn(

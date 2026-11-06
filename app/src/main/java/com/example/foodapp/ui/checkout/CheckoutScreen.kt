@@ -223,6 +223,7 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
 
                     val currentUserId = state.userId
                     if (currentUserId.isNullOrBlank()) {
+                        state.screen = "auth"
                         return@Button
                     }
 
@@ -236,7 +237,8 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         subTotal = state.cartSubtotal,
                         discount = state.discountAmount,
                         managementFee = 1.50,
-                        total = state.cartFinalTotal
+                        total = state.cartFinalTotal,
+                        paymentMethod = state.paymentMethod
                     )
                     viewModel.submitOrder(request) { conf ->
                         state.orderId = conf.orderId

@@ -152,7 +152,8 @@ data class PickupOrderRequest(
     @SerializedName("subTotal") val subTotal: Double,
     @SerializedName("discount") val discount: Double,
     @SerializedName("managementFee") val managementFee: Double,
-    @SerializedName("total") val total: Double
+    @SerializedName("total") val total: Double,
+    @SerializedName("paymentMethod") val paymentMethod: String
 )
 
 /** Conferma dell'ordine ricevuto dal server con PIN di ritiro e QR code. */
