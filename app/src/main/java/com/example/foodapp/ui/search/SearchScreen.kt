@@ -65,7 +65,7 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     val displayList = if (query.isBlank()) {
         products
     } else if (searchResults.isNotEmpty()) {
-        searchResults.filter { it.IdProduct.isNullOrBlank() }
+        searchResults.filter { !it.IdProduct.isNullOrBlank() }
     } else {
         // Ricerca case-insensitive (ignora maiuscole/minuscole su nome e descrizione)
         val q = query.trim()

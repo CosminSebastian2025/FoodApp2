@@ -38,7 +38,6 @@ import com.example.foodapp.ui.components.BackHeader
 fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
 
     val paymentHystory by viewModel.paymentHistory.collectAsState()
-    val orderHystory by viewModel.orderHistory.collectAsState()
 
     LazyColumn(
         Modifier
@@ -70,14 +69,14 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                         color = Color.White
                     )
                     Text(
-                        "${state.paymentHistory.size} transazioni registrate",
+                        "${paymentHystory.size} transazioni registrate",
                         fontSize = 11.sp,
                         color = Slate400
                     )
                 }
             }
         }
-        if (paymentHystory.isNotEmpty()) {
+        if (paymentHystory.isEmpty()) {
             item {
                 Card(
                     shape = RoundedCornerShape(16.dp),
@@ -102,7 +101,7 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                 }
             }
         } else {
-            items(orderHystory) { pay ->
+            items(paymentHystory) { payment ->
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(Color.White),
@@ -118,11 +117,15 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                     ) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(pay.id, fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
+                                Text(
+                                    payment.id,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontSize = 12.sp
+                                )
                                 Spacer(Modifier.width(8.dp))
                                 Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
                                     Text(
-                                        pay.status,
+                                        payment.status,
                                         Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                         fontSize = 8.sp,
                                         fontWeight = FontWeight.Bold,
@@ -132,15 +135,15 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                             }
                             Spacer(Modifier.height(2.dp))
                             Text(
-                                pay.paymentMethod,
+                                payment.paymentMethod,
                                 fontSize = 11.sp,
                                 color = Slate700,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            Text(pay.date, fontSize = 10.sp, color = Slate400)
+                            Text(payment.date, fontSize = 10.sp, color = Slate400)
                         }
                         Text(
-                            "-€${"%.2f".format(pay.total)}",
+                            "-€${"%.2f".format(payment.amount)}",
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 13.sp,
                             color = Slate900

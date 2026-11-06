@@ -89,8 +89,9 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
         Button(
             onClick = {
                 if (email.isNotBlank() && password.isNotBlank()) {
-                    viewModel.login(email, password) {
-                        state.simulateLogin()
+                    viewModel.login(email, password) { response ->
+                        state.userId = response.userId
+                        state.isLoggedIn = true
                         state.screen = "profile"
                     }
                 } else {

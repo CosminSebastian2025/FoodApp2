@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,13 +44,19 @@ fun RegisterScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
+    LaunchedEffect(state.isLoggedIn, state.screen) {
+        if (!state.isLoggedIn) {
+            state.userId?.let { }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        BackHeader("Registrati") { state.previousScreen = "auth" }
+        BackHeader("Registrati") { state.screen = "auth" }
         Spacer(Modifier.height(30.dp))
 
         errorMessage?.let { err ->

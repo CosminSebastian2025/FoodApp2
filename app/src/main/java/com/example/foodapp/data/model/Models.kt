@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName
 
 /** Modello dati per le promozioni in evidenza nella home. */
 data class Promotion(
-    @SerializedName("id") val id: String,
-    @SerializedName("title") val title: String,
-    @SerializedName("subtitle") val subtitle: String,
-    @SerializedName("badges") val badges: List<String>,
-    @SerializedName("image_url") val ImageUrl: String
+    @SerializedName("id") val id: String = "",
+    @SerializedName("title") val title: String = "",
+    @SerializedName("subtitle") val subtitle: String = "",
+    @SerializedName("badges") val badges: List<String>? = null,
+    @SerializedName("image_url") val ImageUrl: String = ""
 )
 
 /** Modello dati per le categorie di cibo. */
 data class Category(
-    @SerializedName("id_category") val idCategory: String,
-    @SerializedName("name_category") val nameCategory: String,
-    @SerializedName("icon") val icon: String,
-    @SerializedName("count") val count: Int
+    @SerializedName("id_category") val idCategory: String? = "",
+    @SerializedName("name_category") val nameCategory: String? = "",
+    @SerializedName("icon") val icon: String? = "",
+    @SerializedName("count") val count: Int? = 0
 )
 
 /** Modello dati per i prodotti del menu. */

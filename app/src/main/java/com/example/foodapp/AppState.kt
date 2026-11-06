@@ -166,6 +166,7 @@ class AppState {
     var screen by mutableStateOf("splash")
     var previousScreen by mutableStateOf("home")
     var isLoggedIn by mutableStateOf(false)
+    var userId by mutableStateOf<String?>(null)
     var searchQuery by mutableStateOf("")
     var selectedCategory by mutableStateOf("all")
     var activeQuickCat by mutableStateOf("all")
