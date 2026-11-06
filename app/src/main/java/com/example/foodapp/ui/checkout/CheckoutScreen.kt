@@ -220,8 +220,14 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                             optionPriceModifier = ci.size.price + ci.extras.sumOf { it.price }
                         )
                     }
+
+                    val currentUserId = state.userId
+                    if (currentUserId.isNullOrBlank()) {
+                        return@Button
+                    }
+
                     val request = PickupOrderRequest(
-                        userId = state.userId ?: "user_123",
+                        userId = currentUserId,
                         storeId = state.selectedStore.id.toString(),
                         pickupType = if (state.pickupTime == "ASAP") "immediate" else "scheduled",
                         scheduledTime = if (state.pickupTime != "ASAP") state.pickupTime else null,
