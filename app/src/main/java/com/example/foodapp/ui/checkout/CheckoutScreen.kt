@@ -45,15 +45,16 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate800
 import com.example.foodapp.Slate900
+import com.example.foodapp.data.model.CartItem
 import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.ui.components.BackHeader
 import com.example.foodapp.ui.components.TotalsCard
-import com.example.foodapp.data.model.CartItem as ApiCartItem
 
 @Composable
 fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val confirmation by viewModel.orderConfirmation.collectAsState()
 
     val timeOptions = listOf("ASAP", "12:30", "13:00", "13:30", "19:30", "20:00")
 
@@ -210,8 +211,8 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
             Button(
                 onClick = {
                     val apiItems = state.cart.map { ci ->
-                        ApiCartItem(
-                            productId = ci.product.id.toString(),
+                        CartItem(
+                            productId = ci.product.id,
                             productName = ci.product.name,
                             basePrice = ci.product.price,
                             quantity = ci.quantity,
@@ -231,9 +232,9 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         managementFee = 1.50,
                         total = state.cartFinalTotal
                     )
-                    viewModel.submitOrder(request) { confirmation ->
-                        state.orderId = confirmation.orderId
-                        state.pickupPin = confirmation.pickupPin
+                    viewModel.submitOrder(request) { conf ->
+                        state.orderId = conf.orderId
+                        state.pickupPin = conf.pickupPin
                         state.cart.clear()
                         state.screen = "confirmation"
                     }

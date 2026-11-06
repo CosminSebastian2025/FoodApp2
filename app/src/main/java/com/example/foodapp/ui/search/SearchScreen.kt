@@ -65,14 +65,13 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     val displayList = if (query.isBlank()) {
         products
     } else if (searchResults.isNotEmpty()) {
-        searchResults.filter { product ->
-            !product.IdProduct.isNullOrBlank()
-        }
-    }
-    else {
-        products.filter {
-            it.name.lowercase().contains(query.lowercase()) || it.description.lowercase()
-                .contains(query.lowercase())
+        searchResults.filter { it.IdProduct.isNullOrBlank() }
+    } else {
+        // Ricerca case-insensitive (ignora maiuscole/minuscole su nome e descrizione)
+        val q = query.trim()
+        products.filter { product ->
+            product.name.contains(q, ignoreCase = true) ||
+                    product.description.contains(q, ignoreCase = true)
         }
     }
 
@@ -117,9 +116,11 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
         }
         if (isLoading) {
             item {
-                Box(Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp), contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
             }

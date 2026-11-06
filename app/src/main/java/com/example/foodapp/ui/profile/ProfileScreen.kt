@@ -196,7 +196,7 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
             Text("I Tuoi Ordini Recenti", fontWeight = FontWeight.Bold, fontSize = 14.sp)
         }
 
-        if (state.orderHistory.isEmpty() && orderHistoryApi.isEmpty()) {
+        if (orderHistoryApi.isEmpty()) {
             item {
                 Card(
                     shape = RoundedCornerShape(16.dp),
@@ -213,35 +213,9 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                 }
             }
         } else {
-            items(state.orderHistory) { order ->
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(Color.White),
-                    modifier = Modifier.clickable { state.openOrderDetail(order) }
-                ) {
-                    Column(
-                        Modifier.padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                "Ordine ${order.id}",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
-                            )
-                            Text(
-                                "€${"%.2f".format(order.total)}",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = Brand
-                            )
-                        }
-                        Text(order.itemsSummary, fontSize = 11.sp, color = Slate500)
-                        Text("${order.date} • ${order.status}", fontSize = 10.sp, color = Slate400)
-                    }
+            items(orderHistoryApi) { order ->
+                OrderHistoryCard(order) {
+                    state.openOrderDetail(order)
                 }
             }
         }

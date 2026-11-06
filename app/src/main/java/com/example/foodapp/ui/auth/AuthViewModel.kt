@@ -2,9 +2,9 @@ package com.example.foodapp.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.AuthRequest
 import com.example.foodapp.data.model.AuthResponse
+import com.example.foodapp.retrofit.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -37,12 +37,12 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun register(email: String, pass: String, onSuccess: (AuthResponse) -> Unit) {
+    fun register(email: String, pass: String, name: String, onSuccess: (AuthResponse) -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val res = RetrofitClient.apiService.registerUser(request = AuthRequest(email, pass))
+                val res = RetrofitClient.apiService.registerUser(request = AuthRequest(email, pass, name))
                 _authResult.value = res
                 if (res.success) onSuccess(res)
                 else _errorMessage.value = res.message

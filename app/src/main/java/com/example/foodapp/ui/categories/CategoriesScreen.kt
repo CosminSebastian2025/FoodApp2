@@ -42,19 +42,19 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
         viewModel.loadData()
     }
 
+    // 1. Fallback alle categorie locali se l'API non Risponde
     val displayCategories: List<CategoryItem> = if (categories.isNotEmpty()) {
-        listOf(CategoryItem("all", "Tutti", "🍔")) + categories.filterNotNull().map { cat ->
-            val catId = cat.idCategory
-            val catName = cat.nameCategory
-            val catIcon = cat.icon
+        listOf(
+            CategoryItem("all", "Tutti", "🍔")
+        ) + categories.map { cat ->
             CategoryItem(
-                id = if (!catId.isNullOrBlank()) catId else "unknown",
-                name = if (!catName.isNullOrBlank()) catName else "Categoria",
-                emoji = if (!catIcon.isNullOrBlank()) catIcon else "🍕"
+                id = cat.idCategory,
+                name = cat.nameCategory,
+                emoji = cat.icon
             )
         }
     } else {
-        localCategories
+        localCategories //Categorie statiche di fallback
     }
 
     val mappedProducts = if (products.isNotEmpty()) {
@@ -86,6 +86,7 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
         item {
             Text("Menu FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
             Spacer(Modifier.height(8.dp))
+            // LazyRow dei filtri per Categoria
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(displayCategories.size) { idx ->
                     val cat = displayCategories[idx]
@@ -108,6 +109,7 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
                 }
             }
         }
+        // 2. Mostra i prodotti filtrati per categoria azinchè tutti
         items(filtered) { p ->
             ProductCard(p) { state.openCustomize(p) }
         }

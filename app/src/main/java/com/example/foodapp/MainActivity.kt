@@ -58,6 +58,7 @@ import com.example.foodapp.ui.home.HomeScreen
 import com.example.foodapp.ui.profile.OrderDetailScreen
 import com.example.foodapp.ui.profile.PaymentHistoryScreen
 import com.example.foodapp.ui.profile.ProfileScreen
+import com.example.foodapp.ui.register.RegisterScreen
 import com.example.foodapp.ui.search.SearchScreen
 import com.example.foodapp.ui.splash.SplashScreen
 import com.example.foodapp.ui.store.StoreSelectScreen
@@ -102,6 +103,7 @@ fun FastBiteApp(state: AppState) {
                 "payment-history" -> PaymentHistoryScreen(state)
                 "order-detail" -> OrderDetailScreen(state)
                 "auth" -> AuthScreen(state)
+                "register" -> RegisterScreen(state)
             }
         }
     }
