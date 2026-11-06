@@ -88,7 +88,8 @@ fun RegisterScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
         Button(
             onClick = {
                 if (emails.isNotBlank() && passwords.isNotBlank() && name.isNotBlank()) {
-                    viewModel.register(emails, passwords, name) {
+                    viewModel.register(emails, passwords, name) { response ->
+                        state.userId = response.userId
                         state.isLoggedIn = true
                         state.screen = "profile"
                     }
