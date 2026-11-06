@@ -58,20 +58,20 @@ interface FoodApiService {
     /** Recupera il profilo dell'utente autenticato tramite ID. */
     @GET("index.php")
     suspend fun getUserProfile(
-        @Query("userId") userId: String,
+        @Query("user_id") userId: String,
         @Query("endpoint") endpoint: String = "profile"
     ): UserProfile
 
     /** Recupera lo storico degli ordini effettuati dall'utente. */
     @GET("index.php")
     suspend fun getOrderHistory(
-        @Query("userId") userId: String,
+        @Query("user_id") userId: String,
         @Query("endpoint") endpoint: String = "order_history"
     ): List<OrderHistoryItemResponse>
 
     @GET("index.php")
     suspend fun getPaymentHistory(
-        @Query("userId") userId: String,
+        @Query("user_id") userId: String,
         @Query("endpoint") endpoint: String = "payment_history"
     ): List<PaymentHistoryItemResponse>
 
