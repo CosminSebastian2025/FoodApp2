@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
 
     /** URL di base del server API locale (XAMPP). */
-    private const val BASE_URL = "http://192.168.1.2/api/"
+    private const val BASE_URL = "http://192.168.2.248/api/"
 
     /** Istanza lazy del servizio API per eseguire richieste HTTP con Gson (modalità lenient). */
     val apiService: FoodApiService by lazy {

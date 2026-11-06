@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import coil3.compose.AsyncImage
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -175,7 +177,17 @@ fun ProductCard(p: Product, onCustomize: () -> Unit) {
                     .clip(RoundedCornerShape(14.dp))
                     .background(Slate100),
                 contentAlignment = Alignment.Center
-            ) { Text(p.imageUrl, fontSize = 32.sp) }
+            ) {
+                if (p.imageUrl.startsWith("http") || p.imageUrl.startsWith("/")) {
+                    AsyncImage(
+                        model = p.imageUrl,
+                        contentDescription = p.nameProduct,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(p.imageUrl.ifBlank { "🍔" }, fontSize = 32.sp)
+                }
+            }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

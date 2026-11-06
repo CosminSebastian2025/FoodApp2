@@ -143,7 +143,7 @@ data class CartItem(
 
 /** Richiesta POST per la creazione di un nuovo ordine. */
 data class PickupOrderRequest(
-    @SerializedName("user_id") val userId: String,
+    @SerializedName("user_id") val userId: String?,
     @SerializedName("store_id") val storeId: String,
     @SerializedName("pickup_type") val pickupType: String,
     @SerializedName("scheduled_time") val scheduledTime: String?,
