@@ -50,7 +50,7 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
             CategoryItem(
                 id = cat.idCategory?.takeIf { it.isNotBlank() } ?: "unknown",
                 name = cat.nameCategory?.takeIf { it.isNotBlank() } ?: "Categoria",
-                emoji = cat.icon?.takeIf { it.isNotBlank() } ?: ""
+                emoji = cat.icon?.takeIf { it.isNotBlank() } ?: "\uD83C\uDF55"
             )
         }
     } else {

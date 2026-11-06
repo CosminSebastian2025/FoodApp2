@@ -53,7 +53,7 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
     LaunchedEffect(state.isLoggedIn, state.userId) {
         if (state.isLoggedIn) {
             try {
-                state.userId?.let { viewModel::loadProfileData }
+                state.userId?.let(viewModel::loadProfileData)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
