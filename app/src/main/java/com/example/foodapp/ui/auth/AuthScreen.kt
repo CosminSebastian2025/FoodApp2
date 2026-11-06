@@ -111,12 +111,12 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
                 Text("Accedi a FastBite", fontWeight = FontWeight.Bold)
             }
         }
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(8.dp))
         Button(
             onClick = { state.screen = "register" },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .height(48.dp)
         ) {
             Text("Registrati", fontWeight = FontWeight.Bold)
         }

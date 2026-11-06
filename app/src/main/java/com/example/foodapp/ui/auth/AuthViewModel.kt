@@ -24,7 +24,7 @@ class AuthViewModel : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val res = RetrofitClient.apiService.loginUser(request = AuthRequest(email, pass))
+                val res = RetrofitClient.apiService.loginUser(request = AuthRequest(email, password = pass))
                 _authResult.value = res
                 if (res.success) onSuccess(res)
                 else _errorMessage.value = res.message
@@ -42,7 +42,7 @@ class AuthViewModel : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val res = RetrofitClient.apiService.registerUser(request = AuthRequest(email, pass, name))
+                val res = RetrofitClient.apiService.registerUser(request = AuthRequest(email, password = pass, name = name))
                 _authResult.value = res
                 if (res.success) onSuccess(res)
                 else _errorMessage.value = res.message
