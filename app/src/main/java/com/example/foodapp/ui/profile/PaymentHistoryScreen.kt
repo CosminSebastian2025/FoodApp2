@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,6 +39,10 @@ import com.example.foodapp.ui.components.BackHeader
 fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
 
     val paymentHystory by viewModel.paymentHistory.collectAsState()
+
+    LaunchedEffect(state.userId) {
+        viewModel.loadProfileData(state.userId ?: "user_123")
+    }
 
     LazyColumn(
         Modifier

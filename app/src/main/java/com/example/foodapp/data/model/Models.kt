@@ -168,7 +168,7 @@ data class PickupOrderConfirmation(
 /** Auth */
 data class AuthRequest(
     @SerializedName("email") val email: String,
-    @SerializedName("pass") val pass: String,
+    @SerializedName("password") val password: String,
     @SerializedName("name") val name: String? = null
 )
 

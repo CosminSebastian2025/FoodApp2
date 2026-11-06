@@ -203,7 +203,7 @@ fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
                         )
                     }
                     val request = PickupOrderRequest(
-                        userId = "user_123",
+                        userId = state.userId ?: "user_123",
                         storeId = state.selectedStore.id.toString(),
                         pickupType = if (state.pickupTime == "ASAP") "immediate" else "scheduled",
                         scheduledTime = if (state.pickupTime != "ASAP") state.pickupTime else null,

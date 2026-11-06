@@ -45,7 +45,6 @@ import com.example.foodapp.ui.components.ProductCard
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
     val promotions by viewModel.promotions.collectAsState()
-//    val stores by viewModel.stores.collectAsState()
     val popularProducts by viewModel.popularProducts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
