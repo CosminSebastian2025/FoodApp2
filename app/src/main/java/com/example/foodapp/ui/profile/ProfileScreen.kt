@@ -50,10 +50,10 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
     val userProfile by viewModel.userProfile.collectAsState()
     val orderHistoryApi by viewModel.orderHistory.collectAsState()
 
-    LaunchedEffect(state.isLoggedIn) {
+    LaunchedEffect(state.isLoggedIn, state.userId) {
         if (state.isLoggedIn) {
             try {
-                viewModel.loadProfileData("user_123")
+                state.userId?.let { viewModel::loadProfileData }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

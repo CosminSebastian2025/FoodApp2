@@ -95,7 +95,6 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
                         state.screen = "profile"
                     }
                 } else {
-                    state.simulateLogin()
                     state.screen = "profile"
                 }
             },
