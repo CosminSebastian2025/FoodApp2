@@ -10,26 +10,32 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CheckoutViewModel : ViewModel() {
-    private val _orderConfirmation = MutableStateFlow<PickupOrderConfirmation?>(null)
-    val orderConfirmation: StateFlow<PickupOrderConfirmation?> = _orderConfirmation
 
+    private val _confirmation = MutableStateFlow<PickupOrderConfirmation?>(null)
+//    val orderConfirmation: StateFlow<PickupOrderConfirmation?> = _confirmation
+
+    // 2. Stato di caricamento (mostra il CircularProgressIndicator sul bottone)
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    // 3. Gestione degli errori di rete o validazione
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
     fun submitOrder(request: PickupOrderRequest, onSuccess: (PickupOrderConfirmation) -> Unit) {
         viewModelScope.launch {
+
             _isLoading.value = true
             _errorMessage.value = null
+
             try {
-                val response = RetrofitClient.apiService.createOrder(orderRequest = request)
-                _orderConfirmation.value = response
-                onSuccess(response)
-            } catch (e: Exception) {
-                _errorMessage.value = "Errore invio ordine: ${e.message}"
-                e.printStackTrace()
+                val conf =
+                    RetrofitClient.apiService.createOrder("create_order", orderRequest = request)
+                _confirmation.value = conf
+                onSuccess(conf) // Esegue l'azione di successo (es. pulire il carrello e cambiare schermata)
+            } catch (ex: Exception) {
+                _errorMessage.value = "Errore di connessione: ${ex.message}"
+                ex.printStackTrace()
             } finally {
                 _isLoading.value = false
             }

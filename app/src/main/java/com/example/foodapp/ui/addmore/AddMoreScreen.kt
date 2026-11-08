@@ -19,10 +19,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,16 +35,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate900
-import com.example.foodapp.products
+import com.example.foodapp.ui.categories.CategoriesViewModel
 import com.example.foodapp.ui.components.BackHeader
 
 @Composable
-fun AddMoreScreen(state: AppState) {
+fun AddMoreScreen(state: AppState, viewModel: CategoriesViewModel = viewModel()) {
+    val products by viewModel.products.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadData()
+    }
+
     val filtered = when (state.activeQuickCat) {
         "drinks" -> products.filter { it.category == "drinks" }
         "desserts" -> products.filter { it.category == "desserts" }
@@ -71,36 +83,46 @@ fun AddMoreScreen(state: AppState) {
                 }
             }
         }
-        items(filtered) { p ->
-            Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
-                Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Slate100),
-                        contentAlignment = Alignment.Center
-                    ) { Text(p.emoji, fontSize = 26.sp) }
-                    Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(p.name, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        Text(
-                            p.description, fontSize = 10.sp, color = Slate400, maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            "€${"%.2f".format(p.price)}",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                    }
-                    Button(
-                        onClick = { state.openCustomize(p) },
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(Brand),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
-                    ) {
-                        Text("Seleziona", fontSize = 11.sp)
+        if (isLoading) {
+            item {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp), contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+        } else {
+            items(filtered) { p ->
+                Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            Modifier
+                                .size(56.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Slate100),
+                            contentAlignment = Alignment.Center
+                        ) { Text(p.emoji, fontSize = 26.sp) }
+                        Spacer(Modifier.width(12.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(p.name, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                            Text(
+                                p.description, fontSize = 10.sp, color = Slate400, maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                "€${"%.2f".format(p.price)}",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+                        Button(
+                            onClick = { state.openCustomize(p) },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(Brand),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+                        ) {
+                            Text("Seleziona", fontSize = 11.sp)
+                        }
                     }
                 }
             }

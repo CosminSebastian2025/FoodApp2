@@ -48,7 +48,6 @@ import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
-import com.example.foodapp.products
 
 @Composable
 fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
@@ -62,18 +61,7 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
         }
     }
 
-    val displayList = if (query.isBlank()) {
-        products
-    } else if (searchResults.isNotEmpty()) {
-        searchResults.filter { !it.IdProduct.isNullOrBlank() }
-    } else {
-        // Ricerca case-insensitive (ignora maiuscole/minuscole su nome e descrizione)
-        val q = query.trim()
-        products.filter { product ->
-            product.name.contains(q, ignoreCase = true) ||
-                    product.description.contains(q, ignoreCase = true)
-        }
-    }
+    val displayList = searchResults.filter { !it.IdProduct.isNullOrBlank() }
 
     LazyColumn(
         Modifier

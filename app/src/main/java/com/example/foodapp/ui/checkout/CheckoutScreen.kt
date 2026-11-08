@@ -54,7 +54,6 @@ import com.example.foodapp.ui.components.TotalsCard
 fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val confirmation by viewModel.orderConfirmation.collectAsState()
 
     val timeOptions = listOf("ASAP", "12:30", "13:00", "13:30", "19:30", "20:00")
 
@@ -260,7 +259,7 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                     )
                 } else {
                     Text(
-                        "Conferma e Invia Ordine (€${"%.2f".format(state.cartFinalTotal)})",
+                        "Conferma Ordine (€${"%.2f".format(state.cartFinalTotal)})",
                         fontWeight = FontWeight.Bold
                     )
                 }

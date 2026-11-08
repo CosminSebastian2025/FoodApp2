@@ -49,14 +49,13 @@ import com.example.foodapp.Slate700
 fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
     val userProfile by viewModel.userProfile.collectAsState()
     val orderHistoryApi by viewModel.orderHistory.collectAsState()
+    val paymentHistory by viewModel.paymentHistory.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
-    LaunchedEffect(state.isLoggedIn) {
+    LaunchedEffect(state.isLoggedIn, state.userId) {
         if (state.isLoggedIn) {
-            try {
-                state.userId?.let(viewModel::loadProfileData)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            viewModel.loadProfileData(state.userId)
         }
     }
 
@@ -81,20 +80,23 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                             .background(Brand),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            if (state.isLoggedIn) (userProfile?.name?.take(1) ?: "M") else "G",
-                            color = Color.White,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 16.sp
-                        )
+                        if (state.isLoggedIn) userProfile?.name?.take(1) else state.userId?.let {
+                            Text(
+                                it,
+                                color = Color.White,
+                                fontWeight = FontWeight.Black,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(
-                            if (state.isLoggedIn) (userProfile?.name
-                                ?: "Marco Rossi") else "Utente Ospite",
-                            fontWeight = FontWeight.Bold, fontSize = 13.sp
-                        )
+                        if (state.isLoggedIn) userProfile?.name else "Utente Ospite".let {
+                            Text(
+                                it,
+                                fontWeight = FontWeight.Bold, fontSize = 13.sp
+                            )
+                        }
                         Text(
                             if (state.isLoggedIn) (userProfile?.email
                                 ?: "marco.rossi@email.it") else "Accedi per ordinare in velocità",

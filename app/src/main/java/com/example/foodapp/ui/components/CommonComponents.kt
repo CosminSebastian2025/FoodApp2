@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import coil3.compose.AsyncImage
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
@@ -164,7 +164,7 @@ fun SmallQtyButton(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ProductCard(p: Product, onCustomize: () -> Unit) {
+fun ProductCard(p: Product?, onCustomize: () -> Unit) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(Color.White),
@@ -178,35 +178,42 @@ fun ProductCard(p: Product, onCustomize: () -> Unit) {
                     .background(Slate100),
                 contentAlignment = Alignment.Center
             ) {
-                if (p.imageUrl.startsWith("http") || p.imageUrl.startsWith("/")) {
+                if (p?.imageUrl?.startsWith("http") == true || p?.imageUrl?.startsWith("/") == true) {
                     AsyncImage(
                         model = p.imageUrl,
                         contentDescription = p.nameProduct,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
-                    Text(p.imageUrl.ifBlank { "🍔" }, fontSize = 32.sp)
+                    Text(p?.imageUrl?.ifBlank { "🍔" } ?: "", fontSize = 32.sp)
                 }
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    p?.nameProduct?.let {
+                        Text(
+                            p.nameProduct,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                    p?.basePrice?.let {
+                        Text(
+                            "€${"%.2f".format(p.basePrice)}",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+                p?.description?.let {
                     Text(
-                        p.nameProduct,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Text(
-                        "€${"%.2f".format(p.basePrice)}",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 12.sp
+                        p.description, fontSize = 11.sp, color = Slate500, maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-                Text(
-                    p.description, fontSize = 11.sp, color = Slate500, maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+
                 Spacer(Modifier.height(6.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Button(

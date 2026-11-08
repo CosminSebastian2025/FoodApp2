@@ -29,6 +29,7 @@ import com.example.foodapp.ui.components.BackHeader
 @Composable
 fun StoreSelectScreen(state: AppState, viewModel: StoreViewModel = viewModel()) {
     val stores by viewModel.stores.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -42,7 +43,15 @@ fun StoreSelectScreen(state: AppState, viewModel: StoreViewModel = viewModel()) 
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         BackHeader("Seleziona Punto Vendita") {
-            state.screen = state.previousScreen.ifBlank { "summary" }
+            state.screen = state.previousScreen.ifBlank { "profile" }
+        }
+
+        errorMessage?.let { message ->
+            Text(
+                message,
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.error
+            )
         }
 
         if (isLoading) {

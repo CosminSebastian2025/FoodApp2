@@ -54,7 +54,6 @@ import com.example.foodapp.data.model.CartItem as ApiCartItem
 fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val confirmation by viewModel.orderConfirmation.collectAsState()
 
     LazyColumn(
         Modifier
@@ -245,7 +244,7 @@ fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
                         Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Conferma ed Effettua Ordine", fontWeight = FontWeight.Bold)
+                        Text("Conferma Ordine", fontWeight = FontWeight.Bold)
                         Text(
                             "€${"%.2f".format(state.cartFinalTotal)}",
                             fontWeight = FontWeight.ExtraBold

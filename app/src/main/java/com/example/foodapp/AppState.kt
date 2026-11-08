@@ -6,10 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.example.foodapp.data.model.OrderHistoryItemResponse
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import kotlin.random.Random
 
 // Typealias per garantire compatibilità trasparente con tutte le schermate UI
 typealias Product = com.example.foodapp.data.model.Product
@@ -52,18 +48,18 @@ data class CartItem(
 }
 
 /** Storico ordini locale. */
-data class OrderHistoryItem(
-    val id: String,
-    val date: String,
-    val storeName: String,
-    val itemsSummary: String,
-    val total: Double,
-    val storeAddress: String = "Via Roma 42, Milano",
-    val orderType: String = "Asporto - Ritiro in Cassa",
-    val paymentMethod: String = "💳 Carta di Credito",
-    val status: String = "Completato",
-    val pin: String = "PIN-782"
-)
+//data class OrderHistoryItem(
+//    val id: String,
+//    val date: String,
+//    val storeName: String,
+//    val itemsSummary: String,
+//    val total: Double,
+//    val storeAddress: String = "Via Roma 42, Milano",
+//    val orderType: String = "Asporto - Ritiro in Cassa",
+//    val paymentMethod: String = "💳 Carta di Credito",
+//    val status: String = "Completato",
+//    val pin: String = "PIN-782"
+//)
 
 /** Storico pagamenti locale. */
 data class PaymentHistoryItem(
@@ -75,82 +71,82 @@ data class PaymentHistoryItem(
 )
 
 // ---------- Dati Statici di Fallback ----------
-val stores = listOf(
-    Store(1, "FastBite - Via Roma", "Via Roma 42, Milano", "350m", "10-15 min", true),
-    Store(2, "FastBite - Duomo", "Piazza del Duomo 8, Milano", "1.2 km", "15-20 min", false),
-    Store(
-        3,
-        "FastBite - Navigli",
-        "Ripa di Porta Ticinese 15, Milano",
-        "2.5 km",
-        "20-25 min",
-        false
-    )
-)
+//val stores = listOf(
+//    Store(1, "FastBite - Via Roma", "Via Roma 42, Milano", "350m", "10-15 min", true),
+//    Store(2, "FastBite - Duomo", "Piazza del Duomo 8, Milano", "1.2 km", "15-20 min", false),
+//    Store(
+//        3,
+//        "FastBite - Navigli",
+//        "Ripa di Porta Ticinese 15, Milano",
+//        "2.5 km",
+//        "20-25 min",
+//        false
+//    )
+//)
 
-val categories = listOf(
-    CategoryItem("burgers", "Burgers", "\uD83C\uDF54"),
-    CategoryItem("pizzas", "Pizze", "\uD83C\uDF55"),
-    CategoryItem("drinks", "Bibite", "\uD83E\uDDC3"),
-    CategoryItem("desserts", "Dolci", "\uD83C\uDF66")
-)
+//val categories = listOf(
+//    CategoryItem("burgers", "Burgers", "\uD83C\uDF54"),
+//    CategoryItem("pizzas", "Pizze", "\uD83C\uDF55"),
+//    CategoryItem("drinks", "Bibite", "\uD83E\uDDC3"),
+//    CategoryItem("desserts", "Dolci", "\uD83C\uDF66")
+//)
 
-val products = listOf(
-    Product(
-        IdProduct = "101",
-        category = "burgers",
-        nameProduct = "Fast Bacon Burger",
-        description = "Manzo 180g, bacon croccante, cheddar, salsa special.",
-        basePrice = 9.50,
-        imageUrl = "\uD83C\uDF54",
-        isPopular = true
-    ),
-    Product(
-        IdProduct = "102",
-        category = "burgers",
-        nameProduct = "Double Cheese Monster",
-        description = "Doppio burger, doppio cheddar melted, cipolla caramellata.",
-        basePrice = 11.50,
-        imageUrl = "\uD83C\uDF54",
-        isPopular = true
-    ),
-    Product(
-        IdProduct = "103",
-        category = "pizzas",
-        nameProduct = "Pizza Margherita DOC",
-        description = "Pomodoro bio, mozzarella di bufala, basilico fresco.",
-        basePrice = 7.50,
-        imageUrl = "\uD83C\uDF55",
-        isPopular = true
-    ),
-    Product(
-        IdProduct = "104",
-        category = "pizzas",
-        nameProduct = "Diavola Spicy Special",
-        description = "Pomodoro, mozzarella, salame piccante, olio al peperoncino.",
-        basePrice = 8.50,
-        imageUrl = "\uD83C\uDF55",
-        isPopular = false
-    ),
-    Product(
-        IdProduct = "105",
-        category = "drinks",
-        nameProduct = "Coca Cola Zero 33cl",
-        description = "Lattina da 33cl servita fredda.",
-        basePrice = 2.50,
-        imageUrl = "\uD83E\uDDC3",
-        isPopular = false
-    ),
-    Product(
-        IdProduct = "106",
-        category = "desserts",
-        nameProduct = "Tiramisù della Casa",
-        description = "Mascarpone, savoiardi al caffè, cacao amaro.",
-        basePrice = 4.50,
-        imageUrl = "\uD83C\uDF66",
-        isPopular = false
-    )
-)
+//val products = listOf(
+//    Product(
+//        IdProduct = "101",
+//        category = "burgers",
+//        nameProduct = "Fast Bacon Burger",
+//        description = "Manzo 180g, bacon croccante, cheddar, salsa special.",
+//        basePrice = 9.50,
+//        imageUrl = "\uD83C\uDF54",
+//        isPopular = true
+//    ),
+//    Product(
+//        IdProduct = "102",
+//        category = "burgers",
+//        nameProduct = "Double Cheese Monster",
+//        description = "Doppio burger, doppio cheddar melted, cipolla caramellata.",
+//        basePrice = 11.50,
+//        imageUrl = "\uD83C\uDF54",
+//        isPopular = true
+//    ),
+//    Product(
+//        IdProduct = "103",
+//        category = "pizzas",
+//        nameProduct = "Pizza Margherita DOC",
+//        description = "Pomodoro bio, mozzarella di bufala, basilico fresco.",
+//        basePrice = 7.50,
+//        imageUrl = "\uD83C\uDF55",
+//        isPopular = true
+//    ),
+//    Product(
+//        IdProduct = "104",
+//        category = "pizzas",
+//        nameProduct = "Diavola Spicy Special",
+//        description = "Pomodoro, mozzarella, salame piccante, olio al peperoncino.",
+//        basePrice = 8.50,
+//        imageUrl = "\uD83C\uDF55",
+//        isPopular = false
+//    ),
+//    Product(
+//        IdProduct = "105",
+//        category = "drinks",
+//        nameProduct = "Coca Cola Zero 33cl",
+//        description = "Lattina da 33cl servita fredda.",
+//        basePrice = 2.50,
+//        imageUrl = "\uD83E\uDDC3",
+//        isPopular = false
+//    ),
+//    Product(
+//        IdProduct = "106",
+//        category = "desserts",
+//        nameProduct = "Tiramisù della Casa",
+//        description = "Mascarpone, savoiardi al caffè, cacao amaro.",
+//        basePrice = 4.50,
+//        imageUrl = "\uD83C\uDF66",
+//        isPopular = false
+//    )
+//)
 
 val sizeOptions = listOf(SizeOption(1, "Standard", 0.0), SizeOption(2, "XXL Big", 2.50))
 val extraOptions = listOf(
@@ -176,7 +172,10 @@ class AppState {
     var paymentMethod by mutableStateOf("card")
     var orderId by mutableStateOf("")
     var pickupPin by mutableStateOf("")
-    var selectedStore by mutableStateOf(stores[0])
+
+    var selectedStore by mutableStateOf(
+        Store(0, "Seleziona punto vendita", "", "-", "-", false)
+    )
     var activeProduct by mutableStateOf<Product?>(null)
     var selectedSize by mutableStateOf(sizeOptions[0])
     val selectedExtras = mutableStateListOf<ExtraOption>()
@@ -190,8 +189,8 @@ class AppState {
     }
 
     val cart = mutableStateListOf<CartItem>()
-    val orderHistory = mutableStateListOf<OrderHistoryItem>()
-    val paymentHistory = mutableStateListOf<PaymentHistoryItem>()
+//    val orderHistory = mutableStateListOf<OrderHistoryItem>()
+//    val paymentHistory = mutableStateListOf<PaymentHistoryItem>()
 
     /** Calcola il subtotale del carrello. */
     val cartSubtotal: Double get() = cart.sumOf { it.itemTotal * it.quantity }
@@ -237,47 +236,47 @@ class AppState {
         screen = if (isLoggedIn) "summary" else "auth"
     }
 
-    /** Simula il login dell'utente. */
-    fun simulateLogin() {
-        isLoggedIn = true; screen = "profile"
-    }
-
-    /** Conferma l'ordine e lo aggiunge allo storico. */
-    fun confirmOrder() {
-        orderId = "#${Random.nextInt(1000, 10000)}"
-        pickupPin = "PIN-${Random.nextInt(100, 1000)}"
-        val summary =
-            if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.nameProduct}" } else "Ordine FastBite"
-        val timeStr = "Oggi, " + SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-        val payMethodLabel = when (paymentMethod) {
-            "card" -> "💳 Carta di Credito / Google Pay"
-            "paypal" -> "💸 PayPal"
-            else -> "💵 Contanti al ritiro"
-        }
-        val newOrder = OrderHistoryItem(
-            id = orderId,
-            date = timeStr,
-            storeName = selectedStore.name,
-            storeAddress = selectedStore.address,
-            orderType = "Asporto - Ritiro in Cassa ($pickupTime)",
-            paymentMethod = payMethodLabel,
-            itemsSummary = summary,
-            total = cartFinalTotal,
-            status = "In Preparazione",
-            pin = pickupPin
-        )
-        orderHistory.add(0, newOrder)
-        paymentHistory.add(
-            0,
-            PaymentHistoryItem(
-                "TRX-${Random.nextInt(1000, 9999)}",
-                timeStr,
-                cartFinalTotal,
-                payMethodLabel
-            )
-        )
-        screen = "confirmation"
-    }
+//    /** Simula il login dell'utente. */
+//    fun simulateLogin() {
+//        isLoggedIn = true; screen = "profile"
+//    }
+//
+//    /** Conferma l'ordine e lo aggiunge allo storico. */
+//    fun confirmOrder() {
+//        orderId = "#${Random.nextInt(1000, 10000)}"
+//        pickupPin = "PIN-${Random.nextInt(100, 1000)}"
+//        val summary =
+//            if (cart.isNotEmpty()) cart.joinToString(", ") { "${it.quantity}x ${it.product.nameProduct}" } else "Ordine FastBite"
+//        val timeStr = "Oggi, " + SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+//        val payMethodLabel = when (paymentMethod) {
+//            "card" -> "💳 Carta di Credito / Google Pay"
+//            "paypal" -> "💸 PayPal"
+//            else -> "💵 Contanti al ritiro"
+//        }
+//        val newOrder = OrderHistoryItem(
+//            id = orderId,
+//            date = timeStr,
+//            storeName = selectedStore.name,
+//            storeAddress = selectedStore.address,
+//            orderType = "Asporto - Ritiro in Cassa ($pickupTime)",
+//            paymentMethod = payMethodLabel,
+//            itemsSummary = summary,
+//            total = cartFinalTotal,
+//            status = "In Preparazione",
+//            pin = pickupPin
+//        )
+//        orderHistory.add(0, newOrder)
+//        paymentHistory.add(
+//            0,
+//            PaymentHistoryItem(
+//                "TRX-${Random.nextInt(1000, 9999)}",
+//                timeStr,
+//                cartFinalTotal,
+//                payMethodLabel
+//            )
+//        )
+//        screen = "confirmation"
+//    }
 
     /** Resetta lo stato dell'applicazione. */
     fun resetApp() {

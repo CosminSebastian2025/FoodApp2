@@ -18,7 +18,8 @@ class MenuViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun loadData() {
+    fun loadData(force: Boolean = false) {
+        if (!force && _prodotti.value.isNotEmpty()) return
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null

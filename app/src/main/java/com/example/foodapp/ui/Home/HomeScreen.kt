@@ -39,13 +39,13 @@ import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
-import com.example.foodapp.categories
 import com.example.foodapp.ui.components.ProductCard
 
 @Composable
 fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
-    val promotions by viewModel.promotions.collectAsState()
-    val popularProducts by viewModel.popularProducts.collectAsState()
+    val promozioni by viewModel.promozioni.collectAsState()
+    val popolari by viewModel.popolari.collectAsState()
+    val categorie by viewModel.categorie.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
@@ -84,7 +84,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(promotions) { promo ->
+                    items(promozioni) { promo ->
                         Card(
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(containerColor = Slate900),
@@ -98,13 +98,13 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                     .padding(16.dp),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                if (!promo.badges.isNullOrEmpty()) {
-                                    Surface(
-                                        color = Brand.copy(alpha = 0.3f),
-                                        shape = RoundedCornerShape(50)
-                                    ) {
+                                Surface(
+                                    color = Brand.copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(50)
+                                ) {
+                                    promo?.badges?.first()?.let {
                                         Text(
-                                            text = promo.badges.first(),
+                                            text = it,
                                             modifier = Modifier.padding(
                                                 horizontal = 8.dp,
                                                 vertical = 3.dp
@@ -117,18 +117,22 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                 }
 
                                 Column {
-                                    Text(
-                                        text = promo.title,
-                                        color = Color.White,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
+                                    promo?.title?.first()?.let {
+                                        Text(
+                                            text = promo.title,
+                                            color = Color.White,
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
+                                    }
                                     Spacer(Modifier.height(2.dp))
-                                    Text(
-                                        text = promo.subtitle,
-                                        color = Slate400,
-                                        fontSize = 11.sp
-                                    )
+                                    promo?.subtitle?.first()?.let {
+                                        Text(
+                                            text = promo.subtitle,
+                                            color = Slate400,
+                                            fontSize = 11.sp
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -150,23 +154,23 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                         modifier = Modifier.clickable { state.screen = "categories" })
                 }
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    items(categories) { cat ->
+                    items(categorie) { cat ->
                         Surface(
                             shape = RoundedCornerShape(16.dp),
                             border = BorderStroke(1.dp, Slate200),
                             color = Color.White,
                             modifier = Modifier.clickable {
-                                state.selectedCategory = cat.id; state.screen = "categories"
+                                state.selectedCategory = cat.idCategory; state.screen = "categories"
                             }
                         ) {
                             Row(
                                 Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(cat.emoji, fontSize = 16.sp)
+                                Text(cat.icon, fontSize = 16.sp)
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    cat.name,
+                                    cat.nameCategory,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Slate700
@@ -188,7 +192,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
 //        val mappedPopulars = popularProducts.mapNotNull { p ->
 //            val productId = p.IdProduct.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 //        }
-        items(popularProducts) { p ->
+        items(popolari) { p ->
             ProductCard(p) {
                 state.openCustomize(p)
             }

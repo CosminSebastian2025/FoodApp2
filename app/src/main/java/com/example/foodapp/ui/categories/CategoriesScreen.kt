@@ -26,10 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
-import com.example.foodapp.CategoryItem
 import com.example.foodapp.ui.components.ProductCard
-import com.example.foodapp.categories as localCategories
-import com.example.foodapp.products as localProducts
 
 @Composable
 fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel()) {
@@ -42,39 +39,21 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
         viewModel.loadData()
     }
 
-    // 1. Fallback alle categorie locali se l'API non Risponde
-    val displayCategories: List<CategoryItem> = if (categories.isNotEmpty()) {
-        listOf(
-            CategoryItem("all", "Tutti", "🍔")
-        ) + categories.map { cat ->
-            CategoryItem(
-                id = cat.idCategory,
-                name = cat.nameCategory,
-                emoji = cat.icon        //?.takeIf { it.isNotBlank() } ?: "\uD83C\uDF55"
-            )
-        }
-    } else {
-        localCategories //Categorie statiche di fallback
-    }
-
-    val mappedProducts = if (products.isNotEmpty()) {
-        products.filter { product ->
-            !product.IdProduct.isNullOrBlank()
-        }
-    } else {
-        localProducts.filter { product ->
-            !product.IdProduct.isNullOrBlank()
-        }
-    }
-
-    val filtered = if (selectedCategory == "all") mappedProducts
-    else mappedProducts.filter { it.category == selectedCategory }
-
     if (isLoading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = Brand)
         }
         return
+    }
+
+    // Filtraggio dei prodotti in base alla categoria selezionata
+    val filteredProducts = if (selectedCategory == "all") {
+        products.filter { !it.IdProduct.isNullOrBlank() }
+    } else {
+        products.filter {
+            !it.IdProduct.isNullOrBlank() &&
+                    it.category.equals(selectedCategory, ignoreCase = true)
+        }
     }
 
     LazyColumn(
@@ -88,15 +67,28 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
             Spacer(Modifier.height(8.dp))
             // LazyRow dei filtri per Categoria
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(displayCategories.size) { idx ->
-                    val cat = displayCategories[idx]
-                    val sel = selectedCategory == cat.id
+                // Chip "Tutti"
+                item {
+                    FilterChip(
+                        selected = selectedCategory == "all",
+                        onClick = { viewModel.selectCategory("all") },
+                        label = { Text("🍔 Tutti", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Brand,
+                            selectedLabelColor = Color.White
+                        )
+                    )
+                }
+
+                items(categories) { cat ->
+                    val catId = cat.idCategory
+                    val sel = selectedCategory == catId
                     FilterChip(
                         selected = sel,
-                        onClick = { viewModel.selectCategory(cat.id) },
+                        onClick = { viewModel.selectCategory(catId) },
                         label = {
                             Text(
-                                "${cat.emoji} ${cat.name}",
+                                "${cat.icon} ${cat.nameCategory}",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -109,8 +101,8 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
                 }
             }
         }
-        // 2. Mostra i prodotti filtrati per categoria azinchè tutti
-        items(filtered) { p ->
+        // Mostra i prodotti filtrati per categoria
+        items(filteredProducts) { p ->
             ProductCard(p) { state.openCustomize(p) }
         }
     }
