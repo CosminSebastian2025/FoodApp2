@@ -48,13 +48,21 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
         return
     }
 
-    // Filtraggio dei prodotti in base alla categoria selezionata
+    // Il server può restituire in "category" l'ID oppure il nome della categoria:
+    // confrontiamo entrambi per far funzionare sempre il filtro.
+    val selectedCategoryName = categories
+        .firstOrNull { it.idCategory == selectedCategory }
+        ?.nameCategory
+
     val filteredProducts = if (selectedCategory == "all") {
         products.filter { !it.IdProduct.isNullOrBlank() }
     } else {
         products.filter {
-            !it.IdProduct.isNullOrBlank() &&
-                    it.category.equals(selectedCategory, ignoreCase = true)
+            !it.IdProduct.isNullOrBlank() && (
+                    it.category.equals(selectedCategory, ignoreCase = true) ||
+                            (selectedCategoryName != null &&
+                                    it.category.equals(selectedCategoryName, ignoreCase = true))
+                    )
         }
     }
 

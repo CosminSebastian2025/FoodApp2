@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,6 +50,7 @@ import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.ui.components.ErrorBanner
+import com.example.foodapp.ui.components.ProductImage
 
 @Composable
 fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
@@ -58,18 +60,10 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(query) {
-        if (query.isNotBlank()) {
-            viewModel.search(query)
-        } else {
-            viewModel.clear()
-        }
+        viewModel.search(query)
     }
 
-    val displayList = if (query.isBlank()) {
-        emptyList()
-    } else {
-        searchResults.filter { !it.IdProduct.isNullOrBlank() }
-    }
+    val displayList = searchResults.filter { !it.IdProduct.isNullOrBlank() }
 
     LazyColumn(
         Modifier
@@ -114,7 +108,7 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
             item {
                 ErrorBanner(
                     message = message,
-                    onRetry = { if (query.isNotBlank()) viewModel.search(query) }
+                    onRetry = { viewModel.search(query) }
                 )
             }
         }
@@ -128,6 +122,19 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
                     CircularProgressIndicator()
                 }
             }
+        } else if (displayList.isEmpty()) {
+            item {
+                Text(
+                    if (query.isBlank()) "Nessun prodotto disponibile"
+                    else "Nessun prodotto trovato per \"${query.trim()}\"",
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp),
+                    textAlign = TextAlign.Center,
+                    color = Slate400,
+                    fontSize = 12.sp
+                )
+            }
         } else {
             items(displayList) { p ->
                 Card(
@@ -140,9 +147,14 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
                             Modifier
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Slate100),
-                            contentAlignment = Alignment.Center
-                        ) { Text(p.emoji, fontSize = 26.sp) }
+                                .background(Slate100)
+                        ) {
+                            ProductImage(
+                                raw = p.imageUrl,
+                                contentDescription = p.name,
+                                emojiFontSize = 26.sp
+                            )
+                        }
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f)) {
                             Text(p.name, fontWeight = FontWeight.Bold, fontSize = 12.sp)

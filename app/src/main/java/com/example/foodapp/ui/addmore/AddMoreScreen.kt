@@ -43,6 +43,7 @@ import com.example.foodapp.Slate400
 import com.example.foodapp.Slate900
 import com.example.foodapp.ui.categories.CategoriesViewModel
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ProductImage
 
 @Composable
 fun AddMoreScreen(state: AppState, viewModel: CategoriesViewModel = viewModel()) {
@@ -53,10 +54,15 @@ fun AddMoreScreen(state: AppState, viewModel: CategoriesViewModel = viewModel())
         viewModel.loadData()
     }
 
+    // Le categorie del server sono per nome (Bevande/Dolci): accettiamo anche gli ID legacy.
     val filtered = when (state.activeQuickCat) {
-        "drinks" -> products.filter { it.category == "drinks" }
-        "desserts" -> products.filter { it.category == "desserts" }
-        else -> products.filter { it.category == "drinks" || it.category == "desserts" }
+        "drinks" -> products.filter {
+            it.category.equals("Bevande", true) || it.category.equals("drinks", true)
+        }
+        "desserts" -> products.filter {
+            it.category.equals("Dolci", true) || it.category.equals("desserts", true)
+        }
+        else -> products
     }
     LazyColumn(
         Modifier
@@ -99,9 +105,14 @@ fun AddMoreScreen(state: AppState, viewModel: CategoriesViewModel = viewModel())
                             Modifier
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Slate100),
-                            contentAlignment = Alignment.Center
-                        ) { Text(p.emoji, fontSize = 26.sp) }
+                                .background(Slate100)
+                        ) {
+                            ProductImage(
+                                raw = p.imageUrl,
+                                contentDescription = p.name,
+                                emojiFontSize = 26.sp
+                            )
+                        }
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f)) {
                             Text(p.name, fontWeight = FontWeight.Bold, fontSize = 12.sp)

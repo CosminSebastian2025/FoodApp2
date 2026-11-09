@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
@@ -175,18 +173,13 @@ fun ProductCard(p: Product?, onCustomize: () -> Unit) {
                 Modifier
                     .size(72.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(Slate100),
-                contentAlignment = Alignment.Center
+                    .background(Slate100)
             ) {
-                if (p?.imageUrl?.startsWith("http") == true || p?.imageUrl?.startsWith("/") == true) {
-                    AsyncImage(
-                        model = p.imageUrl,
-                        contentDescription = p.nameProduct,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Text(p?.imageUrl?.ifBlank { "🍔" } ?: "", fontSize = 32.sp)
-                }
+                ProductImage(
+                    raw = p?.imageUrl.orEmpty(),
+                    contentDescription = p?.nameProduct,
+                    emojiFontSize = 32.sp
+                )
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {

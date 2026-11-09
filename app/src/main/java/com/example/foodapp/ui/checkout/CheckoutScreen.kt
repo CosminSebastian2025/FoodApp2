@@ -72,6 +72,12 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
             }
         }
 
+        state.checkoutError?.let { msg ->
+            item {
+                ErrorBanner(message = msg)
+            }
+        }
+
         // 1. Locale di Ritiro + Mappa
         item {
             Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
@@ -210,6 +216,22 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
         item {
             Button(
                 onClick = {
+                    state.checkoutError = null
+
+                    val currentUserId = state.userId
+                    if (currentUserId.isNullOrBlank()) {
+                        state.checkoutError = "Accedi per completare l'ordine."
+                        state.screen = "auth"
+                        return@Button
+                    }
+
+                    if (state.selectedStore.id.isBlank()) {
+                        state.checkoutError = "Seleziona un punto vendita prima di confermare l'ordine."
+                        state.previousScreen = "checkout"
+                        state.screen = "store-select"
+                        return@Button
+                    }
+
                     val apiItems = state.cart.map { ci ->
                         CartItem(
                             productId = ci.product.id,
@@ -221,15 +243,9 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         )
                     }
 
-                    val currentUserId = state.userId
-                    if (currentUserId.isNullOrBlank()) {
-                        state.screen = "auth"
-                        return@Button
-                    }
-
                     val request = PickupOrderRequest(
                         userId = currentUserId,
-                        storeId = state.selectedStore.id.toString(),
+                        storeId = state.selectedStore.id,
                         pickupType = if (state.pickupTime == "ASAP") "immediate" else "scheduled",
                         scheduledTime = if (state.pickupTime != "ASAP") state.pickupTime else null,
                         discountCode = if (state.promoApplied) state.promoInput else null,
@@ -238,11 +254,11 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         discount = state.discountAmount,
                         managementFee = 1.50,
                         total = state.cartFinalTotal,
-                        paymentMethod = state.paymentMethod
+                        paymentMethod = state.paymentMethod.uppercase()
                     )
                     viewModel.submitOrder(request) { conf ->
-                        state.orderId = conf.orderId
-                        state.pickupPin = conf.pickupPin
+                        state.orderId = conf.orderId.orEmpty()
+                        state.pickupPin = conf.pickupPin.orEmpty()
                         state.cart.clear()
                         state.screen = "confirmation"
                     }

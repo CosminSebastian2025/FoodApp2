@@ -26,7 +26,7 @@ val EmeraldBg = Color(0xFFD1FAE5)
 
 // ---------- Modelli di Stato UI locali ----------
 data class Store(
-    val id: Int, val name: String, val address: String,
+    val id: String, val name: String, val address: String,
     val distance: String, val prepTime: String, val isNearest: Boolean
 )
 
@@ -172,9 +172,11 @@ class AppState {
     var paymentMethod by mutableStateOf("card")
     var orderId by mutableStateOf("")
     var pickupPin by mutableStateOf("")
+    var authMessage by mutableStateOf<String?>(null)
+    var checkoutError by mutableStateOf<String?>(null)
 
     var selectedStore by mutableStateOf(
-        Store(0, "Seleziona punto vendita", "", "-", "-", false)
+        Store("", "Seleziona punto vendita", "", "-", "-", false)
     )
     var activeProduct by mutableStateOf<Product?>(null)
     var selectedSize by mutableStateOf(sizeOptions[0])

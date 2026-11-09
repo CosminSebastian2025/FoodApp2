@@ -48,6 +48,7 @@ import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate900
 import com.example.foodapp.ui.components.ErrorBanner
+import com.example.foodapp.ui.components.ProductImage
 import com.example.foodapp.ui.components.SmallQtyButton
 import com.example.foodapp.ui.components.TotalsCard
 
@@ -116,9 +117,14 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                                 Modifier
                                     .size(44.dp)
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(Slate100),
-                                contentAlignment = Alignment.Center
-                            ) { Text(item.product.emoji, fontSize = 22.sp) }
+                                    .background(Slate100)
+                            ) {
+                                ProductImage(
+                                    raw = item.product.imageUrl,
+                                    contentDescription = item.product.name,
+                                    emojiFontSize = 22.sp
+                                )
+                            }
                             Spacer(Modifier.width(10.dp))
                             Column {
                                 Text(

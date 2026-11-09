@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -32,8 +34,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
+import com.example.foodapp.Emerald
+import com.example.foodapp.EmeraldBg
 import com.example.foodapp.Slate400
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
@@ -48,11 +53,31 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        BackHeader("Accedi / Registrati") { state.screen = "profile" }
+        BackHeader("Accedi / Registrati") {
+            state.authMessage = null
+            state.screen = "profile"
+        }
         Spacer(Modifier.height(40.dp))
 
+        state.authMessage?.let { message ->
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = EmeraldBg)
+            ) {
+                Text(
+                    message,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Emerald
+                )
+            }
+        }
+
         errorMessage?.let { err ->
-            Text(err, color = Brand, fontSize = 12.sp)
+            ErrorBanner(message = err)
         }
 
         OutlinedButton(
@@ -88,9 +113,11 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
         Button(
             onClick = {
                 if (email.isNotBlank() && password.isNotBlank()) {
+                    viewModel.clearError()
                     viewModel.login(email, password) { response ->
                         state.userId = response.userId
                         state.isLoggedIn = true
+                        state.authMessage = null
                         state.screen = "profile"
                     }
                 }
@@ -112,7 +139,11 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
         }
         Spacer(Modifier.height(8.dp))
         Button(
-            onClick = { state.screen = "register" },
+            onClick = {
+                viewModel.clearError()
+                state.authMessage = null
+                state.screen = "register"
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)

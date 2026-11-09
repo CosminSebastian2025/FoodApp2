@@ -29,6 +29,7 @@ import com.example.foodapp.extraOptions
 import com.example.foodapp.sizeOptions
 import com.example.foodapp.ui.components.BackHeader
 import com.example.foodapp.ui.components.ErrorBanner
+import com.example.foodapp.ui.components.ProductImage
 import com.example.foodapp.ui.components.SmallQtyButton
 
 @Composable
@@ -63,9 +64,14 @@ fun CustomizeScreen(state: AppState, viewModel: CustomizeViewModel = viewModel()
                     .fillMaxWidth()
                     .height(160.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Slate100),
-                contentAlignment = Alignment.Center
-            ) { Text(p.emoji, fontSize = 72.sp) }
+                    .background(Slate100)
+            ) {
+                ProductImage(
+                    raw = p.imageUrl,
+                    contentDescription = p.name,
+                    emojiFontSize = 72.sp
+                )
+            }
         }
         item {
             Column {

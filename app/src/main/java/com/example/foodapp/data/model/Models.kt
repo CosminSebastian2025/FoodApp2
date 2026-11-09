@@ -8,14 +8,14 @@ data class Promotion(
     @SerializedName("title") val title: String = "",
     @SerializedName("subtitle") val subtitle: String = "",
     @SerializedName("badges") val badges: List<String>? = emptyList(),
-    @SerializedName("ImageUrl") val ImageUrl: String = ""
+    @SerializedName(value = "imageUrl", alternate = ["ImageUrl", "image_url"]) val ImageUrl: String = ""
 )
 
 /** Modello dati per le categorie di cibo. */
 data class Category(
     @SerializedName("idCategory") val idCategory: String = "",
     @SerializedName("nameCategory") val nameCategory: String = "",
-    @SerializedName("ImageUrl") val icon: String = "",
+    @SerializedName(value = "icon", alternate = ["ImageUrl"]) val icon: String = "",
     @SerializedName("count") val count: Int = 0
 )
 
@@ -158,12 +158,17 @@ data class PickupOrderRequest(
 
 /** Conferma dell'ordine ricevuto dal server con PIN di ritiro e QR code. */
 data class PickupOrderConfirmation(
-    @SerializedName("orderId") val orderId: String,
-    @SerializedName("pickupPin") val pickupPin: String,
-    @SerializedName("pickupTime") val pickupTime: String,
-    @SerializedName("storeName") val storeName: String,
-    @SerializedName("qrCodeUrl") val qrCodeUrl: String,
-    @SerializedName("total") val total: Double
+    @SerializedName("orderId") val orderId: String? = null,
+    @SerializedName("pickupPin") val pickupPin: String? = null,
+    @SerializedName("pickupTime") val pickupTime: String? = null,
+    @SerializedName("storeName") val storeName: String? = null,
+    @SerializedName("qrCodeUrl") val qrCodeUrl: String? = null,
+    @SerializedName("total") val total: Double? = null
+)
+
+/** Errore restituito dagli endpoint PHP nel formato {"error": "..."}. */
+data class ApiError(
+    @SerializedName("error") val error: String? = null
 )
 
 /** Auth */
@@ -174,9 +179,10 @@ data class AuthRequest(
 )
 
 data class AuthResponse(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("userId") val userId: String,
-    @SerializedName("message") val message: String
+    @SerializedName("success") val success: Boolean = false,
+    @SerializedName("userId") val userId: String = "",
+    @SerializedName("message") val message: String = "",
+    @SerializedName("error") val error: String? = null
 )
 
 data class UserProfile(

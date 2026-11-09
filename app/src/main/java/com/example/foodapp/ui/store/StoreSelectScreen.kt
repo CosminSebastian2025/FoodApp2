@@ -71,13 +71,14 @@ fun StoreSelectScreen(state: AppState, viewModel: StoreViewModel = viewModel()) 
                             .fillMaxWidth()
                             .clickable {
                                 state.selectedStore = com.example.foodapp.Store(
-                                    id = store.id.toIntOrNull() ?: 1,
+                                    id = store.id,
                                     name = store.name,
                                     address = store.address,
                                     distance = store.distanceKm.toString() + " km",
                                     prepTime = "${store.readyInMinutes} min",
                                     isNearest = store.isPreferred
                                 )
+                                state.checkoutError = null
                                 state.screen = state.previousScreen.ifBlank { "summary" }
                             }
                     ) {

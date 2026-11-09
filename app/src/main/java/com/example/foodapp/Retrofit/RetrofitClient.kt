@@ -37,4 +37,18 @@ object RetrofitClient {
             .build()
             .create(FoodApiService::class.java)
     }
+
+    /**
+     * Converte il campo imageUrl del prodotto in un URL assoluto.
+     * Restituisce null quando il valore non è un URL (es. emoji).
+     */
+    fun resolveImageUrl(raw: String): String? {
+        val value = raw.trim()
+        return when {
+            value.isEmpty() -> null
+            value.startsWith("http://", true) || value.startsWith("https://", true) -> value
+            value.startsWith("/") -> BASE_URL.trimEnd('/').removeSuffix("/api") + value
+            else -> BASE_URL + value
+        }
+    }
 }

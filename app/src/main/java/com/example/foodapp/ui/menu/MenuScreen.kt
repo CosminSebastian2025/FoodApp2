@@ -8,10 +8,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
 import com.example.foodapp.data.model.Product
 import com.example.foodapp.ui.components.ErrorBanner
+import com.example.foodapp.ui.components.ProductImage
 
 @Composable
 fun MenuScreen(menuViewModel: MenuViewModel = viewModel()) {
@@ -76,10 +77,11 @@ fun ProductCard(product: Product) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Immagine del prodotto
-            AsyncImage(
-                model = product.imageUrl,
+            ProductImage(
+                raw = product.imageUrl,
                 contentDescription = product.nameProduct,
-                modifier = Modifier.size(80.dp)
+                modifier = Modifier.size(80.dp),
+                emojiFontSize = 36.sp
             )
 
             Spacer(modifier = Modifier.width(16.dp))
