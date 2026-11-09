@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,14 +33,23 @@ import com.example.foodapp.AppState
 import com.example.foodapp.Emerald
 import com.example.foodapp.EmeraldBg
 import com.example.foodapp.Slate400
+import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
 
-    val paymentHystory by viewModel.paymentHistory.collectAsState()
+    val paymentHistory by viewModel.paymentHistory.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val userProfile by viewModel.userProfile.collectAsState()
+
+    LaunchedEffect(userProfile) {
+        userProfile?.let { state.updateProfile(it.name.orEmpty(), it.email.orEmpty()) }
+    }
 
     LaunchedEffect(state.userId) {
         val userId = state.userId
@@ -59,6 +70,14 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
         item {
             BackHeader("Storico Pagamenti") { state.screen = "profile" }
         }
+        if (errorMessage != null) {
+            item {
+                ErrorBanner(
+                    message = errorMessage.orEmpty(),
+                    onRetry = { viewModel.loadProfileData(state.userId) }
+                )
+            }
+        }
         item {
             Card(
                 shape = RoundedCornerShape(20.dp),
@@ -74,20 +93,20 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "€${"%.2f".format(paymentHystory.sumOf { it.amount })}",
+                        "€${"%.2f".format(paymentHistory.sumOf { it.amount })}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
                     )
                     Text(
-                        "${paymentHystory.size} transazioni registrate",
+                        "${paymentHistory.size} transazioni registrate",
                         fontSize = 11.sp,
                         color = Slate400
                     )
                 }
             }
         }
-        if (paymentHystory.isEmpty()) {
+        if (paymentHistory.isEmpty()) {
             item {
                 Card(
                     shape = RoundedCornerShape(16.dp),
@@ -100,19 +119,29 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                             .padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("💳", fontSize = 32.sp)
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            "Nessun pagamento registrato",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            color = Slate700
-                        )
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = Emerald,
+                                modifier = Modifier.size(28.dp)
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text("Caricamento pagamenti...", fontSize = 12.sp, color = Slate500)
+                        } else {
+                            Text("💳", fontSize = 32.sp)
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "Nessun pagamento registrato",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = Slate700
+                            )
+                        }
                     }
                 }
             }
         } else {
-            items(paymentHystory) { payment ->
+            items(paymentHistory) { payment ->
+                val status = payment.status?.takeIf { it.isNotBlank() } ?: "Pagato"
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(Color.White),
@@ -129,14 +158,14 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    payment.id,
+                                    payment.id.orEmpty().ifBlank { "Pagamento" },
                                     fontWeight = FontWeight.ExtraBold,
                                     fontSize = 12.sp
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
                                     Text(
-                                        payment.status,
+                                        status,
                                         Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                         fontSize = 8.sp,
                                         fontWeight = FontWeight.Bold,
@@ -146,12 +175,12 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
                             }
                             Spacer(Modifier.height(2.dp))
                             Text(
-                                payment.paymentMethod,
+                                payment.paymentMethod.orEmpty().ifBlank { "-" },
                                 fontSize = 11.sp,
                                 color = Slate700,
                                 fontWeight = FontWeight.SemiBold
                             )
-                            Text(payment.date, fontSize = 10.sp, color = Slate400)
+                            Text(payment.date.orEmpty(), fontSize = 10.sp, color = Slate400)
                         }
                         Text(
                             "-€${"%.2f".format(payment.amount)}",

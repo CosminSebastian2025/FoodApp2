@@ -42,6 +42,7 @@ import com.example.foodapp.ui.components.BackHeader
 
 @Composable
 fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
+    val status = order.status?.takeIf { it.isNotBlank() } ?: "In Preparazione"
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(Color.White),
@@ -57,11 +58,11 @@ fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(order.id, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp)
+                    Text(order.id.orEmpty(), fontWeight = FontWeight.ExtraBold, fontSize = 13.sp)
                     Spacer(Modifier.width(8.dp))
                     Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
                         Text(
-                            order.status,
+                            status,
                             Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
@@ -69,16 +70,16 @@ fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
                         )
                     }
                 }
-                Text(order.date, fontSize = 10.sp, color = Slate400)
+                Text(order.date.orEmpty(), fontSize = 10.sp, color = Slate400)
             }
             Text(
-                "📍 ${order.storeName}",
+                "📍 ${order.storeName.orEmpty().ifBlank { "FastBite" }}",
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Slate700
             )
             Text(
-                order.itemsSummary,
+                order.itemsSummary.orEmpty().ifBlank { "Ordine FastBite" },
                 fontSize = 11.sp,
                 color = Slate500,
                 maxLines = 2,
@@ -104,7 +105,29 @@ fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
 
 @Composable
 fun OrderDetailScreen(state: AppState) {
-    val order = state.activeOrderHistoryItem ?: return
+    val order = state.activeOrderHistoryItem
+    if (order == null) {
+        Column(Modifier.fillMaxSize().padding(16.dp)) {
+            BackHeader("Dettaglio Ordine") { state.screen = "profile" }
+            Spacer(Modifier.height(24.dp))
+            Text(
+                "Dettaglio non disponibile. Torna al profilo e riapri l'ordine.",
+                fontSize = 12.sp,
+                color = Slate500
+            )
+        }
+        return
+    }
+
+    val status = order.status?.takeIf { it.isNotBlank() } ?: "In Preparazione"
+    val orderId = order.id.orEmpty().ifBlank { "-" }
+    val orderDate = order.date.orEmpty()
+    val orderType = order.orderType.orEmpty().ifBlank { "Asporto - Ritiro in Cassa" }
+    val storeName = order.storeName.orEmpty().ifBlank { "FastBite Store" }
+    val storeAddress = order.storeAddress.orEmpty()
+    val pin = order.pin.orEmpty().ifBlank { "-" }
+    val paymentMethod = order.paymentMethod.orEmpty().ifBlank { "-" }
+    val itemsSummary = order.itemsSummary.orEmpty().ifBlank { "Ordine FastBite" }
 
     LazyColumn(
         Modifier
@@ -137,7 +160,7 @@ fun OrderDetailScreen(state: AppState) {
                         )
                         Surface(color = EmeraldBg, shape = RoundedCornerShape(50)) {
                             Text(
-                                order.status,
+                                status,
                                 Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                 fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
@@ -146,12 +169,12 @@ fun OrderDetailScreen(state: AppState) {
                         }
                     }
                     Text(
-                        order.id,
+                        orderId,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Black,
                         color = Color.White
                     )
-                    Text("Data: ${order.date}", fontSize = 11.sp, color = Slate400)
+                    Text("Data: $orderDate", fontSize = 11.sp, color = Slate400)
                 }
             }
         }
@@ -170,7 +193,7 @@ fun OrderDetailScreen(state: AppState) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Tipo di Ordine:", fontSize = 11.sp, color = Slate500)
                         Text(
-                            order.orderType,
+                            orderType,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = Slate700
@@ -183,12 +206,12 @@ fun OrderDetailScreen(state: AppState) {
                         Text("Dove lo va a ritirare:", fontSize = 11.sp, color = Slate500)
                         Spacer(Modifier.height(2.dp))
                         Text(
-                            order.storeName,
+                            storeName,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = Slate900
                         )
-                        Text(order.storeAddress, fontSize = 11.sp, color = Slate500)
+                        Text(storeAddress, fontSize = 11.sp, color = Slate500)
                     }
 
                     HorizontalDivider(color = Slate100)
@@ -196,7 +219,7 @@ fun OrderDetailScreen(state: AppState) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("PIN Ritiro Cassa:", fontSize = 11.sp, color = Slate500)
                         Text(
-                            order.pin,
+                            pin,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = Brand
@@ -220,7 +243,7 @@ fun OrderDetailScreen(state: AppState) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Tipo di Pagamento:", fontSize = 11.sp, color = Slate500)
                         Text(
-                            order.paymentMethod,
+                            paymentMethod,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = Slate700
@@ -253,7 +276,7 @@ fun OrderDetailScreen(state: AppState) {
                         color = Slate400
                     )
                     Text(
-                        order.itemsSummary,
+                        itemsSummary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Slate700

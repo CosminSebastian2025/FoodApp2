@@ -43,25 +43,20 @@ class ProfileViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
-            // Nessuna cache: si riparte sempre dai dati del server
-            _userProfile.value = null
-            _orderHistory.value = emptyList()
-            _paymentHistory.value = emptyList()
-            try {
-                val usrProf = RetrofitClient.apiService.getUserProfile(userId)
-                val ordHst = RetrofitClient.apiService.getOrderHistory(userId)
-                val pmnHst = RetrofitClient.apiService.getPaymentHistory(userId)
+            // Un endpoint che fallisce non deve svuotare gli altri dati già caricati.
+            var failures = 0
+            runCatching { RetrofitClient.apiService.getUserProfile(userId) }
+                .onSuccess { _userProfile.value = it }
+                .onFailure { failures++; it.printStackTrace() }
+            runCatching { RetrofitClient.apiService.getOrderHistory(userId) }
+                .onSuccess { _orderHistory.value = it }
+                .onFailure { failures++; it.printStackTrace() }
+            runCatching { RetrofitClient.apiService.getPaymentHistory(userId) }
+                .onSuccess { _paymentHistory.value = it }
+                .onFailure { failures++; it.printStackTrace() }
 
-                _userProfile.value = usrProf
-                _orderHistory.value = ordHst
-                _paymentHistory.value = pmnHst
-
-            } catch (e: Exception) {
-                _errorMessage.value = SERVER_ERROR_MESSAGE
-                e.printStackTrace()
-            } finally {
-                _isLoading.value = false
-            }
+            if (failures == 3) _errorMessage.value = SERVER_ERROR_MESSAGE
+            _isLoading.value = false
         }
     }
 }

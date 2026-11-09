@@ -60,6 +60,14 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
         }
     }
 
+    // Aggiorna e rende persistenti nome/email ricevuti dal server.
+    LaunchedEffect(userProfile) {
+        userProfile?.let { state.updateProfile(it.name.orEmpty(), it.email.orEmpty()) }
+    }
+
+    val displayName = userProfile?.name?.takeIf { it.isNotBlank() } ?: state.userName
+    val displayEmail = userProfile?.email?.takeIf { it.isNotBlank() } ?: state.userEmail
+
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -90,11 +98,14 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                             .background(Brand),
                         contentAlignment = Alignment.Center
                     ) {
-                        val initial = (if (state.isLoggedIn) userProfile?.name else state.userId)
-                            ?.trim()
-                            ?.take(1)
-                            ?.uppercase()
-                            .orEmpty()
+                        val initial = (if (state.isLoggedIn) {
+                            displayName.ifBlank { state.userId.orEmpty() }
+                        } else {
+                            state.userId.orEmpty()
+                        })
+                            .trim()
+                            .take(1)
+                            .uppercase()
                         if (initial.isNotEmpty()) {
                             Text(
                                 initial,
@@ -107,11 +118,11 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text(
-                            if (state.isLoggedIn) userProfile?.name ?: "Utente" else "Utente Ospite",
+                            if (state.isLoggedIn) displayName.ifBlank { "Utente" } else "Utente Ospite",
                             fontWeight = FontWeight.Bold, fontSize = 13.sp
                         )
                         Text(
-                            if (state.isLoggedIn) userProfile?.email.orEmpty()
+                            if (state.isLoggedIn) displayEmail
                             else "Accedi per ordinare in velocità",
                             fontSize = 11.sp, color = Slate500
                         )
@@ -130,8 +141,7 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     } else {
                         OutlinedButton(
                             onClick = {
-                                state.isLoggedIn = false
-                                state.userId = null
+                                state.endSession()
                                 state.authMessage = null
                                 state.checkoutError = null
                                 viewModel.loadProfileData(null)

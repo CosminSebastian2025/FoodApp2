@@ -82,7 +82,8 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
 
         OutlinedButton(
             onClick = {
-                state.screen = "profile"
+                state.authMessage =
+                    "Accesso con Google non ancora disponibile: usa email e password."
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,9 +115,12 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
             onClick = {
                 if (email.isNotBlank() && password.isNotBlank()) {
                     viewModel.clearError()
-                    viewModel.login(email, password) { response ->
-                        state.userId = response.userId
-                        state.isLoggedIn = true
+                    viewModel.login(email.trim(), password) { response ->
+                        state.startSession(
+                            userId = response.userId,
+                            name = response.name.orEmpty(),
+                            email = response.email.orEmpty()
+                        )
                         state.authMessage = null
                         state.screen = state.consumeAuthReturnScreen()
                     }

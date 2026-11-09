@@ -2,6 +2,7 @@ package com.example.foodapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -81,6 +82,11 @@ class MainActivity : ComponentActivity() {
 fun FastBiteApp(state: AppState) {
     val navScreens = listOf("home", "search", "categories", "cart", "profile")
 
+    // Senza questo, il tasto indietro chiude l'Activity invece di tornare alla schermata precedente.
+    BackHandler(enabled = state.screen != "home" && state.screen != "splash") {
+        state.goBack()
+    }
+
     Scaffold(
         containerColor = Slate50,
         topBar = { if (state.screen in navScreens) Header(state) },
@@ -148,16 +154,27 @@ fun Header(state: AppState) {
                 }
             }
             // Avatar / login
+            val avatarInitial = state.userName.trim().take(1).uppercase()
+                .ifBlank { state.userId.orEmpty().take(1).uppercase() }
             Box(
                 Modifier
                     .size(36.dp)
                     .clip(CircleShape)
                     .background(Slate100)
-                    .clickable { state.screen = if (state.isLoggedIn) "profile" else "auth" },
+                    .clickable {
+                        if (state.isLoggedIn) {
+                            state.screen = "profile"
+                        } else {
+                            state.authReturnScreen = state.screen
+                            state.screen = "auth"
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 if (state.isLoggedIn) Text(
-                    "M", color = Color.White, fontWeight = FontWeight.Bold,
+                    avatarInitial.ifBlank { "U" },
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Brand, CircleShape)

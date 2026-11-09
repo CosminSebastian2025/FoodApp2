@@ -30,7 +30,12 @@ class AuthViewModel : ViewModel() {
             try {
                 val res = RetrofitClient.apiService.loginUser(request = AuthRequest(email, password = pass))
                 _authResult.value = res
-                if (res.success) onSuccess(res) else _errorMessage.value = failureMessage(res)
+                when {
+                    !res.success -> _errorMessage.value = failureMessage(res)
+                    res.userId.isBlank() ->
+                        _errorMessage.value = "Il server non ha restituito l'utente. Riprova."
+                    else -> onSuccess(res)
+                }
             } catch (e: Exception) {
                 _errorMessage.value = readableMessage(e)
                 e.printStackTrace()
@@ -63,7 +68,7 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun failureMessage(res: AuthResponse): String =
-        res.message.ifBlank { res.error ?: "Operazione non riuscita" }
+        res.message.orEmpty().ifBlank { res.error ?: "Operazione non riuscita" }
 
     /** Legge il campo "error" restituito dal server sugli status HTTP di errore (es. 401). */
     private fun readableMessage(ex: Exception): String {

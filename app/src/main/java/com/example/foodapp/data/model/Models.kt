@@ -181,34 +181,38 @@ data class AuthRequest(
 data class AuthResponse(
     @SerializedName("success") val success: Boolean = false,
     @SerializedName("userId") val userId: String = "",
-    @SerializedName("message") val message: String = "",
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("email") val email: String? = null,
+    @SerializedName("message") val message: String? = null,
     @SerializedName("error") val error: String? = null
 )
 
 data class UserProfile(
-    @SerializedName("userId") val userId: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("email") val email: String,
+    @SerializedName("userId") val userId: String? = null,
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("email") val email: String? = null,
     @SerializedName("phone") val phone: String? = null
 )
 
+// Gson non applica i valori di default Kotlin: i campi assenti dal JSON
+// restano null, quindi i tipi devono essere nullable e la UI usa orEmpty().
 data class OrderHistoryItemResponse(
-    @SerializedName("id") val id: String,
-    @SerializedName("date") val date: String,
-    @SerializedName(value = "storeName", alternate = ["store_name"]) val storeName: String = "",
-    @SerializedName("items_summary") val itemsSummary: String = "",
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("date") val date: String? = null,
+    @SerializedName(value = "storeName", alternate = ["store_name"]) val storeName: String? = null,
+    @SerializedName("items_summary") val itemsSummary: String? = null,
     @SerializedName("total") val total: Double = 0.0,
-    @SerializedName(value = "storeAddress", alternate = ["store_address"]) val storeAddress: String = "",
-    @SerializedName("order_type") val orderType: String,
-    @SerializedName("payment_method") val paymentMethod: String,
-    @SerializedName("status") val status: String,
-    @SerializedName("pin") val pin: String
+    @SerializedName(value = "storeAddress", alternate = ["store_address"]) val storeAddress: String? = null,
+    @SerializedName("order_type") val orderType: String? = null,
+    @SerializedName("payment_method") val paymentMethod: String? = null,
+    @SerializedName("status") val status: String? = null,
+    @SerializedName("pin") val pin: String? = null
 )
 
 data class PaymentHistoryItemResponse(
-    @SerializedName("id") val id: String,
-    @SerializedName("date") val date: String,
-    @SerializedName("amount") val amount: Double,
-    @SerializedName("payment_method") val paymentMethod: String,
-    @SerializedName("status") val status: String
+    @SerializedName("id") val id: String? = null,
+    @SerializedName("date") val date: String? = null,
+    @SerializedName("amount") val amount: Double = 0.0,
+    @SerializedName("payment_method") val paymentMethod: String? = null,
+    @SerializedName("status") val status: String? = null
 )

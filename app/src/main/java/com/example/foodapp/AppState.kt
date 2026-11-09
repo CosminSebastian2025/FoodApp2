@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.example.foodapp.data.SessionStore
 import com.example.foodapp.data.model.OrderHistoryItemResponse
 
 // Typealias per garantire compatibilità trasparente con tutte le schermate UI
@@ -161,11 +162,23 @@ val extraOptions = listOf(
 /**
  * Gestore dello stato globale dell'applicazione e della navigazione tra le schermate (Composable).
  */
-class AppState {
+class AppState(private val sessionStore: SessionStore? = null) {
     var screen by mutableStateOf("splash")
     var previousScreen by mutableStateOf("home")
     var isLoggedIn by mutableStateOf(false)
     var userId by mutableStateOf<String?>(null)
+    var userName by mutableStateOf("")
+    var userEmail by mutableStateOf("")
+
+    init {
+        val savedId = sessionStore?.userId().orEmpty()
+        if (savedId.isNotBlank()) {
+            userId = savedId
+            userName = sessionStore?.name().orEmpty()
+            userEmail = sessionStore?.email().orEmpty()
+            isLoggedIn = true
+        }
+    }
     var searchQuery by mutableStateOf("")
     var selectedCategory by mutableStateOf("all")
     var activeQuickCat by mutableStateOf("all")
@@ -193,6 +206,48 @@ class AppState {
         val destination = authReturnScreen
         authReturnScreen = "profile"
         return destination
+    }
+
+    /** Avvia la sessione e la salva su disco, così sopravvive alla chiusura dell'app. */
+    fun startSession(userId: String, name: String, email: String) {
+        this.userId = userId
+        this.userName = name
+        this.userEmail = email
+        this.isLoggedIn = true
+        sessionStore?.save(userId, name, email)
+    }
+
+    /** Aggiorna nome/email con i dati del server e li rende persistenti. */
+    fun updateProfile(name: String, email: String) {
+        if (name.isNotBlank()) userName = name
+        if (email.isNotBlank()) userEmail = email
+        val id = userId
+        if (!id.isNullOrBlank()) sessionStore?.save(id, userName, userEmail)
+    }
+
+    /** Chiude la sessione e cancella i dati salvati. */
+    fun endSession() {
+        isLoggedIn = false
+        userId = null
+        userName = ""
+        userEmail = ""
+        sessionStore?.clear()
+    }
+
+    /** Gestisce il tasto indietro di sistema senza chiudere l'app. */
+    fun goBack() {
+        screen = when (screen) {
+            "order-detail", "payment-history" -> "profile"
+            "auth" -> consumeAuthReturnScreen()
+            "register" -> "auth"
+            "store-select" -> if (previousScreen == "store-select") "home" else previousScreen
+            "checkout", "summary" -> "cart"
+            "payment-select" -> "summary"
+            "add-more" -> "summary"
+            "item-customize" -> if (previousScreen == "add-more") "summary" else previousScreen
+            "confirmation" -> "home"
+            else -> "home"
+        }
     }
 
     /** Apre il dettaglio di un ordine precedente. */

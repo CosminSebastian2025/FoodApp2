@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.foodapp"
         minSdk = 24
         targetSdk = 37
-        versionCode = 113
-        versionName = "1.1.3"
+        versionCode = 116
+        versionName = "1.1.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
