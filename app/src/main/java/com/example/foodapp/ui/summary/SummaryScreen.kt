@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
+import com.example.foodapp.MANAGEMENT_FEE
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
@@ -198,11 +199,13 @@ fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
         item {
             Button(
                 onClick = {
+                    if (isLoading) return@Button
                     state.checkoutError = null
 
                     val currentUserId = state.userId
                     if (currentUserId.isNullOrBlank()) {
                         state.checkoutError = "Accedi per completare l'ordine."
+                        state.authReturnScreen = "summary"
                         state.screen = "auth"
                         return@Button
                     }
@@ -234,7 +237,7 @@ fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
                         items = apiItems,
                         subTotal = state.cartSubtotal,
                         discount = state.discountAmount,
-                        managementFee = 1.50,
+                        managementFee = MANAGEMENT_FEE,
                         total = state.cartFinalTotal,
                         paymentMethod = state.paymentMethod.uppercase()
                     )
@@ -248,6 +251,7 @@ fun SummaryScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
+                enabled = !isLoading,
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(Brand)
             ) {

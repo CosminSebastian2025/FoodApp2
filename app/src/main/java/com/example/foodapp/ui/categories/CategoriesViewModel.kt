@@ -17,9 +17,6 @@ class CategoriesViewModel : ViewModel() {
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products: StateFlow<List<Product>> = _products
 
-    private val _selectedCategory = MutableStateFlow("all")
-    val selectedCategory: StateFlow<String> = _selectedCategory
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -45,9 +42,5 @@ class CategoriesViewModel : ViewModel() {
                 _isLoading.value = false
             }
         }
-    }
-
-    fun selectCategory(categoryId: String) {
-        _selectedCategory.value = categoryId
     }
 }

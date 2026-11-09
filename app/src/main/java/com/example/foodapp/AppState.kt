@@ -148,6 +148,9 @@ data class PaymentHistoryItem(
 //    )
 //)
 
+/** Costo di gestione dell'asporto, allineato al valore del server (cart_rules.managementFee). */
+const val MANAGEMENT_FEE = 0.50
+
 val sizeOptions = listOf(SizeOption(1, "Standard", 0.0), SizeOption(2, "XXL Big", 2.50))
 val extraOptions = listOf(
     ExtraOption(1, "Extra Cheddar", 1.0),
@@ -173,6 +176,7 @@ class AppState {
     var orderId by mutableStateOf("")
     var pickupPin by mutableStateOf("")
     var authMessage by mutableStateOf<String?>(null)
+    var authReturnScreen by mutableStateOf("profile")
     var checkoutError by mutableStateOf<String?>(null)
 
     var selectedStore by mutableStateOf(
@@ -183,6 +187,13 @@ class AppState {
     val selectedExtras = mutableStateListOf<ExtraOption>()
     var customQty by mutableStateOf(1)
     var activeOrderHistoryItem by mutableStateOf<OrderHistoryItemResponse?>(null)
+
+    /** Ritorna alla schermata che aveva richiesto il login (checkout, riepilogo, ecc.). */
+    fun consumeAuthReturnScreen(): String {
+        val destination = authReturnScreen
+        authReturnScreen = "profile"
+        return destination
+    }
 
     /** Apre il dettaglio di un ordine precedente. */
     fun openOrderDetail(item: OrderHistoryItemResponse) {
@@ -201,7 +212,7 @@ class AppState {
     val discountAmount: Double get() = if (promoApplied) cartSubtotal * 0.10 else 0.0
 
     /** Calcola il totale finale del carrello inclusi costi di gestione. */
-    val cartFinalTotal: Double get() = maxOf(0.0, cartSubtotal - discountAmount + 1.50)
+    val cartFinalTotal: Double get() = maxOf(0.0, cartSubtotal - discountAmount + MANAGEMENT_FEE)
 
     /** Conta il numero totale di articoli nel carrello. */
     val cartTotalCount: Int get() = cart.sumOf { it.quantity }
@@ -228,9 +239,10 @@ class AppState {
         screen = if (previousScreen == "add-more") "summary" else previousScreen
     }
 
-    /** Applica un codice promozionale (es. FAST10). */
+    /** Applica un codice promozionale (FAST10 o BENVENUTO10). */
     fun applyPromo() {
-        if (promoInput.trim().uppercase() == "FAST10") promoApplied = true
+        val code = promoInput.trim().uppercase()
+        if (code == "FAST10" || code == "BENVENUTO10") promoApplied = true
     }
 
     /** Avanza verso il riepilogo o l'autenticazione. */

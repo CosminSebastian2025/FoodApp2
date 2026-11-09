@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
+import com.example.foodapp.MANAGEMENT_FEE
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
@@ -123,11 +124,11 @@ fun TotalsCard(state: AppState) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             TotalsRow("Subtotale articoli", "€${"%.2f".format(state.cartSubtotal)}")
             if (state.promoApplied) TotalsRow(
-                "Sconto FAST10 (-10%)",
+                "Sconto applicato (-10%)",
                 "-€${"%.2f".format(state.discountAmount)}",
                 Emerald
             )
-            TotalsRow("Costo gestione asporto", "€0.50")
+            TotalsRow("Costo gestione asporto", "€${"%.2f".format(MANAGEMENT_FEE)}")
             TotalsRow("Ritiro in cassa", "Gratuito", Emerald)
             HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Slate100)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

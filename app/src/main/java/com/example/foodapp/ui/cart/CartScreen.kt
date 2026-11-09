@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -104,8 +105,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                 }
             }
         }
-        items(state.cart.size) { i ->
-            val item = state.cart[i]
+        items(state.cart) { item ->
             Card(
                 shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White),
                 elevation = CardDefaults.cardElevation(1.dp)
@@ -154,7 +154,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { state.cart.removeAt(i) }) {
+                        IconButton(onClick = { state.cart.remove(item) }) {
                             Icon(
                                 Icons.Default.Delete,
                                 null,
@@ -165,8 +165,12 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             SmallQtyButton("-") {
                                 val q = item.quantity - 1
-                                if (q <= 0) state.cart.removeAt(i)
-                                else state.cart[i] = item.copy(quantity = q)
+                                val idx = state.cart.indexOf(item)
+                                if (q <= 0) {
+                                    if (idx >= 0) state.cart.removeAt(idx)
+                                } else if (idx >= 0) {
+                                    state.cart[idx] = item.copy(quantity = q)
+                                }
                             }
                             Text(
                                 "${item.quantity}",
@@ -176,7 +180,8 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                                 fontWeight = FontWeight.Bold
                             )
                             SmallQtyButton("+") {
-                                state.cart[i] = item.copy(quantity = item.quantity + 1)
+                                val idx = state.cart.indexOf(item)
+                                if (idx >= 0) state.cart[idx] = item.copy(quantity = item.quantity + 1)
                             }
                         }
                     }
@@ -203,7 +208,7 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                             OutlinedTextField(
                                 value = state.promoInput,
                                 onValueChange = { state.promoInput = it },
-                                placeholder = { Text("Inserisci es. FAST10", fontSize = 11.sp) },
+                                placeholder = { Text("Inserisci es. BENVENUTO10", fontSize = 11.sp) },
                                 modifier = Modifier.weight(1f),
                                 singleLine = true,
                                 shape = RoundedCornerShape(14.dp),

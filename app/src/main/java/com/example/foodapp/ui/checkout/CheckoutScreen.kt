@@ -27,8 +27,10 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
+import com.example.foodapp.MANAGEMENT_FEE
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
@@ -47,16 +50,35 @@ import com.example.foodapp.Slate800
 import com.example.foodapp.Slate900
 import com.example.foodapp.data.model.CartItem
 import com.example.foodapp.data.model.PickupOrderRequest
+import com.example.foodapp.ui.cart.CartViewModel
 import com.example.foodapp.ui.components.BackHeader
 import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.TotalsCard
 
 @Composable
-fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) {
+fun CheckoutScreen(
+    state: AppState,
+    viewModel: CheckoutViewModel = viewModel(),
+    cartViewModel: CartViewModel = viewModel()
+) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val pickupSlots by cartViewModel.pickupSlots.collectAsState()
 
-    val timeOptions = listOf("ASAP", "12:30", "13:00", "13:30", "19:30", "20:00")
+    LaunchedEffect(Unit) {
+        if (cartViewModel.pickupSlots.value == null) cartViewModel.loadCartData()
+    }
+
+    val timeOptions = remember(pickupSlots) {
+        buildList {
+            add("ASAP")
+            pickupSlots?.scheduled?.filter { it.available }?.forEach { add(it.time) }
+        }
+    }
+
+    LaunchedEffect(timeOptions) {
+        if (state.pickupTime !in timeOptions) state.pickupTime = "ASAP"
+    }
 
     LazyColumn(
         Modifier
@@ -216,11 +238,13 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
         item {
             Button(
                 onClick = {
+                    if (isLoading) return@Button
                     state.checkoutError = null
 
                     val currentUserId = state.userId
                     if (currentUserId.isNullOrBlank()) {
                         state.checkoutError = "Accedi per completare l'ordine."
+                        state.authReturnScreen = "checkout"
                         state.screen = "auth"
                         return@Button
                     }
@@ -252,7 +276,7 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                         items = apiItems,
                         subTotal = state.cartSubtotal,
                         discount = state.discountAmount,
-                        managementFee = 1.50,
+                        managementFee = MANAGEMENT_FEE,
                         total = state.cartFinalTotal,
                         paymentMethod = state.paymentMethod.uppercase()
                     )
@@ -266,6 +290,7 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
+                enabled = !isLoading,
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(Brand)
             ) {

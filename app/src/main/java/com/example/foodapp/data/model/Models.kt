@@ -8,14 +8,14 @@ data class Promotion(
     @SerializedName("title") val title: String = "",
     @SerializedName("subtitle") val subtitle: String = "",
     @SerializedName("badges") val badges: List<String>? = emptyList(),
-    @SerializedName(value = "imageUrl", alternate = ["ImageUrl", "image_url"]) val ImageUrl: String = ""
+    @SerializedName(value = "imageUrl", alternate = ["ImageUrl", "image_url"]) val ImageUrl: String? = null
 )
 
 /** Modello dati per le categorie di cibo. */
 data class Category(
     @SerializedName("idCategory") val idCategory: String = "",
     @SerializedName("nameCategory") val nameCategory: String = "",
-    @SerializedName(value = "icon", alternate = ["ImageUrl"]) val icon: String = "",
+    @SerializedName(value = "icon", alternate = ["ImageUrl"]) val icon: String? = null,
     @SerializedName("count") val count: Int = 0
 )
 
@@ -25,7 +25,7 @@ data class Product(
     @SerializedName("nameProduct") val nameProduct: String = "",
     @SerializedName("description") val description: String = "",
     @SerializedName("basePrice") val basePrice: Double = 0.0,
-    @SerializedName("imageUrl") val imageUrl: String = "",
+    @SerializedName("imageUrl") val imageUrl: String? = null,
     @SerializedName("category") val category: String = "",
     @SerializedName("isPopular") val isPopular: Boolean = false,
     @SerializedName("allergens") val allergens: List<String> = emptyList()
@@ -34,7 +34,7 @@ data class Product(
     val id: String get() = IdProduct ?: ""
     val name: String get() = nameProduct
     val price: Double get() = basePrice
-    val emoji: String get() = imageUrl
+    val emoji: String? get() = imageUrl
 
     // Costruttore secondario per compatibilità con il codice UI locale
     constructor(
@@ -189,16 +189,16 @@ data class UserProfile(
     @SerializedName("userId") val userId: String,
     @SerializedName("name") val name: String,
     @SerializedName("email") val email: String,
-    @SerializedName("phone") val phone: String
+    @SerializedName("phone") val phone: String? = null
 )
 
 data class OrderHistoryItemResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,
-    @SerializedName("storeName") val storeName: String,
-    @SerializedName("items_summary") val itemsSummary: String,
-    @SerializedName("total") val total: Double,
-    @SerializedName("storeAddress") val storeAddress: String,
+    @SerializedName(value = "storeName", alternate = ["store_name"]) val storeName: String = "",
+    @SerializedName("items_summary") val itemsSummary: String = "",
+    @SerializedName("total") val total: Double = 0.0,
+    @SerializedName(value = "storeAddress", alternate = ["store_address"]) val storeAddress: String = "",
     @SerializedName("order_type") val orderType: String,
     @SerializedName("payment_method") val paymentMethod: String,
     @SerializedName("status") val status: String,

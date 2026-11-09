@@ -33,7 +33,7 @@ import com.example.foodapp.ui.components.ProductCard
 fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel()) {
     val categories by viewModel.categories.collectAsState()
     val products by viewModel.products.collectAsState()
-    val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val selectedCategory = state.selectedCategory
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
@@ -86,7 +86,7 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
                 item {
                     FilterChip(
                         selected = selectedCategory == "all",
-                        onClick = { viewModel.selectCategory("all") },
+                        onClick = { state.selectedCategory = "all" },
                         label = { Text("🍔 Tutti", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Brand,
@@ -100,10 +100,10 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
                     val sel = selectedCategory == catId
                     FilterChip(
                         selected = sel,
-                        onClick = { viewModel.selectCategory(catId) },
+                        onClick = { state.selectedCategory = catId },
                         label = {
                             Text(
-                                "${cat.icon} ${cat.nameCategory}",
+                                "${cat.icon ?: ""} ${cat.nameCategory}",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold
                             )

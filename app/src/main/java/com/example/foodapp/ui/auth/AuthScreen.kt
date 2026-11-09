@@ -55,7 +55,7 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
     ) {
         BackHeader("Accedi / Registrati") {
             state.authMessage = null
-            state.screen = "profile"
+            state.screen = state.consumeAuthReturnScreen()
         }
         Spacer(Modifier.height(40.dp))
 
@@ -118,7 +118,7 @@ fun AuthScreen(state: AppState, viewModel: AuthViewModel = viewModel()) {
                         state.userId = response.userId
                         state.isLoggedIn = true
                         state.authMessage = null
-                        state.screen = "profile"
+                        state.screen = state.consumeAuthReturnScreen()
                     }
                 }
             },

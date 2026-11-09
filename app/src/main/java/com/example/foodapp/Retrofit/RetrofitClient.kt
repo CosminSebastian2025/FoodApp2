@@ -48,7 +48,10 @@ object RetrofitClient {
             value.isEmpty() -> null
             value.startsWith("http://", true) || value.startsWith("https://", true) -> value
             value.startsWith("/") -> BASE_URL.trimEnd('/').removeSuffix("/api") + value
-            else -> BASE_URL + value
+            // Percorsi relativi (es. images/prod_1.png) vs emoji/testo semplice.
+            value.contains("/") || value.substringAfterLast('.', "").lowercase() in
+                    setOf("png", "jpg", "jpeg", "webp", "gif", "avif", "svg") -> BASE_URL + value
+            else -> null
         }
     }
 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
@@ -55,7 +56,8 @@ class SearchViewModel : ViewModel() {
                 _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
-                _isLoading.value = false
+                // Un job annullato non deve spegnere il loading della nuova ricerca.
+                if (isActive) _isLoading.value = false
             }
         }
     }

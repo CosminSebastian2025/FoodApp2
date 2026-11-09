@@ -42,9 +42,10 @@ fun PaymentHistoryScreen(state: AppState, viewModel: ProfileViewModel = viewMode
 
     LaunchedEffect(state.userId) {
         val userId = state.userId
-        if (userId.isNullOrBlank()) {
+        if (!userId.isNullOrBlank()) {
             viewModel.loadProfileData(userId)
         } else {
+            state.authReturnScreen = "payment-history"
             state.screen = "auth"
         }
     }

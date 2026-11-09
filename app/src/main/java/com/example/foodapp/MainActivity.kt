@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,8 +70,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme(colorScheme = lightColorScheme(primary = Brand, surface = Color.White)) {
-                val state = remember { AppState() }
-                FastBiteApp(state)
+                val appStateViewModel: AppStateViewModel = viewModel()
+                FastBiteApp(appStateViewModel.state)
             }
         }
     }

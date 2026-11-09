@@ -103,7 +103,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                     color = Brand.copy(alpha = 0.3f),
                                     shape = RoundedCornerShape(50)
                                 ) {
-                                    promo?.badges?.first()?.let {
+                                    promo?.badges?.firstOrNull()?.let {
                                         Text(
                                             text = it,
                                             modifier = Modifier.padding(
@@ -118,7 +118,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                 }
 
                                 Column {
-                                    promo?.title?.first()?.let {
+                                    promo?.title?.takeIf { it.isNotBlank() }?.let {
                                         Text(
                                             text = promo.title,
                                             color = Color.White,
@@ -127,7 +127,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                         )
                                     }
                                     Spacer(Modifier.height(2.dp))
-                                    promo?.subtitle?.first()?.let {
+                                    promo?.subtitle?.takeIf { it.isNotBlank() }?.let {
                                         Text(
                                             text = promo.subtitle,
                                             color = Slate400,
@@ -168,7 +168,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
                                 Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(cat.icon, fontSize = 16.sp)
+                                Text(cat.icon ?: "🍔", fontSize = 16.sp)
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     cat.nameCategory,

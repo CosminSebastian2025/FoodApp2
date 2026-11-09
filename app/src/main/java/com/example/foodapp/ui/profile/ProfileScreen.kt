@@ -90,9 +90,14 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                             .background(Brand),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (state.isLoggedIn) userProfile?.name?.take(1) else state.userId?.let {
+                        val initial = (if (state.isLoggedIn) userProfile?.name else state.userId)
+                            ?.trim()
+                            ?.take(1)
+                            ?.uppercase()
+                            .orEmpty()
+                        if (initial.isNotEmpty()) {
                             Text(
-                                it,
+                                initial,
                                 color = Color.White,
                                 fontWeight = FontWeight.Black,
                                 fontSize = 16.sp
@@ -101,21 +106,22 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                     }
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        if (state.isLoggedIn) userProfile?.name else "Utente Ospite".let {
-                            Text(
-                                it,
-                                fontWeight = FontWeight.Bold, fontSize = 13.sp
-                            )
-                        }
                         Text(
-                            if (state.isLoggedIn) (userProfile?.email
-                                ?: "marco.rossi@email.it") else "Accedi per ordinare in velocità",
+                            if (state.isLoggedIn) userProfile?.name ?: "Utente" else "Utente Ospite",
+                            fontWeight = FontWeight.Bold, fontSize = 13.sp
+                        )
+                        Text(
+                            if (state.isLoggedIn) userProfile?.email.orEmpty()
+                            else "Accedi per ordinare in velocità",
                             fontSize = 11.sp, color = Slate500
                         )
                     }
                     if (!state.isLoggedIn) {
                         Button(
-                            onClick = { state.screen = "auth" },
+                            onClick = {
+                                state.authReturnScreen = "profile"
+                                state.screen = "auth"
+                            },
                             colors = ButtonDefaults.buttonColors(Brand),
                             shape = RoundedCornerShape(12.dp)
                         ) {
@@ -123,7 +129,13 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                         }
                     } else {
                         OutlinedButton(
-                            onClick = { state.isLoggedIn = false },
+                            onClick = {
+                                state.isLoggedIn = false
+                                state.userId = null
+                                state.authMessage = null
+                                state.checkoutError = null
+                                viewModel.loadProfileData(null)
+                            },
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text("Esci", fontSize = 11.sp, color = Slate700)

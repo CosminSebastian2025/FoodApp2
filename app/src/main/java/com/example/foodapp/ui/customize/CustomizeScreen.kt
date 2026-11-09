@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
@@ -28,20 +27,12 @@ import com.example.foodapp.Slate700
 import com.example.foodapp.extraOptions
 import com.example.foodapp.sizeOptions
 import com.example.foodapp.ui.components.BackHeader
-import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.ProductImage
 import com.example.foodapp.ui.components.SmallQtyButton
 
 @Composable
-fun CustomizeScreen(state: AppState, viewModel: CustomizeViewModel = viewModel()) {
+fun CustomizeScreen(state: AppState) {
     val p = state.activeProduct ?: return
-    val optionsResponse by viewModel.optionsResponse.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.loadOptions()
-    }
 
     val extrasSum = state.selectedExtras.sumOf { it.price }
     val unitPrice = (p.price + state.selectedSize.price + extrasSum) * state.customQty
@@ -53,11 +44,7 @@ fun CustomizeScreen(state: AppState, viewModel: CustomizeViewModel = viewModel()
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item { BackHeader("Personalizza Articolo") { state.goBackFromCustomize() } }
-        errorMessage?.let { message ->
-            item {
-                ErrorBanner(message = message, onRetry = { viewModel.loadOptions() })
-            }
-        }
+
         item {
             Box(
                 Modifier
