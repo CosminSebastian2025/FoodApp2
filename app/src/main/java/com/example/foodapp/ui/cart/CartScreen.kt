@@ -47,12 +47,14 @@ import com.example.foodapp.EmeraldBg
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate900
+import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.SmallQtyButton
 import com.example.foodapp.ui.components.TotalsCard
 
 @Composable
 fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
     val cartRules by viewModel.cartRules.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadCartData()
@@ -76,6 +78,11 @@ fun CartScreen(state: AppState, viewModel: CartViewModel = viewModel()) {
                         fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Emerald
                     )
                 }
+            }
+        }
+        errorMessage?.let { message ->
+            item {
+                ErrorBanner(message = message, onRetry = { viewModel.loadCartData() })
             }
         }
         if (state.cart.isEmpty()) {

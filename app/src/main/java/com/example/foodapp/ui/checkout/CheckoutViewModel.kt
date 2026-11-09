@@ -2,6 +2,7 @@ package com.example.foodapp.ui.checkout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.PickupOrderConfirmation
 import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.retrofit.RetrofitClient
@@ -34,7 +35,7 @@ class CheckoutViewModel : ViewModel() {
                 _confirmation.value = conf
                 onSuccess(conf) // Esegue l'azione di successo (es. pulire il carrello e cambiare schermata)
             } catch (ex: Exception) {
-                _errorMessage.value = "Errore di connessione: ${ex.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 ex.printStackTrace()
             } finally {
                 _isLoading.value = false

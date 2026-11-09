@@ -48,6 +48,7 @@ import com.example.foodapp.Slate900
 import com.example.foodapp.data.model.CartItem
 import com.example.foodapp.data.model.PickupOrderRequest
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.TotalsCard
 
 @Composable
@@ -67,7 +68,7 @@ fun CheckoutScreen(state: AppState, viewModel: CheckoutViewModel = viewModel()) 
 
         errorMessage?.let { err ->
             item {
-                Text(err, color = Brand, fontSize = 12.sp)
+                ErrorBanner(message = err)
             }
         }
 

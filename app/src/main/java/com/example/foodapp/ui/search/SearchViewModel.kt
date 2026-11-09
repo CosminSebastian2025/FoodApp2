@@ -2,6 +2,7 @@ package com.example.foodapp.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.Product
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,15 +23,23 @@ class SearchViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: i risultati precedenti vengono scartati
+            _searchResults.value = emptyList()
             try {
                 val results = RetrofitClient.apiService.searchProducts(query = query)
                 _searchResults.value = results
             } catch (e: Exception) {
-                _errorMessage.value = "Errore ricerca: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    /** Svuota risultati ed errori quando il campo di ricerca viene svuotato. */
+    fun clear() {
+        _searchResults.value = emptyList()
+        _errorMessage.value = null
     }
 }

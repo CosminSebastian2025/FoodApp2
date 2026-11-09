@@ -28,6 +28,7 @@ import com.example.foodapp.Slate700
 import com.example.foodapp.extraOptions
 import com.example.foodapp.sizeOptions
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.SmallQtyButton
 
 @Composable
@@ -35,6 +36,7 @@ fun CustomizeScreen(state: AppState, viewModel: CustomizeViewModel = viewModel()
     val p = state.activeProduct ?: return
     val optionsResponse by viewModel.optionsResponse.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadOptions()
@@ -50,6 +52,11 @@ fun CustomizeScreen(state: AppState, viewModel: CustomizeViewModel = viewModel()
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item { BackHeader("Personalizza Articolo") { state.goBackFromCustomize() } }
+        errorMessage?.let { message ->
+            item {
+                ErrorBanner(message = message, onRetry = { viewModel.loadOptions() })
+            }
+        }
         item {
             Box(
                 Modifier

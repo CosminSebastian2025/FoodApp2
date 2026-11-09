@@ -2,6 +2,7 @@ package com.example.foodapp.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.OrderHistoryItemResponse
 import com.example.foodapp.data.model.PaymentHistoryItemResponse
 import com.example.foodapp.data.model.UserProfile
@@ -30,16 +31,22 @@ class ProfileViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    fun loadProfileData(userId: String?, forceRefresh: Boolean = false) {
-
-        if (userId.isNullOrBlank()) return
-
-        // Evita di ricaricare se i dati sono già presenti in memoria
-        if (!forceRefresh && _userProfile.value != null && _orderHistory.value.isNotEmpty()) return
+    fun loadProfileData(userId: String?) {
+        if (userId.isNullOrBlank()) {
+            _userProfile.value = null
+            _orderHistory.value = emptyList()
+            _paymentHistory.value = emptyList()
+            _errorMessage.value = null
+            return
+        }
 
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: si riparte sempre dai dati del server
+            _userProfile.value = null
+            _orderHistory.value = emptyList()
+            _paymentHistory.value = emptyList()
             try {
                 val usrProf = RetrofitClient.apiService.getUserProfile(userId)
                 val ordHst = RetrofitClient.apiService.getOrderHistory(userId)
@@ -50,7 +57,7 @@ class ProfileViewModel : ViewModel() {
                 _paymentHistory.value = pmnHst
 
             } catch (e: Exception) {
-                _errorMessage.value = "Errore caricamento profilo: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

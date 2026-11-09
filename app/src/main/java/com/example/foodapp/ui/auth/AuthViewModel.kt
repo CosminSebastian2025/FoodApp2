@@ -2,6 +2,7 @@ package com.example.foodapp.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.AuthRequest
 import com.example.foodapp.data.model.AuthResponse
 import com.example.foodapp.retrofit.RetrofitClient
@@ -29,7 +30,7 @@ class AuthViewModel : ViewModel() {
                 if (res.success) onSuccess(res)
                 else _errorMessage.value = res.message
             } catch (e: Exception) {
-                _errorMessage.value = "Errore login: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
@@ -47,7 +48,7 @@ class AuthViewModel : ViewModel() {
                 if (res.success) onSuccess(res)
                 else _errorMessage.value = res.message
             } catch (e: Exception) {
-                _errorMessage.value = "Errore registrazione: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

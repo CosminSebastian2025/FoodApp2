@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
+import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.ProductCard
 
 @Composable
@@ -34,6 +35,7 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
     val products by viewModel.products.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadData()
@@ -62,6 +64,11 @@ fun CategoriesScreen(state: AppState, viewModel: CategoriesViewModel = viewModel
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        errorMessage?.let { message ->
+            item {
+                ErrorBanner(message = message, onRetry = { viewModel.loadData() })
+            }
+        }
         item {
             Text("Menu FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
             Spacer(Modifier.height(8.dp))

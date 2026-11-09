@@ -2,6 +2,7 @@ package com.example.foodapp.ui.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.CartRules
 import com.example.foodapp.data.model.PaymentMethod
 import com.example.foodapp.data.model.PickupSlots
@@ -32,6 +33,12 @@ class CartViewModel : ViewModel() {
 
     fun loadCartData() {
         viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            // Nessuna cache: i dati precedenti vengono scartati ad ogni caricamento
+            _cartRules.value = null
+            _paymentMethods.value = emptyList()
+            _pickupSlots.value = null
             try {
                 val rules = RetrofitClient.apiService.getCartRules()
                 val payments = RetrofitClient.apiService.getPaymentMethods()
@@ -41,8 +48,10 @@ class CartViewModel : ViewModel() {
                 _paymentMethods.value = payments
                 _pickupSlots.value = slots
             } catch (e: Exception) {
-                _errorMessage.value = "Errore caricamento carrello: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }

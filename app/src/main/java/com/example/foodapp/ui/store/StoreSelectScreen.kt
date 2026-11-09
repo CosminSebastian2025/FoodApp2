@@ -25,6 +25,7 @@ import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.ui.components.BackHeader
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun StoreSelectScreen(state: AppState, viewModel: StoreViewModel = viewModel()) {
@@ -47,11 +48,7 @@ fun StoreSelectScreen(state: AppState, viewModel: StoreViewModel = viewModel()) 
         }
 
         errorMessage?.let { message ->
-            Text(
-                message,
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.error
-            )
+            ErrorBanner(message = message, onRetry = { viewModel.loadStores() })
         }
 
         if (isLoading) {

@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.foodapp"
         minSdk = 24
         targetSdk = 37
-        versionCode = 112
-        versionName = "1.1.2"
+        versionCode = 113
+        versionName = "1.1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.gson)
+    implementation(libs.okhttp)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

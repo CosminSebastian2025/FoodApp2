@@ -2,6 +2,7 @@ package com.example.foodapp.ui.categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.Category
 import com.example.foodapp.data.model.Product
@@ -29,13 +30,16 @@ class CategoriesViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: si riparte sempre dai dati del server
+            _categories.value = emptyList()
+            _products.value = emptyList()
             try {
                 val catResponse = RetrofitClient.apiService.getCategories()
                 val prodResponse = RetrofitClient.apiService.getProducts()
                 _categories.value = catResponse
                 _products.value = prodResponse
             } catch (e: Exception) {
-                _errorMessage.value = "Errore di connessione: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

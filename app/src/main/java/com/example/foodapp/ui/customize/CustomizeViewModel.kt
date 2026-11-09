@@ -2,6 +2,7 @@ package com.example.foodapp.ui.customize
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.ProductOptionsResponse
 import com.example.foodapp.retrofit.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,18 +22,17 @@ class CustomizeViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    // 4. Funzione per caricare le opzioni dal server (con cache in memoria opzionale)
-    fun loadOptions(forceRefresh: Boolean = false) {
-        if (!forceRefresh && _optionsResponse.value.isNotEmpty()) return
-
+    // 4. Funzione per caricare le opzioni dal server (nessuna cache in memoria)
+    fun loadOptions() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            _optionsResponse.value = emptyList()
             try {
                 val res = RetrofitClient.apiService.getProductOptionsResponse()
                 _optionsResponse.value = res
             } catch (e: Exception) {
-                _errorMessage.value = "Errore caricamento opzioni: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

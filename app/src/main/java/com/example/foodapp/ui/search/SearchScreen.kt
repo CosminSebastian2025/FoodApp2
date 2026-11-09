@@ -48,20 +48,28 @@ import com.example.foodapp.Brand
 import com.example.foodapp.Slate100
 import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
     var query by remember { mutableStateOf(state.searchQuery) }
     val searchResults by viewModel.searchResults.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     LaunchedEffect(query) {
         if (query.isNotBlank()) {
             viewModel.search(query)
+        } else {
+            viewModel.clear()
         }
     }
 
-    val displayList = searchResults.filter { !it.IdProduct.isNullOrBlank() }
+    val displayList = if (query.isBlank()) {
+        emptyList()
+    } else {
+        searchResults.filter { !it.IdProduct.isNullOrBlank() }
+    }
 
     LazyColumn(
         Modifier
@@ -101,6 +109,14 @@ fun SearchScreen(state: AppState, viewModel: SearchViewModel = viewModel()) {
                     unfocusedBorderColor = Slate200
                 )
             )
+        }
+        errorMessage?.let { message ->
+            item {
+                ErrorBanner(
+                    message = message,
+                    onRetry = { if (query.isNotBlank()) viewModel.search(query) }
+                )
+            }
         }
         if (isLoading) {
             item {

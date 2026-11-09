@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.foodapp.data.model.Product
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun MenuScreen(menuViewModel: MenuViewModel = viewModel()) {
@@ -34,18 +35,11 @@ fun MenuScreen(menuViewModel: MenuViewModel = viewModel()) {
 
         // Mostra messaggio di errore se c'è
         errorMessage?.let { error ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
-            ) {
-                Text(
-                    text = error,
-                    modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.onErrorContainer
-                )
-            }
+            ErrorBanner(
+                message = error,
+                modifier = Modifier.padding(bottom = 16.dp),
+                onRetry = { menuViewModel.loadData() }
+            )
         }
 
         // Mostra loading o lista prodotti

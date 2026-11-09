@@ -39,6 +39,7 @@ import com.example.foodapp.Slate200
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
+import com.example.foodapp.ui.components.ErrorBanner
 import com.example.foodapp.ui.components.ProductCard
 
 @Composable
@@ -67,7 +68,7 @@ fun HomeScreen(state: AppState, viewModel: HomeViewModel = viewModel()) {
     ) {
         errorMessage?.let { err ->
             item {
-                Text(err, color = Brand, fontSize = 12.sp)
+                ErrorBanner(message = err, onRetry = { viewModel.loadHomeData() })
             }
         }
         // 2. Inseriamo il LazyRow orizzontale dentro un item della LazyColumn

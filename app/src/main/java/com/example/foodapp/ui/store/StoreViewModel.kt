@@ -2,6 +2,7 @@ package com.example.foodapp.ui.store
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.retrofit.RetrofitClient
 import com.example.foodapp.data.model.Store
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,11 +23,13 @@ class StoreViewModel : ViewModel() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: i dati precedenti vengono scartati
+            _stores.value = emptyList()
             try {
                 val res = RetrofitClient.apiService.getStores()
                 _stores.value = res
             } catch (e: Exception) {
-                _errorMessage.value = "Errore caricamento negozi: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

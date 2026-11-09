@@ -2,6 +2,7 @@ package com.example.foodapp.ui.menu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.Product
 import com.example.foodapp.retrofit.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,16 +19,17 @@ class MenuViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun loadData(force: Boolean = false) {
-        if (!force && _prodotti.value.isNotEmpty()) return
+    fun loadData() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: i dati precedenti vengono scartati
+            _prodotti.value = emptyList()
             try {
                 val response = RetrofitClient.apiService.getProducts()
                 _prodotti.value = response
             } catch (e: Exception) {
-                _errorMessage.value = "Errore: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

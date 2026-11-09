@@ -44,6 +44,7 @@ import com.example.foodapp.Brand
 import com.example.foodapp.Slate400
 import com.example.foodapp.Slate500
 import com.example.foodapp.Slate700
+import com.example.foodapp.ui.components.ErrorBanner
 
 @Composable
 fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
@@ -67,6 +68,15 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
     ) {
         item {
             Text("Il Mio Profilo FastBite", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+        }
+
+        errorMessage?.let { message ->
+            item {
+                ErrorBanner(
+                    message = message,
+                    onRetry = { viewModel.loadProfileData(state.userId) }
+                )
+            }
         }
 
         // Scheda Utente

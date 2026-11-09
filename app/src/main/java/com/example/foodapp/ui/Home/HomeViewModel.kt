@@ -2,6 +2,7 @@ package com.example.foodapp.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodapp.data.SERVER_ERROR_MESSAGE
 import com.example.foodapp.data.model.Category
 import com.example.foodapp.data.model.Product
 import com.example.foodapp.data.model.Promotion
@@ -32,12 +33,13 @@ class HomeViewModel : ViewModel() {
 
     // 2. Funzione per caricare i dati (es. da Retrofit)
     fun loadHomeData() {
-        // Evita di ricaricare se i dati sono già presenti (Cache in memoria)
-        if (categorie.value.isNotEmpty()) return
-
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
+            // Nessuna cache: i dati precedenti vengono scartati ad ogni caricamento
+            _categorie.value = emptyList()
+            _promozioni.value = emptyList()
+            _popolari.value = emptyList()
             try {
                 // Chiamata di rete sospesa
                 val prom = RetrofitClient.apiService.getPromotions()
@@ -47,7 +49,7 @@ class HomeViewModel : ViewModel() {
                 _promozioni.value = prom
                 _popolari.value = productPopular
             } catch (e: Exception) {
-                _errorMessage.value = "Errore di connessione: ${e.message}"
+                _errorMessage.value = SERVER_ERROR_MESSAGE
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
