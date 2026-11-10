@@ -17,7 +17,7 @@ object RetrofitClient {
     private const val BASE_URL = "http://192.168.2.248/api/"
 
     /** Timeout ridotto: se il server non c'è, l'errore arriva subito all'utente. */
-    private const val TIMEOUT_SECONDS = 5L
+    private const val TIMEOUT_SECONDS = 30L
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -51,6 +51,7 @@ object RetrofitClient {
             // Percorsi relativi (es. images/prod_1.png) vs emoji/testo semplice.
             value.contains("/") || value.substringAfterLast('.', "").lowercase() in
                     setOf("png", "jpg", "jpeg", "webp", "gif", "avif", "svg") -> BASE_URL + value
+
             else -> null
         }
     }
