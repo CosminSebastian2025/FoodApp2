@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Store
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -230,6 +231,35 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
                         )
                         Spacer(Modifier.width(10.dp))
                         Text("Storico Pagamenti", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
+                }
+            }
+        }
+
+        // Impostazioni
+        item {
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(Color.White),
+                modifier = Modifier.clickable { state.screen = "settings" }
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Settings,
+                            null,
+                            tint = Brand,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Text("Impostazioni", fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
                     Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Slate400)
                 }

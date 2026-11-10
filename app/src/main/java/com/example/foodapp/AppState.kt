@@ -237,7 +237,7 @@ class AppState(private val sessionStore: SessionStore? = null) {
     /** Gestisce il tasto indietro di sistema senza chiudere l'app. */
     fun goBack() {
         screen = when (screen) {
-            "order-detail", "payment-history" -> "profile"
+            "order-detail", "payment-history", "settings" -> "profile"
             "auth" -> consumeAuthReturnScreen()
             "register" -> "auth"
             "store-select" -> if (previousScreen == "store-select") "home" else previousScreen

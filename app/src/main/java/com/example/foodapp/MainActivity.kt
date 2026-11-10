@@ -37,6 +37,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
@@ -62,6 +65,9 @@ import com.example.foodapp.ui.profile.PaymentHistoryScreen
 import com.example.foodapp.ui.profile.ProfileScreen
 import com.example.foodapp.ui.register.RegisterScreen
 import com.example.foodapp.ui.search.SearchScreen
+import com.example.foodapp.ui.settings.SettingsScreen
+import com.example.foodapp.ui.settings.SettingsViewModel
+import com.example.foodapp.ui.settings.UpdateAvailableBanner
 import com.example.foodapp.ui.splash.SplashScreen
 import com.example.foodapp.ui.store.StoreSelectScreen
 import com.example.foodapp.ui.summary.SummaryScreen
@@ -82,6 +88,14 @@ class MainActivity : ComponentActivity() {
 fun FastBiteApp(state: AppState) {
     val navScreens = listOf("home", "search", "categories", "cart", "profile")
 
+    val settingsViewModel: SettingsViewModel = viewModel()
+    val settingsState by settingsViewModel.state.collectAsState()
+
+    // Controllo silenzioso all'avvio: al massimo una volta al giorno.
+    LaunchedEffect(Unit) {
+        settingsViewModel.autoCheckIfDue()
+    }
+
     // Senza questo, il tasto indietro chiude l'Activity invece di tornare alla schermata precedente.
     BackHandler(enabled = state.screen != "home" && state.screen != "splash") {
         state.goBack()
@@ -92,25 +106,32 @@ fun FastBiteApp(state: AppState) {
         topBar = { if (state.screen in navScreens) Header(state) },
         bottomBar = { if (state.screen in navScreens) BottomBar(state) }
     ) { padding ->
-        Box(Modifier.padding(padding)) {
-            when (state.screen) {
-                "splash" -> SplashScreen(state, onStart = { state.screen = "home" })
-                "home" -> HomeScreen(state)
-                "search" -> SearchScreen(state)
-                "categories" -> CategoriesScreen(state)
-                "cart" -> CartScreen(state)
-                "checkout" -> CheckoutScreen(state)
-                "summary" -> SummaryScreen(state)
-                "payment-select" -> PaymentMethodSelectScreen(state)
-                "add-more" -> AddMoreScreen(state)
-                "item-customize" -> CustomizeScreen(state)
-                "confirmation" -> ConfirmationScreen(state)
-                "profile" -> ProfileScreen(state)
-                "store-select" -> StoreSelectScreen(state)
-                "payment-history" -> PaymentHistoryScreen(state)
-                "order-detail" -> OrderDetailScreen(state)
-                "auth" -> AuthScreen(state)
-                "register" -> RegisterScreen(state)
+        Column(Modifier.padding(padding)) {
+            val update = settingsState.update
+            if (update != null && state.screen != "settings" && state.screen != "splash") {
+                UpdateAvailableBanner(update.versionName) { state.screen = "settings" }
+            }
+            Box(Modifier.weight(1f)) {
+                when (state.screen) {
+                    "splash" -> SplashScreen(state, onStart = { state.screen = "home" })
+                    "home" -> HomeScreen(state)
+                    "search" -> SearchScreen(state)
+                    "categories" -> CategoriesScreen(state)
+                    "cart" -> CartScreen(state)
+                    "checkout" -> CheckoutScreen(state)
+                    "summary" -> SummaryScreen(state)
+                    "payment-select" -> PaymentMethodSelectScreen(state)
+                    "add-more" -> AddMoreScreen(state)
+                    "item-customize" -> CustomizeScreen(state)
+                    "confirmation" -> ConfirmationScreen(state)
+                    "profile" -> ProfileScreen(state)
+                    "settings" -> SettingsScreen(state, settingsViewModel)
+                    "store-select" -> StoreSelectScreen(state)
+                    "payment-history" -> PaymentHistoryScreen(state)
+                    "order-detail" -> OrderDetailScreen(state)
+                    "auth" -> AuthScreen(state)
+                    "register" -> RegisterScreen(state)
+                }
             }
         }
     }
