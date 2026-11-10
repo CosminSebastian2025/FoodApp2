@@ -21,7 +21,9 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("fastbite-release.keystore")
+            val keystorePath = System.getenv("KEYSTORE_FILE")
+                ?: "${rootProject.projectDir.parentFile.absolutePath}/FoodApp-keys/fastbite-release.keystore"
+            storeFile = file(keystorePath)
             storePassword = System.getenv("KEYSTORE_PASSWORD")
             keyAlias = System.getenv("KEY_ALIAS")
             keyPassword = System.getenv("KEY_PASSWORD")

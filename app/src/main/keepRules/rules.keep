@@ -10,33 +10,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
-#PS C:\Users\cosmi\AndroidStudioProjects\FoodApp> keytool -genkeypair -v -keystore fastbite-release.keystore -alias fastbite -keyalg RSA -keysize 2048
-#Immettere la password del keystore:
-#
-#La password del keystore è troppo corta - deve contenere almeno 6 caratteri
-#Immettere la password del keystore:
-#
-#Immettere nuovamente la nuova password:
-#
-#Enter the distinguished name. Provide a single dot (.) to leave a sub-component empty or press ENTER to use the default value in braces.
-#Specificare nome e cognome
-#  [Unknown]:  cosminsebastian.floria
-#Specificare il nome dell'unità organizzativa
-#  [Unknown]:  everything
-#Specificare il nome dell'organizzazione
-#  [Unknown]:  everything srl
-#Specificare la località
-#  [Unknown]:  Budapest
-#Specificare la provincia
-#  [Unknown]:  Budapest
-#Specificare il codice a due lettere del paese in cui si trova l'unità
-#  [Unknown]:  BGR
-#Il dato CN=cosminsebastian.floria, OU=everything, O=everything srl, L=Budapest, ST=Budapest, C=BGR è corretto?
-#  [no]:  si
-#
-#Generating 2048-bit RSA key pair and self-signed certificate (SHA384withRSA) with a validity of 90 days
-#        for: CN=cosminsebastian.floria, OU=everything, O=everything srl, L=Budapest, ST=Budapest, C=BGR
-#[Memorizzazione di fastbite-release.keystore] in corso
-
-
