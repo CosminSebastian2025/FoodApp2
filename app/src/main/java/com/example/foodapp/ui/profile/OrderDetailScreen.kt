@@ -21,6 +21,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Emerald
@@ -39,6 +43,7 @@ import com.example.foodapp.Slate700
 import com.example.foodapp.Slate900
 import com.example.foodapp.data.model.OrderHistoryItemResponse
 import com.example.foodapp.ui.components.BackHeader
+import kotlinx.coroutines.delay
 
 @Composable
 fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
@@ -105,8 +110,10 @@ fun OrderHistoryCard(order: OrderHistoryItemResponse, onClick: () -> Unit) {
 
 @Composable
 fun OrderDetailScreen(state: AppState) {
-    val order = state.activeOrderHistoryItem
-    if (order == null) {
+    val viewModel: ProfileViewModel = viewModel()
+    val orderHistory by viewModel.orderHistory.collectAsState()
+    val snapshot = state.activeOrderHistoryItem
+    if (snapshot == null) {
         Column(Modifier.fillMaxSize().padding(16.dp)) {
             BackHeader("Dettaglio Ordine") { state.screen = "profile" }
             Spacer(Modifier.height(24.dp))
@@ -117,6 +124,17 @@ fun OrderDetailScreen(state: AppState) {
             )
         }
         return
+    }
+
+    // Usa la versione più recente dello stesso ordine, così lo stato
+    // aggiornato dal pannello admin appare anche qui.
+    val order = orderHistory.firstOrNull { it.id == snapshot.id } ?: snapshot
+
+    LaunchedEffect(snapshot.id, state.userId) {
+        while (true) {
+            viewModel.refreshOrderHistory(state.userId)
+            delay(10_000)
+        }
     }
 
     val status = order.status?.takeIf { it.isNotBlank() } ?: "In Preparazione"

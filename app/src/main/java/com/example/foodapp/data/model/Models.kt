@@ -27,6 +27,7 @@ data class Product(
     @SerializedName("basePrice") val basePrice: Double = 0.0,
     @SerializedName("imageUrl") val imageUrl: String? = null,
     @SerializedName("category") val category: String = "",
+    @SerializedName("categories") val categories: List<String>? = emptyList(),
     @SerializedName("isPopular") val isPopular: Boolean = false,
     @SerializedName("allergens") val allergens: List<String> = emptyList()
 ) {
@@ -35,6 +36,12 @@ data class Product(
     val name: String get() = nameProduct
     val price: Double get() = basePrice
     val emoji: String? get() = imageUrl
+
+    /** Tutte le categorie del prodotto: elenco del server più la categoria principale. */
+    val allCategories: List<String>
+        get() = (listOf(category) + (categories ?: emptyList()))
+            .filter { it.isNotBlank() }
+            .distinct()
 
     // Costruttore secondario per compatibilità con il codice UI locale
     constructor(

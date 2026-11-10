@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.delay
 import com.example.foodapp.AppState
 import com.example.foodapp.Brand
 import com.example.foodapp.Slate400
@@ -57,6 +58,16 @@ fun ProfileScreen(state: AppState, viewModel: ProfileViewModel = viewModel()) {
     LaunchedEffect(state.isLoggedIn, state.userId) {
         if (state.isLoggedIn) {
             viewModel.loadProfileData(state.userId)
+        }
+    }
+
+    // Polling leggero: lo stato degli ordini aggiornato dal pannello admin
+    // compare nell'app entro pochi secondi, senza spinner.
+    LaunchedEffect(state.isLoggedIn, state.userId) {
+        if (!state.isLoggedIn || state.userId.isNullOrBlank()) return@LaunchedEffect
+        while (true) {
+            delay(10_000)
+            viewModel.refreshOrderHistory(state.userId)
         }
     }
 

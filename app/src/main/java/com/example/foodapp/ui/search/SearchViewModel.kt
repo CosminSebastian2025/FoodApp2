@@ -47,7 +47,7 @@ class SearchViewModel : ViewModel() {
                     allProducts.filter { product ->
                         product.name.contains(term, ignoreCase = true) ||
                                 product.description.contains(term, ignoreCase = true) ||
-                                product.category.contains(term, ignoreCase = true)
+                                product.allCategories.any { it.contains(term, ignoreCase = true) }
                     }
                 }
             } catch (e: CancellationException) {

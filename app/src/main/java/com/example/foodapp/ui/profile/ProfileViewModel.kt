@@ -31,6 +31,23 @@ class ProfileViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private var refreshingOrders = false
+
+    /** Rilegge lo storico ordini senza spinner né banner: serve al polling dello stato. */
+    fun refreshOrderHistory(userId: String?) {
+        if (userId.isNullOrBlank() || refreshingOrders) return
+        refreshingOrders = true
+        viewModelScope.launch {
+            try {
+                runCatching { RetrofitClient.apiService.getOrderHistory(userId) }
+                    .onSuccess { _orderHistory.value = it }
+                    .onFailure { it.printStackTrace() }
+            } finally {
+                refreshingOrders = false
+            }
+        }
+    }
+
     fun loadProfileData(userId: String?) {
         if (userId.isNullOrBlank()) {
             _userProfile.value = null

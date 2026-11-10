@@ -54,13 +54,17 @@ fun AddMoreScreen(state: AppState, viewModel: CategoriesViewModel = viewModel())
         viewModel.loadData()
     }
 
-    // Le categorie del server sono per nome (Bevande/Dolci): accettiamo anche gli ID legacy.
+    // Un prodotto può stare in più categorie: controlliamo l'elenco completo, accettando anche gli ID legacy.
     val filtered = when (state.activeQuickCat) {
-        "drinks" -> products.filter {
-            it.category.equals("Bevande", true) || it.category.equals("drinks", true)
+        "drinks" -> products.filter { product ->
+            product.allCategories.any {
+                it.equals("Bevande", true) || it.equals("drinks", true)
+            }
         }
-        "desserts" -> products.filter {
-            it.category.equals("Dolci", true) || it.category.equals("desserts", true)
+        "desserts" -> products.filter { product ->
+            product.allCategories.any {
+                it.equals("Dolci", true) || it.equals("desserts", true)
+            }
         }
         else -> products
     }
