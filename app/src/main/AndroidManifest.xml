@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Rete: API FastBite e download degli aggiornamenti da GitHub Releases. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permette all'app di aprire l'installer per l'APK scaricato (Android 8+). -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- Su Android 11+ rende visibile e avviabile il package installer di sistema. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -34,6 +37,7 @@
             </intent-filter>
         </activity>
 
+        <!-- Espone in sola lettura la cartella cache/updates all'installer di sistema. -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

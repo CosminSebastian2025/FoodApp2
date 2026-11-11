@@ -62,14 +62,19 @@ fun SettingsScreen(state: AppState, viewModel: SettingsViewModel = viewModel()) 
     // L'installer parte solo quando il download è completato.
     LaunchedEffect(ui.apkFile) {
         val file = ui.apkFile ?: return@LaunchedEffect
+        // Se Android consente già l'installazione da FastBite si apre subito il pacchetto,
+        // altrimenti si portano le impostazioni di sistema sul permesso mancante.
         if (ApkInstaller.canInstall(context)) {
             ApkInstaller.install(context, file)
         } else {
             ApkInstaller.openPermissionSettings(context)
         }
+        // Stato ripulito subito: senza questo l'installer ripartirebbe a ogni ricomposizione.
         viewModel.consumeApkFile()
     }
 
+    // Ordine dei blocchi: intestazione, versione installata, aggiornamenti,
+    // interruttore del controllo automatico e nota informativa.
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -99,6 +104,7 @@ fun SettingsScreen(state: AppState, viewModel: SettingsViewModel = viewModel()) 
     }
 }
 
+// Riepilogo: nome dell'app, versione installata (nome e versionCode) e data dell'ultimo controllo.
 @Composable
 private fun AppInfoCard(ui: SettingsUiState) {
     Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
@@ -127,6 +133,7 @@ private fun AppInfoCard(ui: SettingsUiState) {
     }
 }
 
+// Card principale dell'updater: mostra lo stato corrente e i pulsanti per agire.
 @Composable
 private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
     val context = LocalContext.current
@@ -148,7 +155,9 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                 Text("Aggiornamenti", fontWeight = FontWeight.Bold, fontSize = 13.sp)
             }
 
+            // Un solo ramo visibile alla volta, in ordine di priorità.
             when {
+                // Controllo in corso: spinner e testo, i pulsanti restano disabilitati.
                 ui.isChecking -> Row(verticalAlignment = Alignment.CenterVertically) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(18.dp),
@@ -159,6 +168,8 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                     Text("Controllo aggiornamenti…", fontSize = 12.sp, color = Slate500)
                 }
 
+                // Nuova versione trovata: numero, note della release, dimensione APK
+                // e pulsante di download (o barra di avanzamento durante lo scaricamento).
                 update != null -> {
                     Text(
                         "Versione ${update.versionName} disponibile",
@@ -181,6 +192,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                             color = Slate400
                         )
                     }
+                    // Download in corso: barra proporzionale alla percentuale ricevuta.
                     if (ui.isDownloading) {
                         LinearProgressIndicator(
                             progress = { ui.downloadProgress / 100f },
@@ -193,6 +205,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                             color = Slate500
                         )
                     } else {
+                        // Download non avviato: scarica l'APK e poi apre l'installer.
                         Button(
                             onClick = viewModel::downloadUpdate,
                             colors = ButtonDefaults.buttonColors(Brand),
@@ -205,6 +218,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                                 fontWeight = FontWeight.Bold
                             )
                         }
+                        // Permesso "installa app sconosciute" assente: si avvisa l'utente.
                         if (!ApkInstaller.canInstall(context)) {
                             Text(
                                 "Android chiederà di consentire l'installazione da FastBite.",
@@ -215,6 +229,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                     }
                 }
 
+                // Controllo riuscito senza novità.
                 ui.upToDate -> Text(
                     "✓ Hai già l'ultima versione",
                     fontSize = 12.sp,
@@ -222,6 +237,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                     color = Emerald
                 )
 
+                // Stato iniziale: nessun controllo ancora eseguito.
                 else -> Text(
                     "Controlla se è disponibile una nuova versione.",
                     fontSize = 12.sp,
@@ -229,10 +245,12 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
                 )
             }
 
+            // Errore dell'ultimo controllo o download, con possibilità di riprovare.
             ui.error?.let { message ->
                 ErrorBanner(message = message, onRetry = { viewModel.checkForUpdates(true) })
             }
 
+            // Azioni sempre disponibili: controllo manuale o apertura della pagina release.
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(
                     onClick = { viewModel.checkForUpdates(manual = true) },
@@ -256,6 +274,7 @@ private fun UpdateCard(ui: SettingsUiState, viewModel: SettingsViewModel) {
     }
 }
 
+// Interruttore persistente che abilita o spegne il controllo automatico all'avvio.
 @Composable
 private fun AutoUpdateCard(autoCheck: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(Color.White)) {
@@ -317,9 +336,11 @@ fun UpdateAvailableBanner(versionName: String, onOpen: () -> Unit) {
     }
 }
 
+// 0 = nessun controllo registrato; altrimenti data e ora italiane.
 private fun formatLastCheck(millis: Long): String =
     if (millis <= 0L) "Mai"
     else SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALY).format(Date(millis))
 
+// Converte i byte in MB con un decimale (stringa vuota se il dato manca).
 private fun formatSize(bytes: Long): String =
     if (bytes <= 0L) "" else "%.1f MB".format(bytes / 1048576.0)

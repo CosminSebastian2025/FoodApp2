@@ -8,14 +8,19 @@ import android.provider.Settings
 import androidx.core.content.FileProvider
 import java.io.File
 
-/** Apre l'APK scaricato nel programma di installazione di Android. */
+/**
+ * Passa l'APK scaricato al programma di installazione di Android.
+ * Da Android 8 (O) l'utente deve autorizzare l'installazione da questa app:
+ * il primo tentativo apre la pagina di sistema, i successivi installano direttamente.
+ */
 object ApkInstaller {
 
+    /** True se Android permette già di installare da FastBite (o se la versione non lo richiede). */
     fun canInstall(context: Context): Boolean =
         Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
             context.packageManager.canRequestPackageInstalls()
 
-    /** Pagina di sistema per consentire l'installazione di app da questa fonte. */
+    /** Apre la pagina di sistema "Installa app sconosciute" per il pacchetto FastBite. */
     fun openPermissionSettings(context: Context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
@@ -24,6 +29,7 @@ object ApkInstaller {
         context.startActivity(intent)
     }
 
+    /** Consegna l'APK in cache all'installer tramite FileProvider (l'APK non è leggibile altrove). */
     fun install(context: Context, apkFile: File) {
         val uri = FileProvider.getUriForFile(
             context,
@@ -36,6 +42,7 @@ object ApkInstaller {
         context.startActivity(intent)
     }
 
+    /** Fallback: apre la pagina delle release nel browser, senza installazione in-app. */
     fun openReleasePage(context: Context) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(AppUpdates.RELEASES_PAGE))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

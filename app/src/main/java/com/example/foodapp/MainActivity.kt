@@ -88,6 +88,8 @@ class MainActivity : ComponentActivity() {
 fun FastBiteApp(state: AppState) {
     val navScreens = listOf("home", "search", "categories", "cart", "profile")
 
+    // ViewModel condiviso con la schermata Impostazioni: versione installata,
+    // aggiornamento disponibile e progresso del download.
     val settingsViewModel: SettingsViewModel = viewModel()
     val settingsState by settingsViewModel.state.collectAsState()
 
@@ -107,6 +109,8 @@ fun FastBiteApp(state: AppState) {
         bottomBar = { if (state.screen in navScreens) BottomBar(state) }
     ) { padding ->
         Column(Modifier.padding(padding)) {
+            // Striscia globale: visibile su tutte le schermate tranne Impostazioni e splash,
+            // così un aggiornamento trovato all'avvio non passa inosservato.
             val update = settingsState.update
             if (update != null && state.screen != "settings" && state.screen != "splash") {
                 UpdateAvailableBanner(update.versionName) { state.screen = "settings" }
@@ -125,6 +129,7 @@ fun FastBiteApp(state: AppState) {
                     "item-customize" -> CustomizeScreen(state)
                     "confirmation" -> ConfirmationScreen(state)
                     "profile" -> ProfileScreen(state)
+                    // Stesso ViewModel usato per il controllo all'avvio: lo stato non si perde.
                     "settings" -> SettingsScreen(state, settingsViewModel)
                     "store-select" -> StoreSelectScreen(state)
                     "payment-history" -> PaymentHistoryScreen(state)
